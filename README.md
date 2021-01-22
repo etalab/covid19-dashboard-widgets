@@ -16,13 +16,13 @@ Two components are defined: `HelloWorld` and `GoodBye`, and they're exposed as `
 - components can communicate to the parent page — demonstrated by an event sent from `hello` (`hello:increment`) and received by some vanilla JS on `index.html`
 - components have scoped styles — demonstrated by the link colors (orange in embedding page, green and red in components)
 - components have styles shared by all components (:warning: and probably the embedding page), demonstrated by the border around components on class `.hello`
+- embedding page can dynamically update component props and they're reactive — demonstrated by `index.html:setTimeout` -> `<good-bye>.msg`
 
 ![](screenshot.png)
 
 ### Todo
 
 - do we really need `vue-custom-element` vs regular Vue apps mounted to specific DOM elements in the parent page?
-- reactivity to prop changes in embedding page
 - static assets handling (fonts, img...)
 - separate builds for each component, without pulling all the dependencies of all the components (`--target lib`), which impact on the store?
 - communication from parent window to components (event based probably)

@@ -18,7 +18,7 @@
     </noscript>
     <a href="#">lien en dehors</a>
     <hello-world msg="HELLO MTF"></hello-world>
-    <good-bye msg="YOP"></good-bye>
+    <good-bye msg="initial"></good-bye>
     <script>
       window.addEventListener(
         "hello:increment",
@@ -26,6 +26,9 @@
           console.log("got event from component", e.detail)
         }
       )
+      setTimeout(() => {
+        document.querySelector('good-bye').msg = 'updated by parent'
+      }, 2000);
     </script>
     <!-- built files will be auto injected -->
   </body>
