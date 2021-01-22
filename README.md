@@ -17,6 +17,8 @@ Two components are defined: `HelloWorld` and `GoodBye`, and they're exposed as `
 - components have scoped styles — demonstrated by the link colors (orange in embedding page, green and red in components)
 - components have styles shared by all components (:warning: and probably the embedding page), demonstrated by the border around components on class `.hello`
 
+![](screenshot.png)
+
 ### Todo
 
 - do we really need `vue-custom-element` vs regular Vue apps mounted to specific DOM elements in the parent page?
