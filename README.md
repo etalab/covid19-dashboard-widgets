@@ -22,6 +22,7 @@ Two components are defined: `HelloWorld` and `GoodBye`, and they're exposed as `
 ### Todo
 
 - do we really need `vue-custom-element` vs regular Vue apps mounted to specific DOM elements in the parent page?
+- reactivity to prop changes in embedding page
 - static assets handling (fonts, img...)
 - separate builds for each component, without pulling all the dependencies of all the components (`--target lib`), which impact on the store?
 - communication from parent window to components (event based probably)
