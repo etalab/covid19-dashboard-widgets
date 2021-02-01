@@ -9,7 +9,9 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
-    "mapbox-gl": "^1.13.0",
+    "mapbox-gl": "^2.0.1",
+    "sass": "^1.32.5",
+    "sass-loader": "^10.1.1",
     "v-mapbox": "^1.6.4",
     "vue": "^2.6.11",
     "vue-custom-element": "^3.2.14",
@@ -22,7 +24,8 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "webpack": "^4.46.0"
   },
   "eslintConfig": {
     "root": true,
