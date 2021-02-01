@@ -6,13 +6,15 @@ Widgets need two files in order to work :
 
 [app.js](https://widgets.barometre-resultats.data.gouv.fr/css/app.css)
 
-Add those to file to your html head.
+Add those two files to your html head.
 
 The CSS file of the DSE is expected to be present on the hosting page.
 
 Widgets can now be called directly into the page as custom html elements.
 
 ## Box with number
+
+![](screenshot-box.png)
 
 ```
 <databox></databox>
@@ -25,6 +27,8 @@ This widget expect one parameter ovqid. The value should be a string correspondi
 ```
 
 ## Region and departement list
+
+![](screenshot-list.png)
 
 ```
 <geo-lists></geo-lists>
