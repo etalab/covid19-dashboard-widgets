@@ -17,7 +17,7 @@ Widgets can now be called directly into the page as custom html elements.
 ![](screenshot-box.png)
 
 ```
-<databox></databox>
+<databox ovqid=""></databox>
 ```
 
 This widget expect one parameter ovqid. The value should be a string corresponding to an id of an OVQ from the projet. Eg :  
