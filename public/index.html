@@ -5,23 +5,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <link rel="stylesheet" href="https://www.gouvernement.fr/sites/all/themes/custom/gouvernement/css/all.css?qncfw4s">
+    
+    
     <title><%= htmlWebpackPlugin.options.title %></title>
     <style>
       a {
         color: orange;
       }
+
     </style>
   </head>
   <body>
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
-    <a href="#">lien en dehors</a>
-    <hello-world msg="HELLO MTF"></hello-world>
-    <good-bye msg="initial"></good-bye>
-    <da-map></da-map>
+    <!-- <da-map></da-map> -->
+    <geo-lists></geo-lists>
+    <data-box ovqid="OVQ-PVL"></data-box>
     <script>
-      window.addEventListener(
+      /* window.addEventListener(
         "hello:increment",
         function (e) {
           console.log("got event from component", e.detail)
@@ -29,7 +32,7 @@
       )
       setTimeout(() => {
         document.querySelector('good-bye').msg = 'updated by parent'
-      }, 2000);
+      }, 2000); */
     </script>
     <!-- built files will be auto injected -->
   </body>
