@@ -2,9 +2,9 @@
 
 Widgets need two files in order to work : 
 
-[app.css](https://widgets.barometre-resultats.data.gouv.fr/js/app.js)
+[app.css](https://widgets.barometre-resultats.data.gouv.fr/css/app.css)
 
-[app.js](https://widgets.barometre-resultats.data.gouv.fr/css/app.css)
+[app.js](https://widgets.barometre-resultats.data.gouv.fr/js/app.js)
 
 Add those two files to your html head.
 
