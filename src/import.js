@@ -18,7 +18,5 @@ export const getData = async function (store) {
 
 	store.commit("endImport",true)
 
-	console.log("test update from Git")
-
 	return true
 }
