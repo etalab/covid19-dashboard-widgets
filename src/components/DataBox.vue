@@ -160,12 +160,18 @@ export default {
 
   watch:{
     dataImport:function(){
+      console.log("dataImport over")
       this.getOvqData()
+      console.log(this.ovqStructure)
     },
     selectedGeoCode:function(){
       this.updateOvqData()
     }
   },
+
+  created(){
+    console.log("databox created")
+  }
 
 }
 </script>
