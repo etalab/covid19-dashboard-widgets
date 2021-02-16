@@ -42,9 +42,7 @@
         </div>
       </div>
     </div>
-    <code><b>logs</b></code><br>
-    <code>OVQ sélectionné : {{ovqStructure['nom_ovq']}}</code><br>
-    <code>Niveau sélectionné : {{selectedGeoLevel}} ({{selectedGeoCode}})</code>
+    <code style='display:none'>OVQ sélectionné : {{ovqStructure['nom_ovq']}}</code><br>
   </div>
 </template>
 
@@ -160,9 +158,7 @@ export default {
 
   watch:{
     dataImport:function(){
-      console.log("dataImport over")
       this.getOvqData()
-      console.log(this.ovqStructure)
     },
     selectedGeoCode:function(){
       this.updateOvqData()
@@ -170,7 +166,7 @@ export default {
   },
 
   created(){
-    console.log("databox created")
+    
   }
 
 }
@@ -180,7 +176,7 @@ export default {
 <style scoped lang="scss">
   
   /* overload fonts path, to delete when parent has access */
-  // @import "../../css/overload-fonts.css";
+  @import "../../css/overload-fonts.css";
 
   .indicateur_container{
     margin-bottom: 30px;

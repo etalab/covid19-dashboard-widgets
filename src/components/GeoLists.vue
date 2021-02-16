@@ -82,7 +82,7 @@ export default {
 <style scoped lang="scss">
   
   /* overload fonts path, to delete when parent has access */
-  // @import "../../css/overload-fonts.css";
+  @import "../../css/overload-fonts.css";
 
   select{
     width: 250px;
