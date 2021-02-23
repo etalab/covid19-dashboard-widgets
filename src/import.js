@@ -1,22 +1,43 @@
 export const getData = async function (store) {
 
-	const dataRequest = await fetch("https://widgets.barometre-resultats.data.gouv.fr/data/structure-cible.json")
-	const data = await dataRequest.json()
-	store.commit('initStructure',data)
+	const dataRequest = await fetch("https://www.data.gouv.fr/fr/datasets/r/f335f9ea-86e3-4ffa-9684-93c009d5e617")
+	const data = await dataRequest.text()
 
-	const nationalDataRequest = await fetch("https://widgets.barometre-resultats.data.gouv.fr/data/par_territoire/territoire-national-global-light.json")
-	const nationalData = await nationalDataRequest.json()
-	store.commit("setTerritoireData",{level:"national",data:nationalData})
+	var CSVdata = []
 
-	const regionalDataRequest = await fetch("https://widgets.barometre-resultats.data.gouv.fr/data/par_territoire/territoire-regional-global-light.json")
-	const regionalData = await regionalDataRequest.json()
-	store.commit("setTerritoireData",{level:"regional",data:regionalData})
+	var tmpArray = csvToArray(data)
 
-	const departementalDataRequest = await fetch("https://widgets.barometre-resultats.data.gouv.fr/data/par_territoire/territoire-departemental-global-light.json")
-	const departementalData = await departementalDataRequest.json()
-	store.commit("setTerritoireData",{level:"departemental",data:departementalData})
+	tmpArray.forEach(function(row){
+		CSVdata.push(row)
+	})
 
+	var mesuresData = {}
+
+	CSVdata.forEach(function(row){
+		mesuresData[row["date"]] = row
+	})
+
+	store.commit("initData",mesuresData)
 	store.commit("endImport",true)
 
 	return true
+}
+
+function csvToArray (csvString) {
+
+	var csvArray = []
+	var csvRows = csvString.split(/\n/)
+	var csvHeaders = csvRows.shift().split(',')
+	for (var rowIndex = 0; rowIndex < csvRows.length; ++rowIndex) {
+		var rowArray = csvRows[rowIndex].split(',')
+		var rowObject = csvArray[rowIndex] = {}
+		for (var propIndex = 0; propIndex < rowArray.length; ++propIndex) {
+			var propValue = rowArray[propIndex].replace(/^"|"$/g, '').replace(/\r/g, '')
+			var propLabel = csvHeaders[propIndex].replace(/^"|"$/g, '').replace(/\r/g, '')
+			rowObject[propLabel] = propValue
+		}
+	}
+
+	return csvArray
+
 }
