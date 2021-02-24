@@ -1,40 +1,13 @@
 <template>
   <div class="databox">
-    <div class="box">
-      <div class="box-header rf-text--sm">
-        <span>Nombre de cas confirmés</span>
+    <div class="box-header rf-text--sm">
+        <span>{{title}}</span>
       </div>
-      <span class="number rf-text--lg">{{convertStringToLocaleNumber(record["conf"])}}</span>
-      <span class="rf-text">cas confirmés (j-1)</span>
+      <span class="number rf-text--lg">{{convertStringToLocaleNumber(record[indicateur])}}</span>
+      <span class="rf-text">{{unit}}</span>
       <span class="date rf-text">Dernière mise à jour : {{convertDateToHuman(record["date"])}}</span>
       <a class="rf-link" href="https://www.data.gouv.fr/fr/datasets/donnees-hospitalieres-relatives-a-lepidemie-de-covid-19/" target="_blank">Voir les données sur data.gouv.fr</a>
     </div>
-
-    <div class="box">
-      <div class="box-header rf-text--sm">
-        <span>Cumul des décès</span>
-      </div>
-      <span class="number rf-text--lg">{{convertStringToLocaleNumber(record["dc_tot"])}}</span>
-      <span class="rf-text">décès</span>
-      <span class="date rf-text">Dernière mise à jour : {{convertDateToHuman(record["date"])}}</span>
-      <a class="rf-link" href="https://www.data.gouv.fr/fr/datasets/donnees-hospitalieres-relatives-a-lepidemie-de-covid-19/" target="_blank">Voir les données sur data.gouv.fr</a>
-    </div>
-
-    <div class="box">
-      <div class="box-header rf-text--sm">
-        <span>Patients en réanimation</span>
-      </div>
-      <span class="number rf-text--lg">{{convertStringToLocaleNumber(record["rea"])}}</span>
-      <span class="rf-text">patients</span>
-      <span class="date rf-text">Dernière mise à jour : {{convertDateToHuman(record["date"])}}</span>
-      <a class="rf-link" href="https://www.data.gouv.fr/fr/datasets/donnees-hospitalieres-relatives-a-lepidemie-de-covid-19/" target="_blank">Voir les données sur data.gouv.fr</a>
-    </div>
-
-
-
-
-  </div>
-
 </template>
 
 <script>
@@ -48,7 +21,9 @@ export default {
     }
   },
   props: {
-    indicateur: String
+    indicateur: String,
+    title: String,
+    unit: String
   },
   computed: {
     dataImport() {
@@ -88,7 +63,7 @@ export default {
   /* overload fonts path, to delete when parent has access */
   @import "../../css/overload-fonts.css";
 
-  .box{
+  .databox{
     width: 230px;
     height: 125px;
     background-color: #f2f2f9;
@@ -118,7 +93,6 @@ export default {
       text-decoration: none;
       color:black;
       font-size: 11px;
-
     }
   }
 
