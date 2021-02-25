@@ -3,7 +3,7 @@
     <div class="chart-header rf-text--sm">
         <span>{{title}}</span>
     </div>
-    <canvas id="myChart"></canvas>
+    <canvas :id="chartId"></canvas>
   </div>
 </template>
 
@@ -17,8 +17,7 @@ export default {
     return {
       labels:[],
       dataset:[],
-      datasetalter:[]
-
+      chartId:""
     }
   },
   props: {
@@ -35,9 +34,8 @@ export default {
 
     createChart () {
       var self = this
-      var ctx = document.getElementById('myChart').getContext('2d');
+      var ctx = document.getElementById(self.chartId).getContext('2d');
       var chart = new Chart(ctx, {
-          type: 'bar',
           data: {
               labels: self.labels,
               datasets: [{
@@ -45,11 +43,6 @@ export default {
                 backgroundColor: "#1167b8",
                 type:'bar',
                 pointRadius:0
-              },{
-                  data: self.datasetalter,
-                  backgroundColor: "#e5e5f4",
-                  type:'line',
-                  fill:false
               }]
           },
           options: {
@@ -68,9 +61,29 @@ export default {
           legend: {
               display: false
           },
+          tooltips:{
+            callbacks: {
+              label: function(tooltipItems) { 
+                var int = self.convertStringToLocaleNumber(tooltipItems["value"])
+                return int+" "+self.unit
+              },
+              title: function(tooltipItems) { 
+                return tooltipItems[0]["label"]
+              }
+            }
+          }
         }
       });
       console.log(chart)
+    },
+
+    convertStringToLocaleNumber(string){
+      return parseInt(string).toLocaleString()
+    },
+
+    convertDateToHuman(string){
+      let date = new Date(string)
+      return date.toLocaleDateString()
     }
     
   },
@@ -82,9 +95,8 @@ export default {
 
       Object.entries(store.state.data).forEach(function(d){
         if(d[1][self.indicateur] != ""){
-          self.labels.push((d[0]))
+          self.labels.push(self.convertDateToHuman(d[0]))
           self.dataset.push((d[1][self.indicateur]))
-          self.datasetalter.push((d[1]["dc_tot"]))
         }
       })
 
@@ -93,7 +105,7 @@ export default {
   },
 
   created(){
-    
+    this.chartId = "myChart"+Math.floor(Math.random() * (1000));
   }
 
 }
@@ -109,8 +121,8 @@ export default {
     display: block;
     width: 100%;
     max-width: 450px;
-    height: 350px;
-    box-sizing: border-box;
+    height: auto;
+    margin:0 auto 20px;
     .chart-header{
       margin-bottom: 20px;
       text-align: center;
