@@ -2,12 +2,12 @@
   <div class="databox">
     <div class="box-header rf-text--sm">
         <span>{{title}}</span>
-      </div>
-      <span class="number rf-text--lg">{{convertStringToLocaleNumber(record[indicateur])}}</span>
-      <span class="rf-text">{{unit}}</span>
-      <span class="date rf-text">Dernière mise à jour : {{convertDateToHuman(record["date"])}}</span>
-      <a class="rf-link" href="https://www.data.gouv.fr/fr/datasets/donnees-hospitalieres-relatives-a-lepidemie-de-covid-19/" target="_blank">Voir les données sur data.gouv.fr</a>
     </div>
+    <span class="number rf-text--lg">{{convertStringToLocaleNumber(record[indicateur])}}</span>
+    <span class="rf-text">{{unit}}</span>
+    <span class="date rf-text">Dernière mise à jour : {{convertDateToHuman(record["date"])}}</span>
+    <a class="rf-link" href="https://www.data.gouv.fr/fr/datasets/donnees-hospitalieres-relatives-a-lepidemie-de-covid-19/" target="_blank">Voir les données sur data.gouv.fr</a>
+  </div>
 </template>
 
 <script>
@@ -71,6 +71,7 @@ export default {
     padding-bottom: 10px;
     display: inline-block;
     margin-right: 20px;
+    margin-bottom: 50px;
     .box-header{
       background-color: #e5e5f4;
       margin-bottom: 15px;
