@@ -17,23 +17,18 @@
     </style>
   </head>
   <body>
+
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
-    <!-- <da-map></da-map> -->
-    <geo-lists></geo-lists>
-    <data-box ovqid="OVQ-PVL"></data-box>
-    <script>
-      /* window.addEventListener(
-        "hello:increment",
-        function (e) {
-          console.log("got event from component", e.detail)
-        }
-      )
-      setTimeout(() => {
-        document.querySelector('good-bye').msg = 'updated by parent'
-      }, 2000); */
-    </script>
-    <!-- built files will be auto injected -->
+
+    
+    <data-box indicateur="conf" title="Nombre de cas confirmés" unit="cas confirmés"></data-box>
+    <data-box indicateur="dc_tot" title="Cumul des décès" unit="décès"></data-box>
+    <data-box indicateur="rea" title="Patients en réanimation" unit="patients"></data-box>
+
+    <line-chart indicateur="conf" title="Nombre de cas confirmés" unit="cas confirmés"></line-chart>
+    <line-chart indicateur="rea" title="Patients en réanimation" unit="patients"></line-chart>
+
   </body>
 </html>

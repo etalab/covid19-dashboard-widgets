@@ -6,7 +6,7 @@ Vue.use(getData(store))
 
 //import Map from './components/Map'
 import DataBox from './components/DataBox'
-import GeoLists from './components/GeoLists'
+import LineChart from './components/LineChart'
 
 Vue.config.productionTip = false
 
@@ -16,4 +16,4 @@ Vue.use(vueCustomElement)
 
 //Vue.customElement('da-map', Map)
 Vue.customElement('data-box', DataBox)
-Vue.customElement('geo-lists', GeoLists)
+Vue.customElement('line-chart', LineChart)
