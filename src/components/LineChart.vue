@@ -65,19 +65,35 @@ export default {
 
     createChart () {
       var self = this
+      
+      var xTickLimit
+      this.display=== 'big' ? xTickLimit = 5 : xTickLimit = 1
+      
+
       var ctx = document.getElementById(self.chartId).getContext('2d');
+
+      var gradientFill
+      this.display=== 'big' ? gradientFill = ctx.createLinearGradient(0, 0, 0, 500) : gradientFill = ctx.createLinearGradient(0, 0, 0, 250)
+
+      gradientFill.addColorStop(0, "rgba(218, 218, 254, 0.6)");
+      gradientFill.addColorStop(0.6, "rgba(245, 245, 255, 0)");
+
       var chart = new Chart(ctx, {
           data: {
               labels: self.labels,
               datasets: [{
                 data: self.dataset,
-                backgroundColor:"rgba(0, 0, 0, 0)",
+                backgroundColor:gradientFill,
                 borderColor:"#000091",
                 type:'line',
                 pointRadius:0
               }]
           },
           options: {
+            animation: {
+              easing: "easeInOutBack"
+            },      
+
             scales: {
               xAxes: [{
                 gridLines: {
@@ -85,7 +101,7 @@ export default {
                 },
                 ticks: {
                   autoSkip: true,
-                  maxTicksLimit: 10,
+                  maxTicksLimit: xTickLimit,
                   maxRotation: 0,
                   minRotation: 0,
                   callback: function(value) {
@@ -139,8 +155,10 @@ export default {
 
       var self = this
 
+      console.log(store.state.data)
+
       Object.entries(store.state.data).forEach(function(d){
-        if(d[1][self.indicateur] != ""){
+        if(d[1][self.indicateur] != ""&&d[0] != ""){
           self.labels.push(self.convertDateToHuman(d[0]))
           self.dataset.push((d[1][self.indicateur]))
         }
@@ -266,24 +284,18 @@ export default {
       }
     }
     &[data-display="small"]{
-      height: 635px;
+      height: 515px;
       .l_col{
         width: 100%;
         display: block;
-        height: 375px;
+        height: 320px;
       }
       .r_col{
         width: 100%;
         display: block;
-        height: 260px;
+        height: 220px;
       }
     }
   }
   
-
-  @media (max-width: 768px) {
-
-  }
-
-
 </style>
