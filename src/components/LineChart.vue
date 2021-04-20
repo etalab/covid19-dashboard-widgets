@@ -1,6 +1,7 @@
 <template>
 
   <div class="widget_container" :data-display="display" :id="widgetId">
+
     <div class="l_col">
         
         <div class="l_box" data-box="loc">
@@ -11,10 +12,10 @@
           </span>
         </div>
         <div class="l_box" data-box="number">
-          <span class="l_box_title">Mise à jour : 12/04/2021</span>
+          <span class="l_box_title">Mise à jour : {{currentDate}}</span>
           <span class="l_box_label">Nombre de patients en réanimation</span>
           <div class="l_box_number_container">
-            <span class="l_box_number">5902</span>
+            <span class="l_box_number">{{currentValue}}</span>
             <span class="l_box_trend">
               <svg class="trend_ico" width="16" height="16" viewBox="0 0 16 16"><path fill="#d80600" d="M12.714 3.286c2.602 2.602 2.602 6.826 0 9.428-2.602 2.602-6.826 2.602-9.428 0-2.602-2.602-2.602-6.826 0-9.428 2.602-2.602 6.826-2.602 9.428 0zm-1.886 1.886H5.172l2.12 2.12-2.828 2.83 1.415 1.414 2.828-2.829 2.121 2.121V5.172z" transform="translate(-663 -5576) translate(527 5237) translate(1 225) translate(135 114)"/></svg>
               +XX % en 7j
@@ -50,7 +51,9 @@ export default {
       dataset:[],
       widgetId:"",
       chartId:"",
-      display:""
+      display:"",
+      currentValue:"",
+      currentDate:""
     }
   },
   props: {
@@ -155,7 +158,11 @@ export default {
 
       var self = this
 
-      console.log(store.state.data)
+      this.currentValue = Object.entries(store.state.data)[Object.entries(store.state.data).length-2][1][self.indicateur]
+
+      this.currentDate = this.convertDateToHuman(Object.entries(store.state.data)[Object.entries(store.state.data).length-2][0])
+
+      console.log(this.currentDate)
 
       Object.entries(store.state.data).forEach(function(d){
         if(d[1][self.indicateur] != ""&&d[0] != ""){
