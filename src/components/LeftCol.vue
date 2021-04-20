@@ -11,7 +11,7 @@
         </div>
         <div class="l_box" data-box="number">
           <span class="l_box_title">Mise à jour : {{date}}</span>
-          <span class="l_box_label">Nombre de patients en réanimation</span>
+          <span class="l_box_label">{{name}}</span>
           <div class="l_box_number_container">
             <span class="l_box_number">{{value}}</span>
             <span class="l_box_trend">
@@ -24,7 +24,7 @@
           <span class="l_box_title">Légende</span>
           <div class="l_box_legende_container">
             <div class="legende_dot"></div>
-            <span class="legende_txt">Patients</span>
+            <span class="legende_txt">{{unit}}</span>
           </div>
         </div>
 
@@ -42,7 +42,9 @@ export default {
   },
   props: {
     date: String,
-    value: String
+    value: String,
+    unit: String,
+    name: String
   },
   computed: {
     
