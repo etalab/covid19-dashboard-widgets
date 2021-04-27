@@ -133,6 +133,8 @@ export default {
 
       var self = this
 
+      console.log(store.state.data)
+
       this.currentValue = Object.entries(store.state.data)[Object.entries(store.state.data).length-2][1][self.indicateur]
 
       this.currentDate = this.convertDateToHuman(Object.entries(store.state.data)[Object.entries(store.state.data).length-2][0])
