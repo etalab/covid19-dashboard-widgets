@@ -1,6 +1,6 @@
 export const getData = async function (store) {
 
-	const dataRequest = await fetch("https://www.data.gouv.fr/fr/datasets/r/f335f9ea-86e3-4ffa-9684-93c009d5e617")
+	/* const dataRequest = await fetch("https://www.data.gouv.fr/fr/datasets/r/f335f9ea-86e3-4ffa-9684-93c009d5e617")
 	const data = await dataRequest.text()
 
 	var CSVdata = []
@@ -15,15 +15,21 @@ export const getData = async function (store) {
 
 	CSVdata.forEach(function(row){
 		mesuresData[row["date"]] = row
-	})
+	}) */
 
-	store.commit("initData",mesuresData)
+	const dataRequest = await fetch("https://raw.githubusercontent.com/geoffreyaldebert/covidbackend/master/global.json")
+	const data = await dataRequest.json()
+	store.commit("initData",data)
 	store.commit("endImport",true)
+
+
+	//store.commit("initData",mesuresData)
+	//store.commit("endImport",true)
 
 	return true
 }
 
-function csvToArray (csvString) {
+/*function csvToArray (csvString) {
 
 	var csvArray = []
 	var csvRows = csvString.split(/\n/)
@@ -40,4 +46,4 @@ function csvToArray (csvString) {
 
 	return csvArray
 
-}
+} */
