@@ -28,8 +28,8 @@ export default {
       display:"",
       currentValue:"",
       currentDate:"",
-      name:"Nombre de patients en réanimation",
-      unit:"Patients"
+      name:"Taux d'incidence",
+      unit:"Incidence pour 100 000 habitants"
     }
   },
   props: {
@@ -50,21 +50,15 @@ export default {
       
       var ctx = document.getElementById(self.chartId).getContext('2d')
 
-      var gradientFill
-      this.display=== 'big' ? gradientFill = ctx.createLinearGradient(0, 0, 0, 500) : gradientFill = ctx.createLinearGradient(0, 0, 0, 250)
-
-      gradientFill.addColorStop(0, "rgba(218, 218, 254, 0.6)")
-      gradientFill.addColorStop(0.6, "rgba(245, 245, 255, 0)")
-
       var chart = new Chart(ctx, {
           data: {
               labels: self.labels,
               datasets: [{
                 data: self.dataset,
-                backgroundColor:gradientFill,
+                backgroundColor:"#000091",
                 borderColor:"#000091",
-                type:'line',
-                pointRadius:0
+                type:'bar',
+                borderWidth:4
               }]
           },
           options: {
@@ -136,6 +130,8 @@ export default {
       this.currentValue = Object.entries(store.state.data)[Object.entries(store.state.data).length-2][1][self.indicateur]
 
       this.currentDate = this.convertDateToHuman(Object.entries(store.state.data)[Object.entries(store.state.data).length-2][0])
+
+      console.log(store.state.data)
 
       Object.entries(store.state.data).forEach(function(d){
         if(d[1][self.indicateur] != ""&&d[0] != ""){
