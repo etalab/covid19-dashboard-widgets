@@ -1,7 +1,7 @@
 <template>
 
   <div class="widget_container" :data-display="display" :id="widgetId">
-    <LeftCol :data-display="display" :date="currentDate" :value="currentValue" :unit="unit" :name="name"></LeftCol>
+    <LeftCol :data-display="display" :date="currentDate" :value="currentValue" :unit="unit" :name="name" :evolcode="evolcode" :evolvalue="evolvalue"></LeftCol>
     <div class="r_col">
       <div class="chart">
         <canvas :id="chartId"></canvas>
@@ -28,8 +28,10 @@ export default {
       display:"",
       currentValue:"",
       currentDate:"",
-      name:"Nombre de patients en réanimation",
-      unit:"Patients"
+      name:"",
+      unit:"",
+      evolcode:"",
+      evolvalue:""
     }
   },
   props: {
@@ -135,15 +137,16 @@ export default {
 
       console.log(store.state.data)
 
-      this.currentValue = Object.entries(store.state.data)[Object.entries(store.state.data).length-2][1][self.indicateur]
+      this.name = store.state.data[self.indicateur]["nom"][0]
+      this.unit = store.state.data[self.indicateur]["unite"][0]
+      this.currentValue = store.state.data[self.indicateur]["france"][0]["last_value"][0]
+      this.currentDate = this.convertDateToHuman(store.state.data[self.indicateur]["france"][0]["last_date"])
+      this.evolcode = store.state.data[self.indicateur]["france"][0]["evol_color"]
+      this.evolvalue = store.state.data[self.indicateur]["france"][0]["evol_percentage"][0]
 
-      this.currentDate = this.convertDateToHuman(Object.entries(store.state.data)[Object.entries(store.state.data).length-2][0])
-
-      Object.entries(store.state.data).forEach(function(d){
-        if(d[1][self.indicateur] != ""&&d[0] != ""){
-          self.labels.push(self.convertDateToHuman(d[0]))
-          self.dataset.push((d[1][self.indicateur]))
-        }
+      store.state.data[self.indicateur]["france"][0]["values"].forEach(function(d){
+        self.labels.push(self.convertDateToHuman(d["date"]))
+        self.dataset.push((d["value"][0]))
       })
 
       this.createChart()

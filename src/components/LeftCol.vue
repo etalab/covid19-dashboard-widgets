@@ -13,10 +13,10 @@
           <span class="l_box_title">Mise à jour : {{date}}</span>
           <span class="l_box_label">{{name}}</span>
           <div class="l_box_number_container">
-            <span class="l_box_number">{{value}}</span>
-            <span class="l_box_trend">
-              <svg class="trend_ico" width="16" height="16" viewBox="0 0 16 16"><path fill="#d80600" d="M12.714 3.286c2.602 2.602 2.602 6.826 0 9.428-2.602 2.602-6.826 2.602-9.428 0-2.602-2.602-2.602-6.826 0-9.428 2.602-2.602 6.826-2.602 9.428 0zm-1.886 1.886H5.172l2.12 2.12-2.828 2.83 1.415 1.414 2.828-2.829 2.121 2.121V5.172z" transform="translate(-663 -5576) translate(527 5237) translate(1 225) translate(135 114)"/></svg>
-              +XX % en 7j
+            <span class="l_box_number">{{convertNumberToHuman(value)}}</span>
+            <span class="l_box_trend" v-bind:class="{'down':isDown,'green':isGreen,'red':isRed}">
+              <svg class="trend_ico" width="16" height="16" viewBox="0 0 16 16"><path d="M12.714 3.286c2.602 2.602 2.602 6.826 0 9.428-2.602 2.602-6.826 2.602-9.428 0-2.602-2.602-2.602-6.826 0-9.428 2.602-2.602 6.826-2.602 9.428 0zm-1.886 1.886H5.172l2.12 2.12-2.828 2.83 1.415 1.414 2.828-2.829 2.121 2.121V5.172z" transform="translate(-663 -5576) translate(527 5237) translate(1 225) translate(135 114)"/></svg>
+              {{convertNumberToHuman(evolvalue)}} % en 7j
             </span>
           </div>
         </div>
@@ -24,7 +24,7 @@
           <span class="l_box_title">Légende</span>
           <div class="l_box_legende_container">
             <div class="legende_dot"></div>
-            <span class="legende_txt">{{unit}}</span>
+            <span class="legende_txt">{{capitalize(unit)}}</span>
           </div>
         </div>
 
@@ -38,27 +38,59 @@ export default {
 
   data(){
     return {
+      isDown:false,
+      isGreen:false,
+      isRed:false,
     }
   },
   props: {
     date: String,
     value: String,
     unit: String,
-    name: String
+    name: String,
+    evolcode: String,
+    evolvalue : String
   },
   computed: {
     
   },
   methods: {
 
+    convertNumberToHuman(float){
+      return parseFloat(float).toLocaleString()
+    },
+
+    capitalize(string){
+      return string.charAt(0).toUpperCase() + string.slice(1)
+    },
+
+    testEvolStyle(){
+      if(this.evolcode=="green"){
+        this.isGreen = true
+        this.isRed = false
+      }else{
+        this.isGreen = false
+        this.isRed = true
+      }
+
+      this.evolvalue > 0 ? this.isDown = false : this.isDown = true
+
+    }
+
   },
 
   watch:{
-  
+    evolcode:function(){
+      this.testEvolStyle()
+    },
+    evolvalue:function(){
+      this.testEvolStyle()
+    }
   },
 
   created(){
-    console.log("test component creataed")
+    this.evolcode === "green" ? this.isGreen = true : this.isRed = true
+    this.evolvalue > 0 ? this.isDown = false : this.isDown = true  
   },
 
 }
@@ -113,12 +145,32 @@ export default {
           .l_box_trend{
             font-family: "Marianne";
             font-size: 12px;
-            color:#d80600;
             display: inline-block;
             margin-left: 10px;
             .trend_ico{
               position: relative;
               transform:translate(0,2px);
+            }
+            &.down{
+              .trend_ico{
+                transform:translate(0,2px) rotate(90deg);
+              }
+            }
+            &.green{
+              color:#357941;
+              .trend_ico{
+                path{
+                  fill:#357941;
+                }
+              }
+            }
+            &.red{
+              color:#d80600;
+              .trend_ico{
+                path{
+                  fill:#d80600;
+                }
+              }
             }
           }
         }
