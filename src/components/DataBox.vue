@@ -8,7 +8,7 @@
       <svg class="trend_ico" width="16" height="16" viewBox="0 0 16 16"><path d="M12.714 3.286c2.602 2.602 2.602 6.826 0 9.428-2.602 2.602-6.826 2.602-9.428 0-2.602-2.602-2.602-6.826 0-9.428 2.602-2.602 6.826-2.602 9.428 0zm-1.886 1.886H5.172l2.12 2.12-2.828 2.83 1.415 1.414 2.828-2.829 2.121 2.121V5.172z" transform="translate(-663 -5576) translate(527 5237) translate(1 225) translate(135 114)"/></svg>
       {{convertNumberToHuman(evolvalue)}} % en 7j
     </div>
-    <span class="number">soit <span class="inner_number">{{convertNumberToHuman(currentValue)}}</span></span>
+    <span class="number">soit <span class="inner_number">{{convertNumberToHuman(currentValue)}} {{unit}}</span></span>
   </div>
 
 </template>
@@ -26,6 +26,7 @@ export default {
       currentValue:"",
       currentDate:"",
       name:"",
+      unit:"",
       evolcode:"",
       evolvalue:"",
       isDown:false,
@@ -75,8 +76,6 @@ export default {
     dataImport:function(){
 
       var self = this
-
-      console.log(store.state.data)
       
       this.name = store.state.data[self.indicateur]["nom"][0]
       this.unit = store.state.data[self.indicateur]["unite"][0]
