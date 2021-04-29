@@ -1,23 +1,22 @@
 <template>
 
-  <div>
-
-    <div class="list_container">
-      <p class="rf-hint-text" id="select-hint-desc-hint">Filter par région</p>
-      <select class="rf-select" id="select-reg" name="select" @change="changeGeoLevel('regions',$event)">
-          <option value="" selected disabled hidden>ex : Bourgogne-France-Comté</option>
+  <div class="fr-mb-4w fr-mt-3v fr-mt-md-0">
+    <div class="fr-mb-3w">
+      <p class="fr-text--sm fr-mb-1v" id="select-hint-desc-hint">Filtrer par région</p>
+      <select class="fr-select" id="select-reg" name="select" @change="changeGeoLevel('regions',$event)">
+          <option value="" selected disabled hidden>ex : Normandie</option>
           <option v-for="d in regions" :value="d['value']" :key="d['value']">{{d['label']}}</option>
       </select>
     </div>
 
-    <div class="list_container">
-      <p class="rf-hint-text" id="select-hint-desc-hint">Filter par département</p>
-
-      <select class="rf-select" id="select-dep" name="select" @change="changeGeoLevel('departements',$event)">
-          <option value="" selected disabled hidden>ex : Côte-d'Or</option>
+    <div class="fr-mb-3w">
+      <p class="fr-text--sm fr-mb-1v" id="select-hint-desc-hint">Filtrer par département</p>
+      <select class="fr-select" id="select-dep" name="select" @change="changeGeoLevel('departements',$event)">
+          <option value="" selected disabled hidden>ex : Manche</option>
           <option v-for="d in departements" :value="d['value']" :key="d['value']">{{d['label']}}</option>
       </select>
     </div>
+    <button class="fr-link fr-link--sm fr-fi-close-circle-line fr-link--icon-left">Réinitialiser</button>
 
   </div>
 
@@ -92,15 +91,13 @@ export default {
   /* overload fonts path, to delete when parent has access */
   @import "../../css/overload-fonts.css";
   @import "../../css/dsfr.min.css";
-  
-  select{
-    width: 250px;
+
+  .fr-select {
+    box-shadow: inset 0 -2px 0 0 #000091;
   }
-  h4{
-    margin-bottom:0px;
+
+  button.fr-link {
+    border: solid 1px #e5e5e5;
   }
-  .list_container{
-    display: block;
-    margin-bottom: 30px;
-  }
+
 </style>
