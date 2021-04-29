@@ -12,7 +12,7 @@ export default new Vuex.Store({
     user:{
       selectedGeoLevel:"France",
       selectedGeoCode:"01",
-      selectedGeoLabel:"France"
+      selectedGeoLabel:"France entière"
     },
   },
   mutations: {

@@ -3,7 +3,7 @@
   <div>
 
     <div class="list_container">
-      <p class="rf-hint-text" id="select-hint-desc-hint">Filter par région</p>
+      <p class="rf-hint-text" id="select-hint-desc-hint">Filtrer par région</p>
       <select class="rf-select" id="select-reg" name="select" @change="changeGeoLevel('regions',$event)">
           <option value="" selected disabled hidden>ex : Bourgogne-France-Comté</option>
           <option v-for="d in regions" :value="d['value']" :key="d['value']">{{d['label']}}</option>
@@ -11,7 +11,7 @@
     </div>
 
     <div class="list_container">
-      <p class="rf-hint-text" id="select-hint-desc-hint">Filter par département</p>
+      <p class="rf-hint-text" id="select-hint-desc-hint">Filtrer par département</p>
 
       <select class="rf-select" id="select-dep" name="select" @change="changeGeoLevel('departements',$event)">
           <option value="" selected disabled hidden>ex : Côte-d'Or</option>
