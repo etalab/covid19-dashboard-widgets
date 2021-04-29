@@ -41,6 +41,12 @@ export default {
     dataImport() {
       return store.state.endImport
     },
+    selectedGeoLevel () {
+      return store.state.user.selectedGeoLevel
+    },
+    selectedGeoCode () {
+      return store.state.user.selectedGeoCode
+    },
   },
   methods: {
 
@@ -68,29 +74,55 @@ export default {
 
       this.evolvalue > 0 ? this.isDown = false : this.isDown = true
 
+    },
+
+    updateData () {
+      var self = this
+
+      var geolevel = this.selectedGeoLevel
+      var geocode = this.selectedGeoCode
+
+      var geoObject
+
+      if(geolevel === "France"){
+        geoObject = store.state.data[self.indicateur]["france"][0]
+        this.localisation = "France entière"
+      }else{
+        this.localisation = geocode
+
+        geoObject = store.state.data[self.indicateur][geolevel].find(obj => {
+          return obj["code_level"] === geocode
+        })  
+      }      
+      
+      this.name = store.state.data[self.indicateur]["nom"]
+      this.unit = store.state.data[self.indicateur]["unite"]
+      this.currentValue = store.state.data[self.indicateur]["france"][0]["last_value"]
+      this.currentValue = geoObject["last_value"]
+      this.currentDate = this.convertDateToHuman(geoObject["last_date"])
+      this.evolcode = geoObject["evol_color"]
+      this.evolvalue = geoObject["evol_percentage"]
     }
     
   },
 
   watch:{
     dataImport:function(){
-
-      var self = this
-      
-      this.name = store.state.data[self.indicateur]["nom"]
-      this.unit = store.state.data[self.indicateur]["unite"]
-      this.currentValue = store.state.data[self.indicateur]["france"][0]["last_value"]
-      this.currentDate = this.convertDateToHuman(store.state.data[self.indicateur]["france"][0]["last_date"])
-      this.evolcode = store.state.data[self.indicateur]["france"][0]["evol_color"]
-      this.evolvalue = store.state.data[self.indicateur]["france"][0]["evol_percentage"]
+      this.updateData()
     },
-
+    selectedGeoCode:function(){
+      this.updateData()
+    },
+    selectedGeoLevel:function(){
+      this.updateData()
+    },
     evolcode:function(){
       this.testEvolStyle()
     },
     evolvalue:function(){
       this.testEvolStyle()
-    }
+    },
+
 
   },
 
