@@ -77,12 +77,12 @@ export default {
 
       var self = this
       
-      this.name = store.state.data[self.indicateur]["nom"][0]
-      this.unit = store.state.data[self.indicateur]["unite"][0]
-      this.currentValue = store.state.data[self.indicateur]["france"][0]["last_value"][0]
+      this.name = store.state.data[self.indicateur]["nom"]
+      this.unit = store.state.data[self.indicateur]["unite"]
+      this.currentValue = store.state.data[self.indicateur]["france"][0]["last_value"]
       this.currentDate = this.convertDateToHuman(store.state.data[self.indicateur]["france"][0]["last_date"])
       this.evolcode = store.state.data[self.indicateur]["france"][0]["evol_color"]
-      this.evolvalue = store.state.data[self.indicateur]["france"][0]["evol_percentage"][0]
+      this.evolvalue = store.state.data[self.indicateur]["france"][0]["evol_percentage"]
     },
 
     evolcode:function(){

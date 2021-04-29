@@ -137,16 +137,16 @@ export default {
 
       console.log(store.state.data)
 
-      this.name = store.state.data[self.indicateur]["nom"][0]
-      this.unit = store.state.data[self.indicateur]["unite"][0]
-      this.currentValue = store.state.data[self.indicateur]["france"][0]["last_value"][0]
+      this.name = store.state.data[self.indicateur]["nom"]
+      this.unit = store.state.data[self.indicateur]["unite"]
+      this.currentValue = store.state.data[self.indicateur]["france"][0]["last_value"]
       this.currentDate = this.convertDateToHuman(store.state.data[self.indicateur]["france"][0]["last_date"])
       this.evolcode = store.state.data[self.indicateur]["france"][0]["evol_color"]
-      this.evolvalue = store.state.data[self.indicateur]["france"][0]["evol_percentage"][0]
+      this.evolvalue = store.state.data[self.indicateur]["france"][0]["evol_percentage"]
 
       store.state.data[self.indicateur]["france"][0]["values"].forEach(function(d){
         self.labels.push(self.convertDateToHuman(d["date"]))
-        self.dataset.push((d["value"][0]))
+        self.dataset.push((d["value"]))
       })
 
       this.createChart()
