@@ -47,6 +47,7 @@ export default {
   },
   props: {
     date: String,
+    localisation: String,
     value: String,
     unit: String,
     name: String,

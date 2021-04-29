@@ -1,5 +1,4 @@
 <template>
-
   <div class="widget_container fr-grid-row" :data-display="display" :id="widgetId">
     <LeftCol :data-display="display" :date="currentDate" :value="currentValue" :unit="unit" :name="name" :evolcode="evolcode" :evolvalue="evolvalue"></LeftCol>
     <div class="r_col fr-col-12 fr-col-md-8 fr-col-lg-9">
@@ -15,7 +14,7 @@ import store from '@/store'
 import Chart from 'chart.js'
 import LeftCol from '@/components/LeftCol' 
 export default {
-  name: 'LineChart',
+  name: 'BarChart',
   components: {
     LeftCol
   },
@@ -26,6 +25,7 @@ export default {
       widgetId:"",
       chartId:"",
       display:"",
+      localisation:"",
       currentValue:"",
       currentDate:"",
       name:"",
@@ -41,8 +41,56 @@ export default {
     dataImport() {
       return store.state.endImport
     },
+    selectedGeoLevel () {
+      return store.state.user.selectedGeoLevel
+    },
+    selectedGeoCode () {
+      return store.state.user.selectedGeoCode
+    },
+    selectedGeoLabel () {
+      return store.state.user.selectedGeoLabel
+    },
+
   },
   methods: {
+
+    updateData () {
+      var self = this
+       
+      var geolevel = this.selectedGeoLevel
+      var geocode = this.selectedGeoCode
+
+      var geoObject
+
+      if(geolevel === "France"){
+        geoObject = store.state.data[self.indicateur]["france"][0]
+        this.localisation = "France entière"
+      }else{
+        this.localisation = geocode
+
+        geoObject = store.state.data[self.indicateur][geolevel].find(obj => {
+          return obj["code_level"] === geocode
+        })  
+      }      
+
+      this.name = store.state.data[self.indicateur]["nom"]
+      this.unit = store.state.data[self.indicateur]["unite"]
+      this.currentValue = geoObject["last_value"]
+      this.currentDate = this.convertDateToHuman(geoObject["last_date"])
+      this.evolcode = geoObject["evol_color"]
+      this.evolvalue = geoObject["evol_percentage"]
+
+      this.labels = []
+      this.dataset = []
+
+      geoObject["values"].forEach(function(d){
+        self.labels.push(self.convertDateToHuman(d["date"]))
+        self.dataset.push((d["value"]))
+      })
+
+      this.createChart()
+
+    },
 
     createChart () {
       var self = this
@@ -126,25 +174,14 @@ export default {
 
   watch:{
     dataImport:function(){
-
-      var self = this
-
-      console.log(store.state.data)
-
-      this.name = store.state.data[self.indicateur]["nom"][0]
-      this.unit = store.state.data[self.indicateur]["unite"][0]
-      this.currentValue = store.state.data[self.indicateur]["france"][0]["last_value"][0]
-      this.currentDate = this.convertDateToHuman(store.state.data[self.indicateur]["france"][0]["last_date"])
-      this.evolcode = store.state.data[self.indicateur]["france"][0]["evol_color"]
-      this.evolvalue = store.state.data[self.indicateur]["france"][0]["evol_percentage"][0]
-
-      store.state.data[self.indicateur]["france"][0]["values"].forEach(function(d){
-        self.labels.push(self.convertDateToHuman(d["date"]))
-        self.dataset.push((d["value"][0]))
-      })
-
-      this.createChart()
+      this.updateData()
     },
+    selectedGeoCode:function(){
+      this.updateData()
+    },
+    selectedGeoLevel:function(){
+      this.updateData()
+    }
   },
 
   created(){

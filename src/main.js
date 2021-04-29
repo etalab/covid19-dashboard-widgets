@@ -8,6 +8,7 @@ Vue.use(getData(store))
 import DataBox from './components/DataBox'
 import LineChart from './components/LineChart'
 import BarChart from './components/BarChart'
+import GeoList from './components/GeoList'
 
 Vue.config.productionTip = false
 
@@ -19,3 +20,4 @@ Vue.use(vueCustomElement)
 Vue.customElement('data-box', DataBox)
 Vue.customElement('line-chart', LineChart)
 Vue.customElement('bar-chart', BarChart)
+Vue.customElement('geo-list', GeoList)
