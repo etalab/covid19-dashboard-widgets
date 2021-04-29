@@ -1,9 +1,8 @@
 <template>
-
-  <div class="widget_container" :data-display="display" :id="widgetId">
-    <LeftCol :data-display="display" :localisation="selectedGeoLabel" :date="currentDate" :value="currentValue" :unit="unit" :name="name" :evolcode="evolcode" :evolvalue="evolvalue"></LeftCol>
-    <div class="r_col">
-      <div class="chart">
+  <div class="widget_container fr-grid-row" :data-display="display" :id="widgetId">
+    <LeftCol :data-display="display" :date="currentDate" :value="currentValue" :unit="unit" :name="name" :evolcode="evolcode" :evolvalue="evolvalue"></LeftCol>
+    <div class="r_col fr-col-12 fr-col-md-8 fr-col-lg-9">
+      <div class="chart fr-ml-0 fr-ml-md-3w">
         <canvas :id="chartId"></canvas>
       </div>
     </div>
@@ -205,34 +204,15 @@ export default {
   @import "../../css/overload-fonts.css";
 
   .widget_container{
-    max-width: 792px;
-    height: 390px;
-    border:1px solid #e5e5e5;
-    box-sizing: border-box;
-    margin:0 auto;
-    .r_col{
-      width: 66.66%;
-      height: 100%;
-      display: inline-block;
-      position: relative;
-      .chart{
-        display: block;
-        width: 100%;
-        height: auto;
-        position: absolute;
-        top:50%;
-        left:50%;
-        transform:translate(-50%,-50%);
-      }
+
+    .r_col {
+      align-self:center;
     }
-    &[data-display="small"]{
-      height: 515px;
-      .r_col{
-        width: 100%;
-        display: block;
-        height: 220px;
-      }
+
+    .chart canvas {
+      max-width:100%;
     }
+
   }
   
 </style>
