@@ -143,6 +143,7 @@ export default {
   
   /* overload fonts path, to delete when parent has access */
   @import "../../css/overload-fonts.css";
+  @import "../../css/dsfr.min.css";
 
   .data_box{
     background-color: white;
