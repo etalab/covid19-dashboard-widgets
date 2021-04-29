@@ -16,6 +16,14 @@
       body{
         background-color: #f9f8f6;
       }
+      .chart_container{
+        max-width: 750px;
+        margin:0 auto 50px;
+      }
+      .box_container{
+        max-width: 270px;
+        margin:0 auto 50px; 
+      }
     </style>
   </head>
   <body>
@@ -25,13 +33,17 @@
     </noscript>
 
     <geo-list></geo-list>
-    <line-chart indicateur="cas_positifs"></line-chart>
-    <!-- <bar-chart indicateur="cas_positifs"></bar-chart> -->
-
-    <bar-chart indicateur="hospitalisations_moyenne_quotidien"></bar-chart>
+    <div class="chart_container">
+      <bar-chart indicateur="cas_positifs"></bar-chart>
+    </div>
     
+    <!-- <div class="chart_container">
+      <bar-chart indicateur="hospitalisations_moyenne_quotidien"></bar-chart>
+    </div> -->
 
-    <data-box indicateur="taux_incidence"></data-box>
+    <div class="box_container">
+      <data-box indicateur="taux_incidence"></data-box>
+    </div>
     <!-- <data-box indicateur="cas_positifs"></data-box>
     <data-box indicateur="hospitalisations"></data-box>
     <data-box indicateur="soins_critiques"></data-box>
