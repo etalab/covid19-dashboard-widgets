@@ -15,7 +15,7 @@
           <p class="fr-text--sm fr-text--bold fr-mt-0 fr-mb-1w">{{name}}</p>
           <div class="l_box_number_container">
             <p class="fr-text--lg fr-text--bold fr-m-0">{{convertNumberToHuman(value)}}</p>
-            <p class="l_box_trend l_box_label fr-m-0 fr-text--sm fr-text--bold" v-bind:class="{'down':isDown,'green':isGreen,'red':isRed}">
+            <p class="l_box_trend l_box_label fr-m-0 fr-text--xs fr-text--bold" v-bind:class="{'down':isDown,'green':isGreen,'red':isRed}">
               <svg class="trend_ico" width="16" height="16" viewBox="0 0 16 16"><path d="M12.714 3.286c2.602 2.602 2.602 6.826 0 9.428-2.602 2.602-6.826 2.602-9.428 0-2.602-2.602-2.602-6.826 0-9.428 2.602-2.602 6.826-2.602 9.428 0zm-1.886 1.886H5.172l2.12 2.12-2.828 2.83 1.415 1.414 2.828-2.829 2.121 2.121V5.172z" transform="translate(-663 -5576) translate(527 5237) translate(1 225) translate(135 114)"/></svg>
               <span class="fr-ml-1v">{{convertNumberToHuman(evolvalue)}} % en 7j</span>
             </p>
