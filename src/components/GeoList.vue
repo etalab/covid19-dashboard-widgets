@@ -91,6 +91,8 @@ export default {
   
   /* overload fonts path, to delete when parent has access */
   @import "../../css/overload-fonts.css";
+  @import "../../css/dsfr.min.css";
+  
   select{
     width: 250px;
   }
