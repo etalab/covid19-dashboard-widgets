@@ -16,7 +16,7 @@
         <option v-for="d in departements" :value="d['value']" :key="d['value']">{{d['label']}}</option>
       </select>
     </div>
-    <button class="fr-link fr-link--sm fr-fi-close-circle-line fr-link--icon-left">Réinitialiser</button>
+    <button @click="resetGeoFilters()" class="fr-link fr-link--sm fr-fi-close-circle-line fr-link--icon-left">Réinitialiser</button>
 
   </div>
 
@@ -54,8 +54,7 @@ export default {
       })
     },
     changeGeoLevel(level,event){
-
-
+      
       var originalObj
       var geoLabel
 
@@ -74,8 +73,14 @@ export default {
       }
 
       store.commit("setUserChoices",{level:level,code:event.target.value,label:geoLabel})
+    },
 
+    resetGeoFilters(){
+      document.querySelector('#select-reg').value = ""
+      document.querySelector('#select-dep').value = ""
+      store.commit("setUserChoices",{level:"France",code:"01",label:"France entière"})
     }
+
   },
   watch:{
     dataImport:function(){

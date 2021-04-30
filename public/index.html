@@ -24,6 +24,10 @@
         max-width: 270px;
         margin:0 auto 50px; 
       }
+      .geo_container{
+        max-width: 300px;
+        margin:0 auto 50px;  
+      }
     </style>
   </head>
   <body>
@@ -32,9 +36,9 @@
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
 
-    <geo-list></geo-list>
+    <div class="geo_container"><geo-list></geo-list></div>
     <div class="chart_container">
-      <bar-chart indicateur="cas_positifs"></bar-chart>
+      <line-chart indicateur="cas_positifs"></line-chart>
     </div>
     
     <!-- <div class="chart_container">
