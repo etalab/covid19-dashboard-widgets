@@ -1,6 +1,6 @@
 <template>
 
-  <div class="data_box fr-p-3w" :data-display="display" :id="widgetId" v-bind:class="{'green':isGreen,'red':isRed}">
+  <div class="data_box fr-p-3w" :data-display="display" :id="widgetId" v-bind:class="{'green':isGreen,'red':isRed, 'loading':loading}">
 
     <p class="l_box_title fr-text--xs fr-mb-0">Mise à jour : {{currentDate}}</p>
     <p class="fr-text--sm fr-text--bold fr-my-1w">{{name}}</p>
@@ -32,6 +32,7 @@ export default {
       isDown:false,
       isGreen:false,
       isRed:false,
+      loading:true
     }
   },
   props: {
@@ -109,6 +110,7 @@ export default {
   watch:{
     dataImport:function(){
       this.updateData()
+      this.loading = false
     },
     selectedGeoCode:function(){
       this.updateData()
