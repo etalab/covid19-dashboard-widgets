@@ -58,7 +58,8 @@ export default {
 
     updateData () {
       var self = this
-       
+        
+
       var geolevel = this.selectedGeoLevel
       var geocode = this.selectedGeoCode
 
@@ -93,7 +94,7 @@ export default {
 
     createChart () {
       var self = this
-       
+    console.log(store.state.data)
       var geolevel = this.selectedGeoLevel
       var geocode = this.selectedGeoCode
 
