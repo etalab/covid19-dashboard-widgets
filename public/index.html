@@ -25,7 +25,7 @@
         margin:0 auto 50px; 
       }
       .geo_container{
-        max-width: 300px;
+        max-width: 200px;
         margin:0 auto 50px;  
       }
     </style>
@@ -37,9 +37,47 @@
     </noscript>
 
     <div class="geo_container"><geo-list></geo-list></div>
+
     <div class="chart_container">
-      <line-chart indicateur="cas_positifs"></line-chart>
+      <line-chart indicateur="deces"></line-chart>
     </div>
+
+    <div class="chart_container">
+      <line-chart indicateur="deces_moyenne_quotidien"></line-chart>
+    </div>
+
+    <div class="chart_container">
+      <line-chart indicateur="hospitalisations"></line-chart>
+    </div>
+
+    <div class="chart_container">
+      <line-chart indicateur="hospitalisations_moyenne_quotidien"></line-chart>
+    </div>
+
+    <div class="chart_container">
+      <line-chart indicateur="soins_critiques"></line-chart>
+    </div>
+
+    <div class="chart_container">
+      <line-chart indicateur="soins_critiques_moyenne_quotidien"></line-chart>
+    </div>
+
+    <div class="chart_container">
+      <line-chart indicateur="taux_incidence"></line-chart>
+    </div>
+
+    <div class="chart_container">
+      <line-chart indicateur="taux_positivite"></line-chart>
+    </div>
+
+    <div class="chart_container">
+      <line-chart indicateur="vaccins_premiere_dose"></line-chart>
+    </div>
+
+    <div class="chart_container">
+      <line-chart indicateur="vaccins_vaccines"></line-chart>
+    </div>
+
     
     <!-- <div class="chart_container">
       <bar-chart indicateur="hospitalisations_moyenne_quotidien"></bar-chart>
