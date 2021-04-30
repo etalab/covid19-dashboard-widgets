@@ -1,6 +1,6 @@
 <template>
 
-  <div class="widget_container fr-grid-row" :data-display="display" :id="widgetId">
+  <div class="widget_container fr-grid-row" :class="(loaded)?'loaded':''" :data-display="display" :id="widgetId">
     <LeftCol :data-display="display" :localisation="selectedGeoLabel" :date="currentDate" :value="currentValue" :unit="unit" :name="name" :evolcode="evolcode" :evolvalue="evolvalue"></LeftCol>
     <div class="r_col fr-col-12 fr-col-md-8 fr-col-lg-9">
       <div class="chart fr-ml-0 fr-ml-md-3w">
@@ -33,7 +33,8 @@ export default {
       unit:"",
       evolcode:"",
       evolvalue:"",
-      chart:undefined
+      chart:undefined,
+      loaded:false
     }
   },
   props: {
@@ -202,6 +203,7 @@ export default {
   watch:{
     dataImport:function(){
       this.createChart()
+      this.loaded = true
     },
     selectedGeoCode:function(){
       this.updateData()
