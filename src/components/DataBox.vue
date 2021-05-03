@@ -113,7 +113,7 @@ export default {
     },
 
     async getData () {
-      var url = "https://raw.githubusercontent.com/etalab/data-covid19-dashboard-widgets/master/data/"+this.indicateur+".json"
+      var url = "https://data.widgets.dashboard.covid19.data.gouv.fr/"+this.indicateur+".json"
       const dataRequest = await fetch(url)
       const data = await dataRequest.json()
       this.indicateur_data = data
