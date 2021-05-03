@@ -151,7 +151,7 @@ export default {
           options: {
             animation: {
               easing: "easeInOutBack"
-            },      
+            },
             scales: {
               xAxes: [{
                 gridLines: {
@@ -183,6 +183,7 @@ export default {
           },
           tooltips:{
             displayColors:false,
+            backgroundColor:"#6b6b6b",
             callbacks: {
               label: function(tooltipItems) { 
                 var int = self.convertStringToLocaleNumber(tooltipItems["value"])
@@ -190,6 +191,9 @@ export default {
               },
               title: function(tooltipItems) { 
                 return tooltipItems[0]["label"]
+              },
+              labelTextColor: function(){
+                return "#eeeeee"
               }
             },
           }
@@ -212,6 +216,7 @@ export default {
   watch:{
     dataImport:function(){
       this.createChart()
+      console.log(store.state.data)
       this.loading = false
     },
     selectedGeoCode:function(){
@@ -234,6 +239,12 @@ export default {
 
 }
 </script>
+
+<style>
+  #chartjs-tooltip {
+    background-color: "#d80600"!important;
+  }
+</style>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">

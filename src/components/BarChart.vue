@@ -175,6 +175,7 @@ export default {
           },
           tooltips:{
             displayColors:false,
+            backgroundColor:"#6b6b6b",
             callbacks: {
               label: function(tooltipItems) { 
                 var int = self.convertStringToLocaleNumber(tooltipItems["value"])
@@ -182,6 +183,9 @@ export default {
               },
               title: function(tooltipItems) { 
                 return tooltipItems[0]["label"]
+              },
+              labelTextColor: function(){
+                return "#eeeeee"
               }
             },
           }
