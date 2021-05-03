@@ -36,10 +36,9 @@ export default {
     
   },
   computed: {
-    dataImport() {
-      return store.state.endImport
-    },
+    
   },
+
   methods: {
     populateLists(){
       var self = this
@@ -82,11 +81,10 @@ export default {
     }
 
   },
-  watch:{
-    dataImport:function(){
-      this.populateLists()
-    }
-  },
+  
+  created(){
+    this.populateLists()
+  }
 }
 </script>
 

@@ -21,6 +21,7 @@ export default {
   },
   data(){
     return {
+      indicateur_data:undefined,
       labels:[],
       dataset:[],
       widgetId:"",
@@ -41,9 +42,6 @@ export default {
     indicateur: String,
   },
   computed: {
-    dataImport() {
-      return store.state.endImport
-    },
     selectedGeoLevel () {
       return store.state.user.selectedGeoLevel
     },
@@ -57,25 +55,34 @@ export default {
   },
   methods: {
 
-    updateData () {
-      var self = this
-        
+    async getData () {
+      var url = "https://raw.githubusercontent.com/etalab/data-covid19-dashboard-widgets/master/data/"+this.indicateur+".json"
+      const dataRequest = await fetch(url)
+      const data = await dataRequest.json()
+      this.indicateur_data = data
+      this.loading = false
+      this.createChart()
+    },
 
+    updateData () {
+
+      var self = this
+      
       var geolevel = this.selectedGeoLevel
       var geocode = this.selectedGeoCode
 
       var geoObject
 
       if(geolevel === "France"){
-        geoObject = store.state.data[self.indicateur]["france"][0]
+        geoObject = this.indicateur_data["france"][0]
       }else{
-        geoObject = store.state.data[self.indicateur][geolevel].find(obj => {
+        geoObject = this.indicateur_data[geolevel].find(obj => {
           return obj["code_level"] === geocode
         })  
       }      
 
-      this.name = store.state.data[self.indicateur]["nom"]
-      this.unit = store.state.data[self.indicateur]["unite"]
+      this.name = this.indicateur_data["nom"]
+      this.unit = this.indicateur_data["unite"]
       this.currentValue = geoObject["last_value"]
       this.currentDate = this.convertDateToHuman(geoObject["last_date"])
       this.evolcode = geoObject["evol_color"]
@@ -89,6 +96,11 @@ export default {
         self.dataset.push((d["value"]))
       })
 
+    },
+
+    updateChart () {
+      
+      this.updateData()
       this.chart.update()
     
     },
@@ -96,33 +108,7 @@ export default {
     createChart () {
       var self = this
     
-      var geolevel = this.selectedGeoLevel
-      var geocode = this.selectedGeoCode
-
-      var geoObject
-
-      if(geolevel === "France"){
-        geoObject = store.state.data[self.indicateur]["france"][0]
-      }else{
-        geoObject = store.state.data[self.indicateur][geolevel].find(obj => {
-          return obj["code_level"] === geocode
-        })  
-      }      
-
-      this.name = store.state.data[self.indicateur]["nom"]
-      this.unit = store.state.data[self.indicateur]["unite"]
-      this.currentValue = geoObject["last_value"]
-      this.currentDate = this.convertDateToHuman(geoObject["last_date"])
-      this.evolcode = geoObject["evol_color"]
-      this.evolvalue = geoObject["evol_percentage"]
-
-      //this.labels = []
-      //this.dataset = []
-
-      geoObject["values"].forEach(function(d){
-        self.labels.push(self.convertDateToHuman(d["date"]))
-        self.dataset.push((d["value"]))
-      })
+      this.updateData()
       
       var xTickLimit
       this.display=== 'big' ? xTickLimit = 5 : xTickLimit = 1
@@ -210,26 +196,22 @@ export default {
       let date = new Date(string)
       return date.toLocaleDateString()
     }
-    
+  
   },
 
   watch:{
-    dataImport:function(){
-      this.createChart()
-      console.log(store.state.data)
-      this.loading = false
-    },
     selectedGeoCode:function(){
-      this.updateData()
+      this.updateChart()
     },
     selectedGeoLevel:function(){
-      this.updateData()
+      this.updateChart()
     }
   },
 
   created(){
     this.chartId = "myChart"+Math.floor(Math.random() * (1000));
     this.widgetId = "widget"+Math.floor(Math.random() * (1000));
+    this.getData()
   },
 
   mounted(){
@@ -239,12 +221,6 @@ export default {
 
 }
 </script>
-
-<style>
-  #chartjs-tooltip {
-    background-color: "#d80600"!important;
-  }
-</style>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">

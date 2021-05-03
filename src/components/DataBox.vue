@@ -26,6 +26,7 @@ export default {
   data(){
     return {
       display:"",
+      indicateur_data:undefined,
       currentValue:"",
       currentDate:"",
       name:"",
@@ -43,9 +44,6 @@ export default {
     indicateur: String,
   },
   computed: {
-    dataImport() {
-      return store.state.endImport
-    },
     selectedGeoLevel () {
       return store.state.user.selectedGeoLevel
     },
@@ -89,40 +87,43 @@ export default {
     },
 
     updateData () {
-      var self = this
-
       var geolevel = this.selectedGeoLevel
       var geocode = this.selectedGeoCode
 
       var geoObject
 
       if(geolevel === "France"){
-        geoObject = store.state.data[self.indicateur]["france"][0]
+        geoObject = this.indicateur_data["france"][0]
         this.localisation = "France entière"
       }else{
         this.localisation = geocode
 
-        geoObject = store.state.data[self.indicateur][geolevel].find(obj => {
+        geoObject = this.indicateur_data[geolevel].find(obj => {
           return obj["code_level"] === geocode
         })  
       }      
       
-      this.name = store.state.data[self.indicateur]["nom"]
-      this.unit = store.state.data[self.indicateur]["unite"]
-      this.currentValue = store.state.data[self.indicateur]["france"][0]["last_value"]
+      this.name = this.indicateur_data["nom"]
+      this.unit = this.indicateur_data["unite"]
+      this.currentValue = this.indicateur_data["france"][0]["last_value"]
       this.currentValue = geoObject["last_value"]
       this.currentDate = this.convertDateToHuman(geoObject["last_date"])
       this.evolcode = geoObject["evol_color"]
       this.evolvalue = geoObject["evol_percentage"]
+    },
+
+    async getData () {
+      var url = "https://raw.githubusercontent.com/etalab/data-covid19-dashboard-widgets/master/data/"+this.indicateur+".json"
+      const dataRequest = await fetch(url)
+      const data = await dataRequest.json()
+      this.indicateur_data = data
+      this.loading = false
+      this.updateData()
     }
     
   },
 
   watch:{
-    dataImport:function(){
-      this.updateData()
-      this.loading = false
-    },
     selectedGeoCode:function(){
       this.updateData()
     },
@@ -135,12 +136,12 @@ export default {
     evolvalue:function(){
       this.testEvolStyle()
     },
-
-
   },
 
   created(){
     this.widgetId = "widget"+Math.floor(Math.random() * (1000));
+    this.getData()
+
   },
 
   mounted(){
