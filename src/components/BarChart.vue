@@ -174,6 +174,7 @@ export default {
               display: false
           },
           tooltips:{
+            displayColors:false,
             callbacks: {
               label: function(tooltipItems) { 
                 var int = self.convertStringToLocaleNumber(tooltipItems["value"])
@@ -182,7 +183,7 @@ export default {
               title: function(tooltipItems) { 
                 return tooltipItems[0]["label"]
               }
-            }
+            },
           }
         }
       });

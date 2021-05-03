@@ -143,7 +143,9 @@ export default {
                 backgroundColor:gradientFill,
                 borderColor:"#000091",
                 type:'line',
-                pointRadius:0
+                pointRadius:8,
+                pointBackgroundColor:"rgba(0, 0, 0, 0)",
+                pointBorderColor:"rgba(0, 0, 0, 0)",
               }]
           },
           options: {
@@ -180,6 +182,7 @@ export default {
               display: false
           },
           tooltips:{
+            displayColors:false,
             callbacks: {
               label: function(tooltipItems) { 
                 var int = self.convertStringToLocaleNumber(tooltipItems["value"])
@@ -188,7 +191,7 @@ export default {
               title: function(tooltipItems) { 
                 return tooltipItems[0]["label"]
               }
-            }
+            },
           }
         }
       });
@@ -238,6 +241,8 @@ export default {
   /* overload fonts path, to delete when parent has access */
   @import "../../css/overload-fonts.css";
   @import "../../css/dsfr.min.css";
+
+
 
   .widget_container{
 
