@@ -15,8 +15,11 @@
           <p class="fr-text--sm fr-text--bold fr-mt-0 fr-mb-1w">{{name}}</p>
           <div class="l_box_number_container">
             <p class="fr-text--lg fr-text--bold fr-m-0">{{convertNumberToHuman(value)}}</p>
-            <p class="l_box_trend l_box_label fr-m-0 fr-text--xs fr-text--bold" v-bind:class="{'down':isDown,'green':isGreen,'red':isRed}">
-              <svg class="trend_ico" width="16" height="16" viewBox="0 0 16 16"><path d="M12.714 3.286c2.602 2.602 2.602 6.826 0 9.428-2.602 2.602-6.826 2.602-9.428 0-2.602-2.602-2.602-6.826 0-9.428 2.602-2.602 6.826-2.602 9.428 0zm-1.886 1.886H5.172l2.12 2.12-2.828 2.83 1.415 1.414 2.828-2.829 2.121 2.121V5.172z" transform="translate(-663 -5576) translate(527 5237) translate(1 225) translate(135 114)"/></svg>
+            <p class="l_box_trend l_box_label fr-m-0 fr-text--xs fr-text--bold" v-bind:class="{'down':isDown,'green':isGreen,'red':isRed,'blue':isBlue}">
+              <svg class="trend_ico" width="24" height="24" viewBox="0 0 24 24">
+                <path v-if="!isBlue" d="M19.071 4.929c3.903 3.903 3.903 10.239 0 14.142-3.903 3.903-10.239 3.903-14.142 0-3.903-3.903-3.903-10.239 0-14.142 3.903-3.903 10.239-3.903 14.142 0zm-2.828 2.828H7.757l3.182 3.182-4.242 4.243 2.121 2.121 4.243-4.242 3.182 3.182V7.757z" transform="translate(-902 -5664) translate(902 5664)"/>
+                <path v-if="isBlue" d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm4 11H8v2h8v-2zm0-4H8v2h8V9z" transform="translate(-1366 -5645) translate(1366 5645)"/>
+              </svg>
               <span class="fr-ml-1v">{{convertNumberToHuman(evolvalue)}} % en 7j</span>
             </p>
           </div>
@@ -43,6 +46,7 @@ export default {
       isDown:false,
       isGreen:false,
       isRed:false,
+      isBlue:false
     }
   },
   props: {
@@ -71,12 +75,19 @@ export default {
       if(this.evolcode=="green"){
         this.isGreen = true
         this.isRed = false
-      }else{
+        this.isBlue = false
+        this.evolvalue > 0 ? this.isDown = false : this.isDown = true
+      }else if(this.evolcode=="red"){
         this.isGreen = false
         this.isRed = true
+        this.isBlue = false
+        this.evolvalue > 0 ? this.isDown = false : this.isDown = true
+      }else{
+        this.isGreen = false
+        this.isRed = false
+        this.isBlue = true
+        this.isDown = false
       }
-
-      this.evolvalue > 0 ? this.isDown = false : this.isDown = true
 
     }
 
@@ -92,8 +103,22 @@ export default {
   },
 
   created(){
-    this.evolcode === "green" ? this.isGreen = true : this.isRed = true
-    this.evolvalue > 0 ? this.isDown = false : this.isDown = true
+    if(this.evolcode=="green"){
+        this.isGreen = true
+        this.isRed = false
+        this.isBlue = false
+        this.evolvalue > 0 ? this.isDown = false : this.isDown = true
+      }else if(this.evolcode=="red"){
+        this.isGreen = false
+        this.isRed = true
+        this.isBlue = false
+        this.evolvalue > 0 ? this.isDown = false : this.isDown = true
+      }else{
+        this.isGreen = false
+        this.isRed = false
+        this.isBlue = true
+        this.isDown = false
+      }
   },
 
 }
@@ -122,30 +147,33 @@ export default {
     .l_box_number_container {
       display: flex;
       justify-content: space-between;
-
       .l_box_trend {
         &.down {
           .trend_ico {
             transform: rotate(90deg);
           }
         }
-
         &.green {
           color: #357941;
-
           .trend_ico {
             path {
               fill: #357941;
             }
           }
         }
-
         &.red {
           color: #d80600;
-
           .trend_ico {
             path {
               fill: #d80600;
+            }
+          }
+        }
+        &.blue {
+          color: #0768d5;
+          .trend_ico {
+            path {
+              fill: #0768d5;
             }
           }
         }
