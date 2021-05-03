@@ -1,9 +1,5 @@
 export const getData = async function (store) {
 
-	const dataRequest = await fetch("https://raw.githubusercontent.com/geoffreyaldebert/covidbackend/master/global_new.json")
-	const data = await dataRequest.json()
-	store.commit("initData",data)
-
 	var dep = [
 		{
 		"value": "01",
@@ -589,8 +585,6 @@ export const getData = async function (store) {
 
 	store.commit("initDep",dep)
 	store.commit("initReg",reg)
-
-	store.commit("endImport",true)
 
 	return true
 }

@@ -5,8 +5,6 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    endImport:false,
-    data:{},
     dep:[],
     reg:[],
     user:{
@@ -16,12 +14,6 @@ export default new Vuex.Store({
     },
   },
   mutations: {
-    endImport (state,value) {
-      state.endImport = value
-    },
-    initData (state,data) {
-      state.data = data
-    },
     initDep (state,dep) {
       state.dep = dep
     },
