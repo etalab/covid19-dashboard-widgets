@@ -39,14 +39,21 @@
     <div class="geo_container"><geo-list></geo-list></div>
 
     <div class="chart_container">
-      <bar-chart indicateur="hospitalisations"></bar-chart>
+      <line-chart indicateur="cas_positifs"></line-chart>
     </div>
 
-     <div class="box_container">
-      <data-box indicateur="taux_incidence"></data-box>
+    <div class="chart_container">
+      <line-chart indicateur="deces"></line-chart>
     </div>
 
-    <!-- 
+    <div class="chart_container">
+      <line-chart indicateur="deces_moyenne_quotidien"></line-chart>
+    </div>
+
+    <div class="chart_container">
+      <line-chart indicateur="hospitalisations"></line-chart>
+    </div>
+
     <div class="chart_container">
       <line-chart indicateur="hospitalisations_moyenne_quotidien"></line-chart>
     </div>
@@ -75,32 +82,52 @@
       <line-chart indicateur="vaccins_vaccines"></line-chart>
     </div>
 
-    <div class="chart_container">
-      <line-chart indicateur="deces"></line-chart>
-    </div>
-  
 
-    <div class="chart_container">
-      <line-chart indicateur="deces_moyenne_quotidien"></line-chart>
+
+    <div class="box_container">
+      <data-box indicateur="cas_positifs"></data-box>
     </div>
 
-      -->
-    
-    
-    <!-- <div class="chart_container">
-      <bar-chart indicateur="hospitalisations_moyenne_quotidien"></bar-chart>
-    </div> 
+    <div class="box_container">
+      <data-box indicateur="deces"></data-box>
+    </div>
+
+    <div class="box_container">
+      <data-box indicateur="deces_moyenne_quotidien"></data-box>
+    </div>
+
+    <div class="box_container">
+      <data-box indicateur="hospitalisations"></data-box>
+    </div>
+
+    <div class="box_container">
+      <data-box indicateur="hospitalisations_moyenne_quotidien"></data-box>
+    </div>
+
+    <div class="box_container">
+      <data-box indicateur="soins_critiques"></data-box>
+    </div>
+
+    <div class="box_container">
+      <data-box indicateur="soins_critiques_moyenne_quotidien"></data-box>
+    </div>
 
     <div class="box_container">
       <data-box indicateur="taux_incidence"></data-box>
     </div>
 
-    -->
-    <!-- <data-box indicateur="cas_positifs"></data-box>
-    <data-box indicateur="hospitalisations"></data-box>
-    <data-box indicateur="soins_critiques"></data-box>
-    <data-box indicateur="deces"></data-box>
-    <data-box indicateur="vaccins_premiere_dose"></data-box> -->
+    <div class="box_container">
+      <data-box indicateur="taux_positivite"></data-box>
+    </div>
+
+    <div class="box_container">
+      <data-box indicateur="vaccins_premiere_dose"></data-box>
+    </div>
+
+    <div class="box_container">
+      <data-box indicateur="vaccins_vaccines"></data-box>
+    </div>
+     
 
   </body>
 </html>
