@@ -1,7 +1,7 @@
 <template>
 
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
-    <LeftCol :data-display="display" :localisation="selectedGeoLabel" :date="currentDate" :value="currentValue" :unit="unit" :name="name" :evolcode="evolcode" :evolvalue="evolvalue"></LeftCol>
+    <LeftCol :data-display="display" :localisation="selectedGeoLabel" :date="currentDate" :value="currentValue" :name="name" :evolcode="evolcode" :evolvalue="evolvalue"></LeftCol>
     <div class="r_col fr-col-12 fr-col-md-8 fr-col-lg-9">
       <div class="chart fr-ml-0 fr-ml-md-3w">
         <canvas :id="chartId"></canvas>
