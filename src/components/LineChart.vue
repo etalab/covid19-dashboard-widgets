@@ -6,6 +6,10 @@
       <div class="chart fr-ml-0 fr-ml-md-3w">
         <canvas :id="chartId"></canvas>
       </div>
+      <div class="unit_container">
+        <div class="legende_dot"></div>
+        <span class="fr-text--sm fr-text--bold fr-ml-1v">{{capitalize(unit)}}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -195,6 +199,12 @@ export default {
     convertDateToHuman(string){
       let date = new Date(string)
       return date.toLocaleDateString()
+    },
+
+    capitalize(string){
+      if(string){
+        return string.charAt(0).toUpperCase() + string.slice(1)
+      }
     }
   
   },
@@ -232,9 +242,21 @@ export default {
 
 
   .widget_container{
-
     .r_col {
       align-self:center;
+      .unit_container{
+        margin-top: 15px;
+        text-align: left;
+        padding-left: 65px;
+        .legende_dot{
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background-color: #000091;
+          display: inline-block;
+          transform:translate(0,3px);
+        }
+      }
     }
 
     .chart canvas {

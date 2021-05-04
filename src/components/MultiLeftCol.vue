@@ -42,7 +42,7 @@
 
         </div>
 
-        <div class="sep fr-my-3w"></div>
+        <!-- <div class="sep fr-my-3w"></div>
         <div class="fr-mb-3w fr-mb-md-0" data-box="leg">
           <p class="l_box_title fr-text--xs fr-mb-1w">Légende</p>
           <div class="l_box_legende_container">
@@ -54,7 +54,7 @@
             <span class="fr-text--sm fr-text--bold fr-ml-1v">{{capitalize(units[1])}}</span>
           </div>
         </div>
-
+        -->
 
 
     </div>
@@ -214,6 +214,7 @@ export default {
     .l_box_number_container {
       display: flex;
       justify-content: space-between;
+      margin-bottom: 15px;
       .l_box_trend {
         &.down {
           .trend_ico {

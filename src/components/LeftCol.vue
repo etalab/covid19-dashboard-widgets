@@ -24,14 +24,14 @@
             </p>
           </div>
         </div>
-        <div class="sep fr-my-3w"></div>
+        <!-- <div class="sep fr-my-3w"></div>
         <div class="fr-mb-3w fr-mb-md-0" data-box="leg">
           <p class="l_box_title fr-text--xs fr-mb-1w">Légende</p>
           <div class="l_box_legende_container">
             <div class="legende_dot"></div>
             <span class="fr-text--sm fr-text--bold fr-ml-1v">{{capitalize(unit)}}</span>
           </div>
-        </div>
+        </div> -->
 
     </div>
 </template>
