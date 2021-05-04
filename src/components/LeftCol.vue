@@ -24,16 +24,7 @@
             </p>
           </div>
         </div>
-        <div class="sep fr-my-3w"></div>
-        <div class="fr-mb-3w fr-mb-md-0" data-box="leg">
-          <p class="l_box_title fr-text--xs fr-mb-1w">Légende</p>
-          <div class="l_box_legende_container">
-            <div class="legende_dot"></div>
-            <span class="fr-text--sm fr-text--bold fr-ml-1v">{{capitalize(unit)}}</span>
-          </div>
-        </div>
-
-    </div>
+      </div>
 </template>
 
 <script>
@@ -53,7 +44,6 @@ export default {
     date: String,
     localisation: String,
     value: String,
-    unit: String,
     name: String,
     evolcode: String,
     evolvalue : String,
@@ -65,10 +55,6 @@ export default {
 
     convertNumberToHuman(float){
       return parseFloat(float).toLocaleString()
-    },
-
-    capitalize(string){
-      return string.charAt(0).toUpperCase() + string.slice(1)
     },
 
     testEvolStyle(){
@@ -178,14 +164,6 @@ export default {
           }
         }
       }
-    }
-    .legende_dot{
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background-color: #000091;
-      display: inline-block;
-      transform:translate(0,3px);
     }
   }
 

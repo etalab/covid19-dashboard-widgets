@@ -1,10 +1,20 @@
 <template>
 
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
-    <MultiLeftCol :data-display="display" :localisation="selectedGeoLabel" :date="currentDate" :values="currentValues" :units="units" :names="names" :evolcodes="evolcodes" :evolvalues="evolvalues"></MultiLeftCol>
+    <MultiLeftCol :data-display="display" :localisation="selectedGeoLabel" :date="currentDate" :values="currentValues" :names="names" :evolcodes="evolcodes" :evolvalues="evolvalues"></MultiLeftCol>
     <div class="r_col fr-col-12 fr-col-md-8 fr-col-lg-9">
       <div class="chart fr-ml-0 fr-ml-md-3w">
         <canvas :id="chartId"></canvas>
+      </div>
+      <div class="unit_container">
+        <div class="multi_unit">
+          <div class="legende_dot"></div>
+          <span class="fr-text--sm fr-text--bold fr-ml-1v">{{capitalize(units[0])}}</span>
+        </div>
+        <div class="multi_unit">
+          <div class="legende_dot" data-serie="2"></div>
+          <span class="fr-text--sm fr-text--bold fr-ml-1v">{{capitalize(units[1])}}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -244,6 +254,12 @@ export default {
     convertDateToHuman(string){
       let date = new Date(string)
       return date.toLocaleDateString()
+    },
+
+    capitalize(string){
+      if(string){
+        return string.charAt(0).toUpperCase() + string.slice(1)
+      }
     }
   
   },
@@ -284,6 +300,22 @@ export default {
 
     .r_col {
       align-self:center;
+      .unit_container{
+        margin-top: 15px;
+        text-align: left;
+        padding-left: 65px;
+        .legende_dot{
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background-color: #000091;
+          display: inline-block;
+          transform:translate(0,3px);
+          &[data-serie="2"]{
+            background-color: #df001b;
+          }
+        }
+      }
     }
 
     .chart canvas {
