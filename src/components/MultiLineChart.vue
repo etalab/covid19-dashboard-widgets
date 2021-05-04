@@ -2,19 +2,18 @@
 
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
     <MultiLeftCol :data-display="display" :localisation="selectedGeoLabel" :date="currentDate" :values="currentValues" :names="names" :evolcodes="evolcodes" :evolvalues="evolvalues"></MultiLeftCol>
-    <div class="r_col fr-col-12 fr-col-md-8 fr-col-lg-9">
-      <div class="chart fr-ml-0 fr-ml-md-3w">
+    <div class="r_col fr-col-12 fr-col-lg-9">
+      <div class="sep fr-my-4w fr-my-md-3w"></div>
+      <div class="chart ml-lg">
         <canvas :id="chartId"></canvas>
       </div>
-      <div class="unit_container">
-        <div class="multi_unit">
-          <div class="legende_dot"></div>
-          <span class="fr-text--sm fr-text--bold fr-ml-1v">{{capitalize(units[0])}}</span>
-        </div>
-        <div class="multi_unit">
-          <div class="legende_dot" data-serie="2"></div>
-          <span class="fr-text--sm fr-text--bold fr-ml-1v">{{capitalize(units[1])}}</span>
-        </div>
+      <div class="flex fr-mt-3v fr-mb-1v ml-lg">
+        <span class="legende_dot"></span>
+        <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(units[0])}}</p>
+      </div>
+      <div class="flex ml-lg">
+        <span class="legende_dot" data-serie="2"></span>
+        <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(units[1])}}</p>
       </div>
     </div>
   </div>
@@ -297,20 +296,31 @@ export default {
 
 
   .widget_container{
-
+    .sep {
+      border-bottom:1px solid #E5E5E5;
+    }
+    .ml-lg {
+      margin-left:0;
+    }
+    @media (min-width: 62em) {
+      .sep {
+        display: none;
+      }
+      .ml-lg {
+        margin-left:3rem;
+      }
+    }
     .r_col {
       align-self:center;
-      .unit_container{
-        margin-top: 15px;
-        text-align: left;
-        padding-left: 65px;
+      .flex{
+        display: flex;
+        align-items: center;
         .legende_dot{
-          width: 16px;
-          height: 16px;
+          width: 1rem;
+          height: 1rem;
           border-radius: 50%;
           background-color: #000091;
           display: inline-block;
-          transform:translate(0,3px);
           &[data-serie="2"]{
             background-color: #df001b;
           }
