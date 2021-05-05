@@ -1,7 +1,7 @@
 <template>
 
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
-    <LeftCol :data-display="display" :localisation="selectedGeoLabel" :date="currentDate" :value="currentValue" :name="name" :evolcode="evolcode" :evolvalue="evolvalue"></LeftCol>
+    <LeftCol :data-display="display" :localisation="selectedGeoLabel" :date="currentDate" :values="currentValues" :names="names" :evolcodes="evolcodes" :evolvalues="evolvalues"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
       <div class="sep fr-my-4w fr-my-md-3w"></div>
       <div class="chart ml-lg">
@@ -9,7 +9,7 @@
       </div>
       <div class="flex fr-mt-3v ml-lg">
         <span class="legende_dot"></span>
-        <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(unit)}}</p>
+        <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(units[0])}}</p>
       </div>
     </div>
   </div>
@@ -33,12 +33,12 @@ export default {
       chartId:"",
       display:"",
       localisation:"",
-      currentValue:"",
+      currentValues:[],
       currentDate:"",
-      name:"",
-      unit:"",
-      evolcode:"",
-      evolvalue:"",
+      names:[],
+      units:[],
+      evolcodes:[],
+      evolvalues:[],
       chart:undefined,
       loading:true
     }
@@ -86,12 +86,18 @@ export default {
         })  
       }      
 
-      this.name = this.indicateur_data["nom"]
-      this.unit = this.indicateur_data["unite"]
-      this.currentValue = geoObject["last_value"]
+      this.names.length = 0
+      this.units.length = 0
+      this.currentValues.length = 0
+      this.evolcodes.length = 0
+      this.evolvalues.length = 0      
+
+      this.names.push(this.indicateur_data["nom"])
+      this.units.push(this.indicateur_data["unite"])
+      this.currentValues.push(geoObject["last_value"])
       this.currentDate = this.convertDateToHuman(geoObject["last_date"])
-      this.evolcode = geoObject["evol_color"]
-      this.evolvalue = geoObject["evol_percentage"]
+      this.evolcodes.push(geoObject["evol_color"])
+      this.evolvalues.push(geoObject["evol_percentage"])
 
       this.labels.length = 0
       this.dataset.length = 0
