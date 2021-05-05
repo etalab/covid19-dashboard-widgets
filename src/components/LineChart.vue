@@ -116,7 +116,7 @@ export default {
       this.updateData()
       
       var xTickLimit
-      this.display=== 'big' ? xTickLimit = 5 : xTickLimit = 1
+      this.display=== 'big' ? xTickLimit = 6 : xTickLimit = 1
       
       var ctx = document.getElementById(self.chartId).getContext('2d')
 
@@ -154,7 +154,7 @@ export default {
                   maxRotation: 0,
                   minRotation: 0,
                   callback: function(value) {
-                    return value.toString().substring(0,5);
+                    return value.toString().substring(3,5)+"/"+value.toString().substring(8,10)
                   }
                 },
               }],
