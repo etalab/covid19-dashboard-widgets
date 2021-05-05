@@ -190,7 +190,7 @@ export default {
             callbacks: {
               label: function(tooltipItems) { 
                 var int = self.convertStringToLocaleNumber(tooltipItems["value"])
-                return int+" "+self.unit
+                return int+" "+self.units[0]
               },
               title: function(tooltipItems) { 
                 return tooltipItems[0]["label"]
