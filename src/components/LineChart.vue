@@ -3,13 +3,12 @@
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
     <LeftCol :data-display="display" :localisation="selectedGeoLabel" :date="currentDate" :values="currentValues" :names="names" :evolcodes="evolcodes" :evolvalues="evolvalues"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
-      <div class="sep fr-my-4w fr-my-md-3w"></div>
       <div class="chart ml-lg">
         <canvas :id="chartId"></canvas>
-      </div>
-      <div class="flex fr-mt-3v ml-lg">
-        <span class="legende_dot"></span>
-        <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(units[0])}}</p>
+        <div class="flex fr-mt-3v" :style="style">
+          <span class="legende_dot"></span>
+          <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(units[0])}}</p>
+        </div>
       </div>
     </div>
   </div>
@@ -40,7 +39,8 @@ export default {
       evolcodes:[],
       evolvalues:[],
       chart:undefined,
-      loading:true
+      loading:true,
+      legendLeftMargin: 0,
     }
   },
   props: {
@@ -55,6 +55,9 @@ export default {
     },
     selectedGeoLabel () {
       return store.state.user.selectedGeoLabel
+    },
+    style () {
+      return 'margin-left: ' + this.legendLeftMargin + 'px';
     },
 
   },
@@ -172,7 +175,10 @@ export default {
                 ticks: {
                   autoSkip: true,
                   maxTicksLimit: 5
-                }   
+                },
+                afterFit: function(axis) {
+                  self.legendLeftMargin = axis.width;
+                },
             }]
           },
           legend: {
@@ -249,18 +255,17 @@ export default {
 
 
   .widget_container{
-    .sep {
-      border-bottom:1px solid #E5E5E5;
-    }
     .ml-lg {
       margin-left:0;
     }
     @media (min-width: 62em) {
-      .sep {
-        display: none;
-      }
       .ml-lg {
         margin-left:3rem;
+      }
+    }
+    @media (max-width: 62em) {
+      .chart .flex {
+        margin-left:0!important
       }
     }
     .r_col {
@@ -271,6 +276,7 @@ export default {
         .legende_dot{
           width: 1rem;
           height: 1rem;
+          min-width: 1rem;
           border-radius: 50%;
           background-color: #000091;
           display: inline-block;
