@@ -1,7 +1,7 @@
 <template>
 
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
-    <MultiLeftCol :data-display="display" :localisation="selectedGeoLabel" :date="currentDate" :values="currentValues" :names="names" :evolcodes="evolcodes" :evolvalues="evolvalues"></MultiLeftCol>
+    <LeftCol :data-display="display" :localisation="selectedGeoLabel" :date="currentDate" :values="currentValues" :names="names" :evolcodes="evolcodes" :evolvalues="evolvalues"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
       <div class="sep fr-my-4w fr-my-md-3w"></div>
       <div class="chart ml-lg">
@@ -22,11 +22,11 @@
 <script>
 import store from '@/store'
 import Chart from 'chart.js'
-import MultiLeftCol from '@/components/MultiLeftCol' 
+import LeftCol from '@/components/LeftCol' 
 export default {
   name: 'MultiLineChart',
   components: {
-    MultiLeftCol
+    LeftCol
   },
   data(){
     return {

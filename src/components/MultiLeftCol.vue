@@ -12,30 +12,20 @@
         <div class="sep fr-my-4w fr-my-md-3w"></div>
         <div data-box="number">
           <p class="l_box_title fr-text--xs fr-mb-1w">Mise à jour : {{date}}</p>
-          <p class="fr-text--sm fr-text--bold fr-mt-0 fr-mb-1w">{{names[0]}}</p>
-          <div class="l_box_number_container">
-            <p class="fr-text--lg fr-text--bold fr-mb-1v">{{convertNumberToHuman(values[0])}}</p>
-            <p class="l_box_trend flex fr-mb-3v fr-text--xs fr-text--bold" v-bind:class="{'down':isDown,'green':isGreen,'red':isRed,'blue':isBlue}">
-              <svg class="trend_ico" width="16" height="16" viewBox="0 0 24 24">
-                <path v-if="!isBlue" d="M19.071 4.929c3.903 3.903 3.903 10.239 0 14.142-3.903 3.903-10.239 3.903-14.142 0-3.903-3.903-3.903-10.239 0-14.142 3.903-3.903 10.239-3.903 14.142 0zm-2.828 2.828H7.757l3.182 3.182-4.242 4.243 2.121 2.121 4.243-4.242 3.182 3.182V7.757z" transform="translate(-902 -5664) translate(902 5664)"/>
-                <path v-if="isBlue" d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm4 11H8v2h8v-2zm0-4H8v2h8V9z" transform="translate(-1366 -5645) translate(1366 5645)"/>
-              </svg>
-              <span class="fr-ml-1v">{{convertNumberToHuman(evolvalues[0])}} % en 7j</span>
-            </p>
-          </div>
 
-          <p class="fr-text--sm fr-text--bold fr-mt-2w fr-mb-1w">{{names[1]}}</p>
-          <div class="l_box_number_container">
-            <p class="fr-text--lg fr-text--bold fr-mb-1v">{{convertNumberToHuman(values[1])}}</p>
-            <p class="l_box_trend flex fr-text--xs fr-text--bold fr-mb-0" v-bind:class="{'down':isDown2,'green':isGreen2,'red':isRed2,'blue':isBlue2}">
-              <svg class="trend_ico" width="16" height="16" viewBox="0 0 24 24">
-                <path v-if="!isBlue2" d="M19.071 4.929c3.903 3.903 3.903 10.239 0 14.142-3.903 3.903-10.239 3.903-14.142 0-3.903-3.903-3.903-10.239 0-14.142 3.903-3.903 10.239-3.903 14.142 0zm-2.828 2.828H7.757l3.182 3.182-4.242 4.243 2.121 2.121 4.243-4.242 3.182 3.182V7.757z" transform="translate(-902 -5664) translate(902 5664)"/>
-                <path v-if="isBlue2" d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm4 11H8v2h8v-2zm0-4H8v2h8V9z" transform="translate(-1366 -5645) translate(1366 5645)"/>
-              </svg>
-              <span class="fr-ml-1v">{{convertNumberToHuman(evolvalues[1])}} % en 7j</span>
-            </p>
-          </div>
-
+          <div class="indicateur_info" v-for="(n,i) in names" :key="n">
+            <p class="fr-text--sm fr-text--bold fr-mt-0 fr-mb-1w">{{names[i]}}</p>
+            <div class="l_box_number_container">
+              <p class="fr-text--lg fr-text--bold fr-mb-1v">{{convertNumberToHuman(values[i])}}</p>
+              <p class="l_box_trend flex fr-mb-3v fr-text--xs fr-text--bold" v-bind:class="{'down':isDown[i],'green':isGreen[i],'red':isRed[i],'blue':isBlue[i]}">
+                <svg class="trend_ico" width="16" height="16" viewBox="0 0 24 24">
+                  <path v-if="!isBlue[i]" d="M19.071 4.929c3.903 3.903 3.903 10.239 0 14.142-3.903 3.903-10.239 3.903-14.142 0-3.903-3.903-3.903-10.239 0-14.142 3.903-3.903 10.239-3.903 14.142 0zm-2.828 2.828H7.757l3.182 3.182-4.242 4.243 2.121 2.121 4.243-4.242 3.182 3.182V7.757z" transform="translate(-902 -5664) translate(902 5664)"/>
+                  <path v-if="isBlue[i]" d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm4 11H8v2h8v-2zm0-4H8v2h8V9z" transform="translate(-1366 -5645) translate(1366 5645)"/>
+                </svg>
+                <span class="fr-ml-1v">{{convertNumberToHuman(evolvalues[i])}} % en 7j</span>
+              </p>
+            </div>
+          </div> 
         </div>
     </div>
 </template>
@@ -47,14 +37,10 @@ export default {
 
   data(){
     return {
-      isDown:false,
-      isGreen:false,
-      isRed:false,
-      isBlue:false,
-      isDown2:false,
-      isGreen2:false,
-      isRed2:false,
-      isBlue2:false
+      isDown:[false,false],
+      isGreen:[false,false],
+      isRed:[false,false],
+      isBlue:[false,false]
     }
   },
   props: {
@@ -75,41 +61,25 @@ export default {
     },
 
     testEvolStyle(){
-
-      if(this.evolcodes[0]=="green"){
-        this.isGreen = true
-        this.isRed = false
-        this.isBlue = false
-        this.evolvalues[0] > 0 ? this.isDown = false : this.isDown = true
-      }else if(this.evolcodes[0]=="red"){
-        this.isGreen = false
-        this.isRed = true
-        this.isBlue = false
-        this.evolvalue[0] > 0 ? this.isDown = false : this.isDown = true
-      }else{
-        this.isGreen = false
-        this.isRed = false
-        this.isBlue = true
-        this.isDown = false
-      }
-
-      if(this.evolcodes[1]=="green"){
-        this.isGreen2 = true
-        this.isRed2 = false
-        this.isBlue2 = false
-        this.evolvalues[1] > 0 ? this.isDown2 = false : this.isDown2 = true
-      }else if(this.evolcodes[1]=="red"){
-        this.isGreen2 = false
-        this.isRed2 = true
-        this.isBlue2 = false
-        this.evolvalues[1] > 0 ? this.isDown2 = false : this.isDown2 = true
-      }else{
-        this.isGreen2 = false
-        this.isRed2 = false
-        this.isBlue2 = true
-        this.isDown2 = false
-      }
-
+      var self = this
+      this.names.forEach(function(n,i){
+        if(self.evolcodes[i]=="green"){
+          self.isGreen[i] = true
+          self.isRed[i] = false
+          self.isBlue[i] = false
+          self.evolvalues[i] > 0 ? self.isDown[i] = false : self.isDown[i] = true
+        }else if(self.evolcodes[i]=="red"){
+          self.isGreen[i] = false
+          self.isRed[i] = true
+          self.isBlue[i] = false
+          self.evolvalue[i] > 0 ? self.isDown[i] = false : self.isDown[i] = true
+        }else{
+          self.isGreen[i] = false
+          self.isRed[i] = false
+          self.isBlue[i] = true
+          self.isDown[i] = false
+        }
+      })
     }
 
   },
@@ -124,40 +94,7 @@ export default {
   },
 
   created(){
-
-    if(this.evolcodes[0]=="green"){
-        this.isGreen = true
-        this.isRed = false
-        this.isBlue = false
-        this.evolvalues[0] > 0 ? this.isDown = false : this.isDown = true
-      }else if(this.evolcodes[0]=="red"){
-        this.isGreen = false
-        this.isRed = true
-        this.isBlue = false
-        this.evolvalue[0] > 0 ? this.isDown = false : this.isDown = true
-      }else{
-        this.isGreen = false
-        this.isRed = false
-        this.isBlue = true
-        this.isDown = false
-      }
-
-      if(this.evolcodes[1]=="green"){
-        this.isGreen2 = true
-        this.isRed2 = false
-        this.isBlue2 = false
-        this.evolvalues[1] > 0 ? this.isDown2 = false : this.isDown2 = true
-      }else if(this.evolcodes[1]=="red"){
-        this.isGreen2 = false
-        this.isRed2 = true
-        this.isBlue2 = false
-        this.evolvalues[1] > 0 ? this.isDown2 = false : this.isDown2 = true
-      }else{
-        this.isGreen2 = false
-        this.isRed2 = false
-        this.isBlue2 = true
-        this.isDown2 = false
-      }
+    this.testEvolStyle()
   },
 
 }
