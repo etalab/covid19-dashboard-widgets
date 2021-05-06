@@ -16,12 +16,12 @@
     <div data-box="number">
       <p class="l_box_title fr-text--xs fr-mb-1w">Mise à jour : {{ date }}</p>
 
-      <div class="indicateur_info" v-for="(n,i) in names" :key="n">
+      <div class="indicateur_info" :class="i>0 ? 'fr-mt-2w' : ''" v-for="(n,i) in names" :key="n">
         <p class="fr-text--sm fr-text--bold fr-mt-0 fr-mb-1w">{{ names[i] }}</p>
         <div class="l_box_number_container">
           <p class="fr-text--lg fr-text--bold fr-mb-1v">{{ convertNumberToHuman(values[i]) }}</p>
-          <p class="l_box_trend flex fr-text--xs fr-text--bold fr-px-1w fr-py-1v"
-             v-bind:class="{'down':isDown[i],'green':isGreen[i],'red':isRed[i],'blue':isBlue[i], 'fr-mb-0':i!=0, 'fr-mb-2w':i==0}">
+          <p class="l_box_trend flex fr-text--xs fr-text--bold fr-px-1w fr-py-1v fr-mb-0"
+             v-bind:class="{'down':isDown[i],'green':isGreen[i],'red':isRed[i],'blue':isBlue[i]}">
             <svg class="trend_ico" width="16" height="16" viewBox="0 0 24 24">
               <path v-if="!isBlue[i]"
                     d="M19.071 4.929c3.903 3.903 3.903 10.239 0 14.142-3.903 3.903-10.239 3.903-14.142 0-3.903-3.903-3.903-10.239 0-14.142 3.903-3.903 10.239-3.903 14.142 0zm-2.828 2.828H7.757l3.182 3.182-4.242 4.243 2.121 2.121 4.243-4.242 3.182 3.182V7.757z"
