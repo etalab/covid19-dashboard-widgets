@@ -195,7 +195,6 @@ export default {
           }
         }
       });
-      console.log(this.chart)
     },
 
     convertStringToLocaleNumber(string){
