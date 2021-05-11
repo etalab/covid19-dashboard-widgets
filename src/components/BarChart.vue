@@ -142,7 +142,7 @@ export default {
     },
 
     getGeoObject(geolevel,geocode){
-      console.log(geolevel,geocode)
+      
       var geoObject
       if(geolevel === "France"){
         geoObject = this.indicateur_data["france"][0]
