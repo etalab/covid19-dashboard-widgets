@@ -1,7 +1,14 @@
 <template>
 
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
-    <LeftCol :data-display="display" :localisation="selectedGeoLabel" :date="currentDate" :values="currentValues" :names="names" :evolcodes="evolcodes" :evolvalues="evolvalues"></LeftCol>
+    <div class="fr-warning" v-if="geoFallback">
+        <div class="scheme-border">
+            <span class="fr-fi-information-fill fr-px-1w fr-py-3v" aria-hidden="true"></span>
+        </div>
+        <p class="fr-text--sm fr-mb-0 fr-p-3v">{{geoFallbackMsg}}
+        </p>
+    </div>
+    <LeftCol :data-display="display" :localisation="localGeoLabel" :date="currentDate" :values="currentValues" :names="names" :evolcodes="evolcodes" :evolvalues="evolvalues"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
       <div class="chart ml-lg">
         <canvas :id="chartId"></canvas>
@@ -41,6 +48,9 @@ export default {
       chart:undefined,
       loading:true,
       legendLeftMargin: 0,
+      localGeoLabel:"",
+      geoFallback:false,
+      geoFallbackMsg:""
     }
   },
   props: {
@@ -79,15 +89,34 @@ export default {
       var geolevel = this.selectedGeoLevel
       var geocode = this.selectedGeoCode
 
+      this.localGeoLabel = this.selectedGeoLabel
+
       var geoObject
 
-      if(geolevel === "France"){
-        geoObject = this.indicateur_data["france"][0]
-      }else{
-        geoObject = this.indicateur_data[geolevel].find(obj => {
-          return obj["code_level"] === geocode
-        })  
-      }      
+      geoObject = this.getGeoObject(geolevel,geocode)      
+
+      if(typeof geoObject === 'undefined'){
+        if(geolevel == 'regions'){
+          geoObject = this.getGeoObject("France","01")   
+          this.localGeoLabel = "France entière"
+          this.geoFallback=true
+          this.geoFallbackMsg="Affichage des résultats au niveau national, faute de données au niveau régional"
+        }else{
+          var depObj = store.state.dep.find(obj => {
+            return obj["value"] === geocode
+          })
+          geoObject = this.getGeoObject("regions",depObj["region_value"])
+          this.localGeoLabel = depObj["region"]
+          this.geoFallback=true
+          this.geoFallbackMsg="Affichage des résultats au niveau régional, faute de données au niveau départemental"
+          if(typeof geoObject === 'undefined'){
+            geoObject = this.getGeoObject("France","01")   
+            this.localGeoLabel = "France entière"
+            this.geoFallback=true
+            this.geoFallbackMsg="Affichage des résultats au niveau national, faute de données au niveau régional ou départemental"
+          }
+        }
+      }    
 
       this.names.length = 0
       this.units.length = 0
@@ -110,6 +139,19 @@ export default {
         self.dataset.push((d["value"]))
       })
 
+    },
+
+    getGeoObject(geolevel,geocode){
+      console.log(geolevel,geocode)
+      var geoObject
+      if(geolevel === "France"){
+        geoObject = this.indicateur_data["france"][0]
+      }else{
+        geoObject = this.indicateur_data[geolevel].find(obj => {
+          return obj["code_level"] === geocode
+        })  
+      }
+      return geoObject
     },
 
     updateChart () {
@@ -247,6 +289,28 @@ export default {
 
 
   .widget_container{
+    .fr-warning {
+      display: flex;
+      min-width: 100%;
+      margin: 0 0 0.75rem;
+      background-color: var(--w);
+      width: 100%;
+      .scheme-border {
+          min-width: 2.5rem;
+          background-color: #0768d5;
+          display: flex;
+          justify-content: center;
+      }
+      span {
+          display: block;
+          color: var(--w);
+      }
+      p {
+          border: solid 1px #0768d5;
+          width: 100%;
+
+      }
+    }
     .ml-lg {
       margin-left:0;
     }
