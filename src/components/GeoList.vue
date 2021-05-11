@@ -4,7 +4,7 @@
     <div class="fr-mb-3w">
       <p class="fr-text--sm fr-mb-1v" id="select-hint-desc-hint">Filtrer par région</p>
       <select class="fr-select fr-text--sm fr-mb-0 fr-py-1v" :class="selectedGeoLevel=='regions'?'selected':''" id="select-reg" name="select_reg" @change="changeGeoLevel('regions',$event)">
-        <option value="" selected disabled hidden>ex : Normandie</option>
+        <option value="" selected disabled>ex : Normandie</option>
         <option v-for="d in regions" :value="d['value']" :key="d['value']">{{d['label']}}</option>
       </select>
     </div>
@@ -12,7 +12,7 @@
     <div class="fr-mb-3w">
       <p class="fr-text--sm fr-mb-1v" id="select-hint-desc-hint">Filtrer par département</p>
       <select class="fr-select fr-text--sm fr-mb-0 fr-py-1v" :class="selectedGeoLevel=='departements'?'selected':''" id="select-dep" name="select_dep" @change="changeGeoLevel('departements',$event)">
-        <option value="" selected disabled hidden>ex : Manche</option>
+        <option value="" selected disabled>ex : Manche</option>
         <option v-for="d in departements" :value="d['value']" :key="d['value']">{{d['label']}}</option>
       </select>
     </div>
