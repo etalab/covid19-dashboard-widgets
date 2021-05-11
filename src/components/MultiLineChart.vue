@@ -21,7 +21,7 @@
 <script>
 import store from '@/store'
 import Chart from 'chart.js'
-import LeftCol from '@/components/LeftCol' 
+import LeftCol from '@/components/LeftCol'
 export default {
   name: 'MultiLineChart',
   components: {
@@ -88,7 +88,7 @@ export default {
     updateData () {
 
       var self = this
-      
+
       var geolevel = this.selectedGeoLevel
       var geocode = this.selectedGeoCode
 
@@ -112,7 +112,7 @@ export default {
       this.units.length = 0
       this.currentValues.length = 0
       this.evolcodes.length = 0
-      this.evolvalues.length = 0      
+      this.evolvalues.length = 0
 
       this.names.push(this.indicateur_data["nom"],this.indicateur_data2["nom"])
       this.units.push(this.indicateur_data["unite"],this.indicateur_data2["unite"])
@@ -126,7 +126,7 @@ export default {
       this.dataset2.length = 0
 
       geoObject["values"].forEach(function(d){
-        
+
         self.labels.push(self.convertDateToHuman(d["date"]))
         self.dataset.push((d["value"]))
 
@@ -141,20 +141,20 @@ export default {
     },
 
     updateChart () {
-      
+
       this.updateData()
       this.chart.update()
-    
+
     },
 
     createChart () {
       var self = this
-    
+
       this.updateData()
-      
+
       var xTickLimit
       this.display=== 'big' ? xTickLimit = 6 : xTickLimit = 1
-      
+
       var ctx = document.getElementById(self.chartId).getContext('2d')
 
       var gradientFill
@@ -165,7 +165,7 @@ export default {
       gradientFill.addColorStop(0.6, "rgba(245, 245, 255, 0)")
 
       var gradientFill2
-      
+
       this.display=== 'big' ? gradientFill2 = ctx.createLinearGradient(0, 0, 0, 350) : gradientFill2 = ctx.createLinearGradient(0, 0, 0, 225)
 
       gradientFill2.addColorStop(0, "rgba(223, 0, 27, 0.6)")
@@ -196,6 +196,13 @@ export default {
               ]
           },
           options: {
+            plugins: {
+              deferred: {
+                xOffset: 150,   // defer until 150px of the canvas width are inside the viewport
+                yOffset: '50%', // defer until 50% of the canvas height are inside the viewport
+                delay: 500      // delay of 500 ms after the canvas is considered inside the viewport
+              }
+            },
             animation: {
               easing: "easeInOutBack"
             },
@@ -235,11 +242,11 @@ export default {
             displayColors:false,
             backgroundColor:"#6b6b6b",
             callbacks: {
-              label: function(tooltipItems) { 
+              label: function(tooltipItems) {
                 var int = self.convertStringToLocaleNumber(tooltipItems["value"])
                 return int+" "+self.units[tooltipItems["datasetIndex"]]
               },
-              title: function(tooltipItems) { 
+              title: function(tooltipItems) {
                 return tooltipItems[0]["label"]
               },
               labelTextColor: function(){
@@ -265,7 +272,7 @@ export default {
         return string.charAt(0).toUpperCase() + string.slice(1)
       }
     }
-  
+
   },
 
   watch:{
@@ -293,8 +300,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-  
-  /* overload fonts path, to delete when parent has access 
+
+  /* overload fonts path, to delete when parent has access
   @import "../../css/overload-fonts.css";
   @import "../../css/dsfr.min.css";
   */
@@ -338,5 +345,5 @@ export default {
     }
 
   }
-  
+
 </style>
