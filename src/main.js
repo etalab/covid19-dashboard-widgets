@@ -11,6 +11,8 @@ import MultiLineChart from './components/MultiLineChart'
 import BarChart from './components/BarChart'
 import GeoList from './components/GeoList'
 
+import lazyLoadComponent from './lazy'
+
 Vue.config.productionTip = false
 
 import vueCustomElement from 'vue-custom-element'
