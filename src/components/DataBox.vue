@@ -121,13 +121,11 @@ export default {
     },
 
     async getData () {
-      var url = "https://data.widgets.dashboard.covid19.data.gouv.fr/"+this.indicateur+"_short.json"
-      const dataRequest = await fetch(url)
-      const data = await dataRequest.json()
-      this.indicateur_data = data
-      console.log(this.indicateur_data)
-      this.loading = false
-      this.updateData()
+      store.dispatch('getData', this.indicateur+"_short").then(data => {
+        this.indicateur_data = data
+        this.loading = false
+        this.updateData()
+      })
     }
     
   },
