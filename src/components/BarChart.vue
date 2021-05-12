@@ -1,15 +1,21 @@
 <template>
 
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
-    <LeftCol :data-display="display" :localisation="selectedGeoLabel" :date="currentDate" :values="currentValues" :names="names" :evolcodes="evolcodes" :evolvalues="evolvalues"></LeftCol>
+    <div class="fr-warning" v-if="geoFallback">
+        <div class="scheme-border">
+            <span class="fr-fi-information-fill fr-px-1w fr-py-3v" aria-hidden="true"></span>
+        </div>
+        <p class="fr-text--sm fr-mb-0 fr-p-3v">{{geoFallbackMsg}}
+        </p>
+    </div>
+    <LeftCol :data-display="display" :localisation="localGeoLabel" :date="currentDate" :values="currentValues" :names="names" :evolcodes="evolcodes" :evolvalues="evolvalues"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
-      <div class="sep fr-my-4w fr-my-md-3w"></div>
       <div class="chart ml-lg">
         <canvas :id="chartId"></canvas>
-      </div>
-      <div class="flex fr-mt-3v ml-lg">
-        <span class="legende_dot"></span>
-        <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(units[0])}}</p>
+        <div class="flex fr-mt-3v" :style="style">
+          <span class="legende_dot"></span>
+          <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(units[0])}}</p>
+        </div>
       </div>
     </div>
   </div>
@@ -40,7 +46,12 @@ export default {
       evolcodes:[],
       evolvalues:[],
       chart:undefined,
-      loading:true
+      loading:true,
+      legendLeftMargin: 0,
+      localGeoLabel:"",
+      geoFallback:false,
+      geoFallbackMsg:"",
+      inViewport:false
     }
   },
   props: {
@@ -56,9 +67,24 @@ export default {
     selectedGeoLabel () {
       return store.state.user.selectedGeoLabel
     },
+    style () {
+      return 'margin-left: ' + this.legendLeftMargin + 'px';
+    },
 
   },
   methods: {
+
+    isInViewport(){
+      var response
+      var rect = document.getElementById(this.widgetId).getBoundingClientRect();
+      rect.top < document.documentElement.clientHeight ? response = true : response = false
+      this.inViewport = response
+    },
+
+    handleScroll(){
+      this.isInViewport()
+      if(this.inViewport&&this.loading){ this.getData() }
+    },
 
     async getData () {
       var url = "https://data.widgets.dashboard.covid19.data.gouv.fr/"+this.indicateur+".json"
@@ -76,15 +102,34 @@ export default {
       var geolevel = this.selectedGeoLevel
       var geocode = this.selectedGeoCode
 
+      this.localGeoLabel = this.selectedGeoLabel
+
       var geoObject
 
-      if(geolevel === "France"){
-        geoObject = this.indicateur_data["france"][0]
-      }else{
-        geoObject = this.indicateur_data[geolevel].find(obj => {
-          return obj["code_level"] === geocode
-        })  
-      }      
+      geoObject = this.getGeoObject(geolevel,geocode)      
+
+      if(typeof geoObject === 'undefined'){
+        if(geolevel == 'regions'){
+          geoObject = this.getGeoObject("France","01")   
+          this.localGeoLabel = "France entière"
+          this.geoFallback=true
+          this.geoFallbackMsg="Affichage des résultats au niveau national, faute de données au niveau régional"
+        }else{
+          var depObj = store.state.dep.find(obj => {
+            return obj["value"] === geocode
+          })
+          geoObject = this.getGeoObject("regions",depObj["region_value"])
+          this.localGeoLabel = depObj["region"]
+          this.geoFallback=true
+          this.geoFallbackMsg="Affichage des résultats au niveau régional, faute de données au niveau départemental"
+          if(typeof geoObject === 'undefined'){
+            geoObject = this.getGeoObject("France","01")   
+            this.localGeoLabel = "France entière"
+            this.geoFallback=true
+            this.geoFallbackMsg="Affichage des résultats au niveau national, faute de données au niveau régional ou départemental"
+          }
+        }
+      }    
 
       this.names.length = 0
       this.units.length = 0
@@ -107,6 +152,19 @@ export default {
         self.dataset.push((d["value"]))
       })
 
+    },
+
+    getGeoObject(geolevel,geocode){
+      
+      var geoObject
+      if(geolevel === "France"){
+        geoObject = this.indicateur_data["france"][0]
+      }else{
+        geoObject = this.indicateur_data[geolevel].find(obj => {
+          return obj["code_level"] === geocode
+        })  
+      }
+      return geoObject
     },
 
     updateChart () {
@@ -165,7 +223,10 @@ export default {
                 ticks: {
                   autoSkip: true,
                   maxTicksLimit: 5
-                }   
+                },
+                afterFit: function(axis) {
+                  self.legendLeftMargin = axis.width;
+                },
             }]
           },
           legend: {
@@ -177,7 +238,7 @@ export default {
             callbacks: {
               label: function(tooltipItems) { 
                 var int = self.convertStringToLocaleNumber(tooltipItems["value"])
-                return int+" "+self.unit
+                return int+" "+self.units[0]
               },
               title: function(tooltipItems) { 
                 return tooltipItems[0]["label"]
@@ -189,7 +250,6 @@ export default {
           }
         }
       });
-      console.log(this.chart)
     },
 
     convertStringToLocaleNumber(string){
@@ -221,11 +281,20 @@ export default {
   created(){
     this.chartId = "myChart"+Math.floor(Math.random() * (1000));
     this.widgetId = "widget"+Math.floor(Math.random() * (1000));
-    this.getData()
+    window.addEventListener('scroll', this.handleScroll);
+  },
+
+  destroyed () {
+    window.removeEventListener('scroll', this.handleScroll);
   },
 
   mounted(){
+    var self = this
     document.getElementById(this.widgetId).offsetWidth > 486 ? this.display='big' : this.display='small'
+    setTimeout(function(){
+      self.isInViewport()
+      if(self.inViewport){ self.getData() }
+    },100)
     // 502px to break
   }
 
@@ -235,25 +304,46 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
   
-  /* overload fonts path, to delete when parent has access */
+  /* overload fonts path, to delete when parent has access 
   @import "../../css/overload-fonts.css";
   @import "../../css/dsfr.min.css";
-
+  */
 
 
   .widget_container{
-    .sep {
-      border-bottom:1px solid #E5E5E5;
+    .fr-warning {
+      display: flex;
+      min-width: 100%;
+      margin: 0 0 0.75rem;
+      background-color: var(--w);
+      width: 100%;
+      .scheme-border {
+          min-width: 2.5rem;
+          background-color: #0768d5;
+          display: flex;
+          justify-content: center;
+      }
+      span {
+          display: block;
+          color: var(--w);
+      }
+      p {
+          border: solid 1px #0768d5;
+          width: 100%;
+
+      }
     }
     .ml-lg {
       margin-left:0;
     }
     @media (min-width: 62em) {
-      .sep {
-        display: none;
-      }
       .ml-lg {
         margin-left:3rem;
+      }
+    }
+    @media (max-width: 62em) {
+      .chart .flex {
+        margin-left:0!important
       }
     }
     .r_col {
@@ -264,6 +354,7 @@ export default {
         .legende_dot{
           width: 1rem;
           height: 1rem;
+          min-width: 1rem;
           border-radius: 50%;
           background-color: #000091;
           display: inline-block;

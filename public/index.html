@@ -38,7 +38,36 @@
 
     <div class="geo_container"><geo-list></geo-list></div>
 
-   <div class="chart_container">
+    <div class="chart_container">
+      <line-chart indicateur="deces"></line-chart>
+    </div>
+
+    <div class="chart_container">
+      <bar-chart indicateur="cas_positifs"></bar-chart>
+    </div>
+
+    <div class="chart_container">
+      <line-chart indicateur="soins_critiques_moyenne_quotidienne"></line-chart>
+    </div>
+
+    <div class="box_container">
+      <data-box indicateur="soins_critiques_moyenne_quotidienne"></data-box>
+    </div>
+
+    <div class="box_container">
+      <data-box indicateur="taux_incidence"></data-box>
+    </div>
+
+    <div class="box_container">
+      <data-box indicateur="taux_positivite"></data-box>
+    </div>
+
+    <div class="box_container">
+      <data-box indicateur="facteur_reproduction"></data-box>
+    </div>
+
+   
+    <div class="chart_container">
       <multiline-chart indicateur1="vaccins_premiere_dose" indicateur2="vaccins_vaccines"></multiline-chart>
     </div>
 
@@ -53,9 +82,6 @@
     <div class="box_container">
       <data-box indicateur="cas_positifs"></data-box>
     </div>
-    <!--
-
-    
 
     <div class="chart_container">
       <line-chart indicateur="deces_moyenne_quotidienne"></line-chart>
@@ -138,8 +164,6 @@
     <div class="box_container">
       <data-box indicateur="vaccins_vaccines"></data-box>
     </div>
-
-    -->
      
 
   </body>
