@@ -231,7 +231,7 @@ export default {
             backgroundColor:"#6b6b6b",
             callbacks: {
               label: function(tooltipItems) { 
-                var int = self.convertStringToLocaleNumber(tooltipItems["value"])
+                var int = self.convertFloatToHuman(tooltipItems["value"])
                 return int+" "+self.units[0]
               },
               title: function(tooltipItems) { 
@@ -248,6 +248,10 @@ export default {
 
     convertStringToLocaleNumber(string){
       return parseInt(string).toLocaleString()
+    },
+
+    convertFloatToHuman(float){
+      return parseFloat(float).toFixed(1).toLocaleString()
     },
 
     convertDateToHuman(string){
