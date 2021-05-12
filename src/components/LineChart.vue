@@ -24,7 +24,7 @@
 <script>
 import store from '@/store'
 import Chart from 'chart.js'
-import LeftCol from '@/components/LeftCol' 
+import LeftCol from '@/components/LeftCol'
 export default {
   name: 'LineChart',
   components: {
@@ -74,18 +74,17 @@ export default {
   methods: {
 
     async getData () {
-      var url = "https://data.widgets.dashboard.covid19.data.gouv.fr/"+this.indicateur+".json"
-      const dataRequest = await fetch(url)
-      const data = await dataRequest.json()
-      this.indicateur_data = data
-      this.loading = false
-      this.createChart()
+      store.dispatch('getData', this.indicateur).then(data => {
+        this.indicateur_data = data
+        this.loading = false
+        this.createChart()
+      })
     },
 
     updateData () {
 
       var self = this
-      
+
       var geolevel = this.selectedGeoLevel
       var geocode = this.selectedGeoCode
 
@@ -93,11 +92,11 @@ export default {
 
       var geoObject
 
-      geoObject = this.getGeoObject(geolevel,geocode)      
+      geoObject = this.getGeoObject(geolevel,geocode)
 
       if(typeof geoObject === 'undefined'){
         if(geolevel == 'regions'){
-          geoObject = this.getGeoObject("France","01")   
+          geoObject = this.getGeoObject("France","01")
           this.localGeoLabel = "France entière"
           this.geoFallback=true
           this.geoFallbackMsg="Affichage des résultats au niveau national, faute de données au niveau régional"
@@ -110,7 +109,7 @@ export default {
           this.geoFallback=true
           this.geoFallbackMsg="Affichage des résultats au niveau régional, faute de données au niveau départemental"
           if(typeof geoObject === 'undefined'){
-            geoObject = this.getGeoObject("France","01")   
+            geoObject = this.getGeoObject("France","01")
             this.localGeoLabel = "France entière"
             this.geoFallback=true
             this.geoFallbackMsg="Affichage des résultats au niveau national, faute de données au niveau régional ou départemental"
@@ -122,7 +121,7 @@ export default {
       this.units.length = 0
       this.currentValues.length = 0
       this.evolcodes.length = 0
-      this.evolvalues.length = 0      
+      this.evolvalues.length = 0
 
       this.names.push(this.indicateur_data["nom"])
       this.units.push(this.indicateur_data["unite"])
@@ -142,33 +141,33 @@ export default {
     },
 
     getGeoObject(geolevel,geocode){
-      
+
       var geoObject
       if(geolevel === "France"){
         geoObject = this.indicateur_data["france"][0]
       }else{
         geoObject = this.indicateur_data[geolevel].find(obj => {
           return obj["code_level"] === geocode
-        })  
+        })
       }
       return geoObject
     },
 
     updateChart () {
-      
+
       this.updateData()
       this.chart.update()
-    
+
     },
 
     createChart () {
       var self = this
-    
+
       this.updateData()
-      
+
       var xTickLimit
       this.display=== 'big' ? xTickLimit = 6 : xTickLimit = 1
-      
+
       var ctx = document.getElementById(self.chartId).getContext('2d')
 
       var gradientFill
@@ -230,11 +229,11 @@ export default {
             displayColors:false,
             backgroundColor:"#6b6b6b",
             callbacks: {
-              label: function(tooltipItems) { 
+              label: function(tooltipItems) {
                 var int = self.convertFloatToHuman(tooltipItems["value"])
                 return int+" "+self.units[0]
               },
-              title: function(tooltipItems) { 
+              title: function(tooltipItems) {
                 return tooltipItems[0]["label"]
               },
               labelTextColor: function(){
@@ -264,7 +263,7 @@ export default {
         return string.charAt(0).toUpperCase() + string.slice(1)
       }
     }
-  
+
   },
 
   watch:{
@@ -292,7 +291,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-  
+
   /* overload fonts path, to delete when parent has access
   @import "../../css/overload-fonts.css";
   @import "../../css/dsfr.min.css";
@@ -355,5 +354,5 @@ export default {
     }
 
   }
-  
+
 </style>
