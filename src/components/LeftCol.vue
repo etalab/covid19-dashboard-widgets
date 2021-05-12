@@ -21,7 +21,7 @@
         <div class="l_box_number_container">
           <p class="fr-text--lg fr-text--bold fr-mb-1v">{{ convertNumberToHuman(values[i]) }}</p>
           <p class="l_box_trend flex fr-text--xs fr-text--bold fr-px-1w fr-py-1v fr-mb-0"
-             v-bind:class="{'down':isDown[i],'green':isGreen[i],'red':isRed[i],'blue':isBlue[i]}">
+             v-bind:class="{'down':isDown[i],'green':isGreen[i],'red':isRed[i],'blue':isBlue[i]}" v-if="(!testIfNaN(evolvalues[i]))">
             <svg class="trend_ico" width="16" height="16" viewBox="0 0 24 24">
               <path v-if="!isBlue[i]"
                     d="M19.071 4.929c3.903 3.903 3.903 10.239 0 14.142-3.903 3.903-10.239 3.903-14.142 0-3.903-3.903-3.903-10.239 0-14.142 3.903-3.903 10.239-3.903 14.142 0zm-2.828 2.828H7.757l3.182 3.182-4.242 4.243 2.121 2.121 4.243-4.242 3.182 3.182V7.757z"
@@ -66,11 +66,16 @@ export default {
   methods: {
 
     convertNumberToHuman(float){
+
       return parseFloat(float).toLocaleString()
     },
 
     convertFloatToHuman(float){
       return parseFloat(float).toFixed(1).toLocaleString()
+    },
+
+    testIfNaN(float){
+      return isNaN(parseFloat(float))
     },
 
     testEvolStyle(){
@@ -116,10 +121,11 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 
-  /* overload fonts path, to delete when parent has access 
+  /* overload fonts path, to delete when parent has access  
   @import "../../css/overload-fonts.css";
   @import "../../css/dsfr.min.css";
   */
+ 
 
   .l_col{
 
