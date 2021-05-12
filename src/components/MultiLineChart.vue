@@ -238,7 +238,7 @@ export default {
             backgroundColor:"#6b6b6b",
             callbacks: {
               label: function(tooltipItems) { 
-                var int = self.convertStringToLocaleNumber(tooltipItems["value"])
+                var int = self.convertFloatToHuman(tooltipItems["value"])
                 return int+" "+self.units[tooltipItems["datasetIndex"]]
               },
               title: function(tooltipItems) { 
@@ -260,6 +260,14 @@ export default {
     convertDateToHuman(string){
       let date = new Date(string)
       return date.toLocaleDateString()
+    },
+
+    convertFloatToHuman(float){
+      if(Number.isInteger(parseFloat(float))){
+        return parseInt(float).toLocaleString()  
+      }else{
+        return parseFloat(float).toFixed(1).toLocaleString()
+      }
     },
 
     capitalize(string){
