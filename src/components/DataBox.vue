@@ -37,7 +37,8 @@ export default {
       isGreen:false,
       isRed:false,
       isBlue:false,
-      loading:true
+      loading:true,
+      inViewport:false,
     }
   },
   props: {
@@ -52,6 +53,27 @@ export default {
     },
   },
   methods: {
+
+    isInViewport(){
+      var response
+      var rect = document.getElementById(this.widgetId).getBoundingClientRect();
+      rect.top < document.documentElement.clientHeight ? response = true : response = false
+      this.inViewport = response
+    },
+
+    handleScroll(){
+      this.isInViewport()
+      if(this.inViewport&&this.loading){ this.getData() }
+    },
+
+    async getData () {
+      var url = "https://data.widgets.dashboard.covid19.data.gouv.fr/"+this.indicateur+"_short.json"
+      const dataRequest = await fetch(url)
+      const data = await dataRequest.json()
+      this.indicateur_data = data
+      this.loading = false
+      this.updateData()
+    },
 
     convertStringToLocaleNumber(string){
       return parseInt(string).toLocaleString()
@@ -118,18 +140,8 @@ export default {
       this.currentDate = this.convertDateToHuman(geoObject["last_date"])
       this.evolcode = geoObject["evol_color"]
       this.evolvalue = geoObject["evol_percentage"]
-    },
-
-    async getData () {
-      var url = "https://data.widgets.dashboard.covid19.data.gouv.fr/"+this.indicateur+"_short.json"
-      const dataRequest = await fetch(url)
-      const data = await dataRequest.json()
-      this.indicateur_data = data
-      console.log(this.indicateur_data)
-      this.loading = false
-      this.updateData()
     }
-    
+
   },
 
   watch:{
@@ -149,12 +161,20 @@ export default {
 
   created(){
     this.widgetId = "widget"+Math.floor(Math.random() * (1000));
-    this.getData()
+    window.addEventListener('scroll', this.handleScroll);
+  },
 
+  destroyed () {
+    window.removeEventListener('scroll', this.handleScroll);
   },
 
   mounted(){
+    var self = this
     document.getElementById(this.widgetId).offsetWidth > 486 ? this.display='big' : this.display='small'
+    setTimeout(function(){
+      self.isInViewport()
+      if(self.inViewport){ self.getData() }
+    },100)
     // 502px to break
   }
 

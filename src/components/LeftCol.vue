@@ -113,7 +113,6 @@ export default {
 
   created(){
     this.testEvolStyle()
-    console.log("test preprod")
   },
 
 }

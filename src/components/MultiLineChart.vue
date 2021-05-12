@@ -47,6 +47,7 @@ export default {
       chart:undefined,
       loading:true,
       legendLeftMargin: 0,
+      inViewport:false
     }
   },
   props: {
@@ -69,6 +70,18 @@ export default {
 
   },
   methods: {
+
+    isInViewport(){
+      var response
+      var rect = document.getElementById(this.widgetId).getBoundingClientRect();
+      rect.top < document.documentElement.clientHeight ? response = true : response = false
+      this.inViewport = response
+    },
+
+    handleScroll(){
+      this.isInViewport()
+      if(this.inViewport&&this.loading){ this.getData() }
+    },
 
     async getData () {
       var url = "https://data.widgets.dashboard.covid19.data.gouv.fr/"+this.indicateur1+".json"
@@ -280,11 +293,20 @@ export default {
   created(){
     this.chartId = "myChart"+Math.floor(Math.random() * (1000));
     this.widgetId = "widget"+Math.floor(Math.random() * (1000));
-    this.getData()
+    window.addEventListener('scroll', this.handleScroll);
+  },
+
+  destroyed () {
+    window.removeEventListener('scroll', this.handleScroll);
   },
 
   mounted(){
+    var self = this
     document.getElementById(this.widgetId).offsetWidth > 486 ? this.display='big' : this.display='small'
+    setTimeout(function(){
+      self.isInViewport()
+      if(self.inViewport){ self.getData() }
+    },100)
     // 502px to break
   }
 
