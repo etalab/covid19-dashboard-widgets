@@ -74,12 +74,11 @@ export default {
   methods: {
 
     async getData () {
-      var url = "https://data.widgets.dashboard.covid19.data.gouv.fr/"+this.indicateur+".json"
-      const dataRequest = await fetch(url)
-      const data = await dataRequest.json()
-      this.indicateur_data = data
-      this.loading = false
-      this.createChart()
+      store.dispatch('getData', this.indicateur).then(data => {
+        this.indicateur_data = data
+        this.loading = false
+        this.createChart()
+      })
     },
 
     updateData () {

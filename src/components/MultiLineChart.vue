@@ -71,18 +71,15 @@ export default {
   methods: {
 
     async getData () {
-      var url = "https://data.widgets.dashboard.covid19.data.gouv.fr/"+this.indicateur1+".json"
-      const dataRequest = await fetch(url)
-      const data = await dataRequest.json()
-      this.indicateur_data = data
+      store.dispatch('getData', this.indicateur1).then(data => {
+        this.indicateur_data = data
+        store.dispatch('getData', this.indicateur2).then(data => {
+          this.indicateur_data2 = data
+          this.loading = false
+          this.createChart()
+        })
+      })
 
-      var url2 = "https://data.widgets.dashboard.covid19.data.gouv.fr/"+this.indicateur2+".json"
-      const dataRequest2 = await fetch(url2)
-      const data2 = await dataRequest2.json()
-      this.indicateur_data2 = data2
-
-      this.loading = false
-      this.createChart()
     },
 
     updateData () {
