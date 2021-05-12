@@ -3,7 +3,7 @@
   <div class="fr-mb-4w fr-mt-3v fr-mt-md-0">
     <div class="fr-mb-3w">
       <p class="fr-text--sm fr-mb-1v" id="select-hint-desc-hint">Filtrer par région</p>
-      <select class="fr-select fr-text--sm fr-mb-0 fr-py-1v" :class="selectedGeoLevel=='regions'?'selected':''" id="select-reg" name="select_reg" @change="changeGeoLevel('regions',$event)">
+      <select class="fr-select" id="select-reg" name="select" @change="changeGeoLevel('regions',$event)">
         <option value="" selected disabled hidden>ex : Normandie</option>
         <option v-for="d in regions" :value="d['value']" :key="d['value']">{{d['label']}}</option>
       </select>
@@ -11,7 +11,7 @@
 
     <div class="fr-mb-3w">
       <p class="fr-text--sm fr-mb-1v" id="select-hint-desc-hint">Filtrer par département</p>
-      <select class="fr-select fr-text--sm fr-mb-0 fr-py-1v" :class="selectedGeoLevel=='departements'?'selected':''" id="select-dep" name="select_dep" @change="changeGeoLevel('departements',$event)">
+      <select class="fr-select" id="select-dep" name="select" @change="changeGeoLevel('departements',$event)">
         <option value="" selected disabled hidden>ex : Manche</option>
         <option v-for="d in departements" :value="d['value']" :key="d['value']">{{d['label']}}</option>
       </select>
@@ -36,9 +36,7 @@ export default {
     
   },
   computed: {
-    selectedGeoLevel () {
-      return store.state.user.selectedGeoLevel
-    },
+    
   },
 
   methods: {
@@ -93,16 +91,12 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 
-/* overload fonts path, to delete when parent has access
+/* overload fonts path, to delete when parent has access */
 @import "../../css/overload-fonts.css";
 @import "../../css/dsfr.min.css";
- */
 
 .fr-select {
   box-shadow: inset 0 -2px 0 0 #000091;
-  &.selected{
-    font-weight: bold;
-  }
 }
 
 button.fr-link {
