@@ -71,14 +71,6 @@ export default {
   methods: {
 
     async getData () {
-      /*store.dispatch('getData', this.indicateur1).then(data => {
-        this.indicateur_data = data
-        store.dispatch('getData', this.indicateur2).then(data => {
-          this.indicateur_data2 = data
-          this.loading = false
-          this.createChart()
-        })
-      }) */
 
       const promise1 = store.dispatch('getData', this.indicateur1).then(data => {
         this.indicateur_data = data
