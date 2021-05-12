@@ -170,8 +170,8 @@ export default {
       
       this.display=== 'big' ? gradientFill2 = ctx.createLinearGradient(0, 0, 0, 350) : gradientFill2 = ctx.createLinearGradient(0, 0, 0, 225)
 
-      gradientFill2.addColorStop(0, "rgba(223, 0, 27, 0.6)")
-      gradientFill2.addColorStop(0.6, "rgba(223, 0, 27, 0)")
+      gradientFill2.addColorStop(0, "rgba(0, 124, 58, 0.6)")
+      gradientFill2.addColorStop(0.6, "rgba(0, 124, 58, 0)")
 
       this.chart = new Chart(ctx, {
           data: {
@@ -189,7 +189,7 @@ export default {
                 {
                   data: self.dataset2,
                   backgroundColor:gradientFill2,
-                  borderColor:"#df001b",
+                  borderColor:"#007c3a",
                   type:'line',
                   pointRadius:8,
                   pointBackgroundColor:"rgba(0, 0, 0, 0)",
@@ -337,7 +337,7 @@ export default {
           background-color: #000091;
           display: inline-block;
           &[data-serie="2"]{
-            background-color: #df001b;
+            background-color: #007c3a;
           }
         }
       }
