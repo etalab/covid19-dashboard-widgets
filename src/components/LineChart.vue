@@ -250,7 +250,11 @@ export default {
     },
 
     convertFloatToHuman(float){
-      return parseFloat(float).toFixed(1).toLocaleString()
+      if(Number.isInteger(parseFloat(float))){
+        return parseInt(float).toLocaleString()  
+      }else{
+        return parseFloat(float).toFixed(1).toLocaleString()
+      }
     },
 
     convertDateToHuman(string){
