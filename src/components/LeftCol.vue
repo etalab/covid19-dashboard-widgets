@@ -173,7 +173,7 @@ export default {
         height: 25px;
         background-color: red;
         position: relative;
-        background: linear-gradient(90deg, rgba(127,127,200,1) 0%, rgba(0,0,109,1) 100%);
+        background: linear-gradient(90deg, rgba(229,229,224,1) 0%, rgba(0,0,109,1) 100%);
         span{
           position: absolute;
           bottom: -25px;

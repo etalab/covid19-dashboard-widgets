@@ -219,7 +219,7 @@ export default {
       this.scaleMin = Math.min.apply(null, values)
       this.scaleMax = Math.max.apply(null, values)
 
-      var x = d3.scaleLinear().domain([this.scaleMin, this.scaleMax]).range(["#7f7fc8", "#00006d"]);
+      var x = d3.scaleLinear().domain([this.scaleMin, this.scaleMax]).range(["#e5e5f4", "#00006d"]);
 
       var parentWidget = document.getElementById(this.widgetId)
       
