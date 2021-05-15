@@ -27,9 +27,7 @@
             </div>
           </div> 
         </div>
-
-        <div v-if="map" class="sep fr-my-4w fr-my-md-3w"></div>
-        <div class="scale" v-if="map">
+        <div class="scale">
           <p class="l_box_title fr-text--xs fr-mb-1w">Légende</p>
           <div class="scale_container">
             <span class="min">{{min}}</span>
@@ -42,7 +40,7 @@
 <script>
 
 export default {
-  name: 'LeftCol',
+  name: 'MapLeftCol',
 
   data(){
     return {
@@ -60,8 +58,7 @@ export default {
     evolcodes: Array,
     evolvalues : Array,
     min: Number,
-    max: Number,
-    map: Boolean
+    max: Number
   },
   computed: {
 

@@ -40,7 +40,8 @@ export default {
       evolcodes:[],
       evolvalues:[],
       chart:undefined,
-      loading:true
+      loading:true,
+      map:false
     }
   },
   props: {

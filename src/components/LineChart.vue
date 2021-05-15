@@ -50,7 +50,8 @@ export default {
       legendLeftMargin: 0,
       localGeoLabel:"",
       geoFallback:false,
-      geoFallbackMsg:""
+      geoFallbackMsg:"",
+      map:false
     }
   },
   props: {
