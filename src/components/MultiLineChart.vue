@@ -68,18 +68,20 @@ export default {
   methods: {
 
     async getData () {
-      var url = "https://data.widgets.dashboard.covid19.data.gouv.fr/"+this.indicateur1+".json"
-      const dataRequest = await fetch(url)
-      const data = await dataRequest.json()
-      this.indicateur_data = data
 
-      var url2 = "https://data.widgets.dashboard.covid19.data.gouv.fr/"+this.indicateur2+".json"
-      const dataRequest2 = await fetch(url2)
-      const data2 = await dataRequest2.json()
-      this.indicateur_data2 = data2
+      const promise1 = store.dispatch('getData', this.indicateur1).then(data => {
+        this.indicateur_data = data
+      })
 
-      this.loading = false
-      this.createChart()
+      const promise2 = store.dispatch('getData', this.indicateur2).then(data => {
+        this.indicateur_data2 = data
+      })
+
+      Promise.all([promise1, promise2]).then((values) => {
+        this.loading = false
+        this.createChart()
+      });
+
     },
 
     updateData () {
@@ -165,8 +167,8 @@ export default {
       
       this.display=== 'big' ? gradientFill2 = ctx.createLinearGradient(0, 0, 0, 350) : gradientFill2 = ctx.createLinearGradient(0, 0, 0, 225)
 
-      gradientFill2.addColorStop(0, "rgba(223, 0, 27, 0.6)")
-      gradientFill2.addColorStop(0.6, "rgba(223, 0, 27, 0)")
+      gradientFill2.addColorStop(0, "rgba(0, 124, 58, 0.6)")
+      gradientFill2.addColorStop(0.6, "rgba(0, 124, 58, 0)")
 
       this.chart = new Chart(ctx, {
           data: {
@@ -184,7 +186,7 @@ export default {
                 {
                   data: self.dataset2,
                   backgroundColor:gradientFill2,
-                  borderColor:"#df001b",
+                  borderColor:"#007c3a",
                   type:'line',
                   pointRadius:8,
                   pointBackgroundColor:"rgba(0, 0, 0, 0)",
@@ -230,7 +232,7 @@ export default {
             backgroundColor:"#6b6b6b",
             callbacks: {
               label: function(tooltipItems) { 
-                var int = self.convertStringToLocaleNumber(tooltipItems["value"])
+                var int = self.convertFloatToHuman(tooltipItems["value"])
                 return int+" "+self.units[tooltipItems["datasetIndex"]]
               },
               title: function(tooltipItems) { 
@@ -253,6 +255,14 @@ export default {
     convertDateToHuman(string){
       let date = new Date(string)
       return date.toLocaleDateString()
+    },
+
+    convertFloatToHuman(float){
+      if(Number.isInteger(parseFloat(float))){
+        return parseInt(float).toLocaleString()  
+      }else{
+        return parseFloat(float).toFixed(1).toLocaleString()
+      }
     },
 
     capitalize(string){
@@ -322,7 +332,7 @@ export default {
           background-color: #000091;
           display: inline-block;
           &[data-serie="2"]{
-            background-color: #df001b;
+            background-color: #007c3a;
           }
         }
       }
