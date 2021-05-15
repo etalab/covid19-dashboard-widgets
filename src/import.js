@@ -4,509 +4,610 @@ export const getData = async function (store) {
 		{
 		"value": "01",
 		"label": "Ain",
-		"region": "Rhône-Alpes"
+		"region": "Auvergne-Rhône-Alpes",
+		"region_value": "84"
 		},
 		{
 		"value": "02",
 		"label": "Aisne",
-		"region": "Picardie"
+		"region": "Hauts-de-France",
+		"region_value": "32"
 		},
 		{
 		"value": "03",
 		"label": "Allier",
-		"region": "Auvergne"
+		"region": "Auvergne-Rhône-Alpes",
+		"region_value": "84"
 		},
 		{
 		"value": "04",
 		"label": "Alpes de Haute-Provence",
-		"region": "Provence-Alpes-Côte d'Azur"
+		"region": "Provence-Alpes-Côte d'Azur",
+		"region_value": "93"
 		},
 		{
 		"value": "05",
 		"label": "Hautes-Alpes",
-		"region": "Provence-Alpes-Côte d'Azur"
+		"region": "Provence-Alpes-Côte d'Azur",
+		"region_value": "93"
 		},
 		{
 		"value": "06",
 		"label": "Alpes-Maritimes",
-		"region": "Provence-Alpes-Côte d'Azur"
+		"region": "Provence-Alpes-Côte d'Azur",
+		"region_value": "93"
 		},
 		{
 		"value": "07",
 		"label": "Ardêche",
-		"region": "Rhône-Alpes"
+		"region": "Auvergne-Rhône-Alpes",
+		"region_value": "84"
 		},
 		{
 		"value": "08",
 		"label": "Ardennes",
-		"region": "Champagne-Ardenne"
+		"region": "Grand Est",
+		"region_value": "44"
 		},
 		{
 		"value": "09",
 		"label": "Ariège",
-		"region": "Midi-Pyrénées"
+		"region": "Occitanie",
+		"region_value": "76"
 		},
 		{
 		"value": "10",
 		"label": "Aube",
-		"region": "Champagne-Ardenne"
+		"region": "Grand Est",
+		"region_value": "44"
 		},
 		{
 		"value": "11",
 		"label": "Aude",
-		"region": "Languedoc-Roussillon"
+		"region": "Occitanie",
+		"region_value": "76"
 		},
 		{
 		"value": "12",
 		"label": "Aveyron",
-		"region": "Midi-Pyrénées"
+		"region": "Occitanie",
+		"region_value": "76"
 		},
 		{
 		"value": "13",
 		"label": "Bouches-du-Rhône",
-		"region": "Provence-Alpes-Côte d'Azur"
+		"region": "Provence-Alpes-Côte d'Azur",
+		"region_value": "93"
 		},
 		{
 		"value": "14",
 		"label": "Calvados",
-		"region": "Basse-Normandie"
+		"region": "Normandie",
+		"region_value": "28"
 		},
 		{
 		"value": "15",
 		"label": "Cantal",
-		"region": "Auvergne"
+		"region": "Auvergne-Rhône-Alpes",
+		"region_value": "84"
 		},
 		{
 		"value": "16",
 		"label": "Charente",
-		"region": "Poitou-Charentes"
+		"region": "Nouvelle-Aquitaine",
+		"region_value": "75"
 		},
 		{
 		"value": "17",
 		"label": "Charente-Maritime",
-		"region": "Poitou-Charentes"
+		"region": "Nouvelle-Aquitaine",
+		"region_value": "75"
 		},
 		{
 		"value": "18",
 		"label": "Cher",
-		"region": "Centre"
+		"region": "Centre-Val de Loire",
+		"region_value": "24"
 		},
 		{
 		"value": "19",
 		"label": "Corrèze",
-		"region": "Limousin"
+		"region": "Nouvelle-Aquitaine",
+		"region_value": "75"
 		},
 		{
 		"value": "2A",
 		"label": "Corse-du-Sud",
-		"region": "Corse"
+		"region": "Corse",
+		"region_value": "94"
 		},
 		{
 		"value": "2B",
 		"label": "Haute-Corse",
-		"region": "Corse"
+		"region": "Corse",
+		"region_value": "94"
 		},
 		{
 		"value": "21",
 		"label": "Côte-d'Or",
-		"region": "Bourgogne"
+		"region": "Bourgogne-Franche-Comté",
+		"region_value": "27"
 		},
 		{
 		"value": "22",
 		"label": "Côtes d'Armor",
-		"region": "Bretagne"
+		"region": "Bretagne",
+		"region_value": "53"
 		},
 		{
 		"value": "23",
 		"label": "Creuse",
-		"region": "Limousin"
+		"region": "Nouvelle-Aquitaine",
+		"region_value": "75"
 		},
 		{
 		"value": "24",
 		"label": "Dordogne",
-		"region": "Aquitaine"
+		"region": "Nouvelle-Aquitaine",
+		"region_value": "75"
 		},
 		{
 		"value": "25",
 		"label": "Doubs",
-		"region": "Franche-Comté"
+		"region": "Bourgogne-Franche-Comté",
+		"region_value": "27"
 		},
 		{
 		"value": "26",
 		"label": "Drôme",
-		"region": "Rhône-Alpes"
+		"region": "Auvergne-Rhône-Alpes",
+		"region_value": "84"
 		},
 		{
 		"value": "27",
 		"label": "Eure",
-		"region": "Haute-Normandie"
+		"region": "Normandie",
+		"region_value": "28"
 		},
 		{
 		"value": "28",
 		"label": "Eure-et-Loir",
-		"region": "Centre"
+		"region": "Centre-Val de Loire",
+		"region_value": "24"
 		},
 		{
 		"value": "29",
 		"label": "Finistère",
-		"region": "Bretagne"
+		"region": "Bretagne",
+		"region_value": "53"
 		},
 		{
 		"value": "30",
 		"label": "Gard",
-		"region": "Languedoc-Roussillon"
+		"region": "Occitanie",
+		"region_value": "76"
 		},
 		{
 		"value": "31",
 		"label": "Haute-Garonne",
-		"region": "Midi-Pyrénées"
+		"region": "Occitanie",
+		"region_value": "76"
 		},
 		{
 		"value": "32",
 		"label": "Gers",
-		"region": "Midi-Pyrénées"
+		"region": "Occitanie",
+		"region_value": "76"
 		},
 		{
 		"value": "33",
 		"label": "Gironde",
-		"region": "Aquitaine"
+		"region": "Nouvelle-Aquitaine",
+		"region_value": "75"
 		},
 		{
 		"value": "34",
 		"label": "Hérault",
-		"region": "Languedoc-Roussillon"
+		"region": "Occitanie",
+		"region_value": "76"
 		},
 		{
 		"value": "35",
 		"label": "Île-et-Vilaine",
-		"region": "Bretagne"
+		"region": "Bretagne",
+		"region_value": "53"
 		},
 		{
 		"value": "36",
 		"label": "Indre",
-		"region": "Centre"
+		"region": "Centre-Val de Loire",
+		"region_value": "24"
 		},
 		{
 		"value": "37",
 		"label": "Indre-et-Loire",
-		"region": "Centre"
+		"region": "Centre-Val de Loire",
+		"region_value": "24"
 		},
 		{
 		"value": "38",
 		"label": "Isère",
-		"region": "Rhône-Alpes"
+		"region": "Auvergne-Rhône-Alpes",
+		"region_value": "84"
 		},
 		{
 		"value": "39",
 		"label": "Jura",
-		"region": "Franche-Comté"
+		"region": "Bourgogne-Franche-Comté",
+		"region_value": "27"
 		},
 		{
 		"value": "40",
 		"label": "Landes",
-		"region": "Aquitaine"
+		"region": "Nouvelle-Aquitaine",
+		"region_value": "75"
 		},
 		{
 		"value": "41",
 		"label": "Loir-et-Cher",
-		"region": "Centre"
+		"region": "Centre-Val de Loire",
+		"region_value": "24"
 		},
 		{
 		"value": "42",
 		"label": "Loire",
-		"region": "Rhône-Alpes"
+		"region": "Auvergne-Rhône-Alpes",
+		"region_value": "84"
 		},
 		{
 		"value": "43",
 		"label": "Haute-Loire",
-		"region": "Auvergne"
+		"region": "Auvergne-Rhône-Alpes",
+		"region_value": "84"
 		},
 		{
 		"value": "44",
 		"label": "Loire-Atlantique",
-		"region": "Pays de la Loire"
+		"region": "Pays de la Loire",
+		"region_value": "52"
 		},
 		{
 		"value": "45",
 		"label": "Loiret",
-		"region": "Centre"
+		"region": "Centre-Val de Loire",
+		"region_value": "24"
 		},
 		{
 		"value": "46",
 		"label": "Lot",
-		"region": "Midi-Pyrénées"
+		"region": "Occitanie",
+		"region_value": "76"
 		},
 		{
 		"value": "47",
 		"label": "Lot-et-Garonne",
-		"region": "Aquitaine"
+		"region": "Nouvelle-Aquitaine",
+		"region_value": "75"
 		},
 		{
 		"value": "48",
 		"label": "Lozère",
-		"region": "Languedoc-Roussillon"
+		"region": "Occitanie",
+		"region_value": "76"
 		},
 		{
 		"value": "49",
 		"label": "Maine-et-Loire",
-		"region": "Pays de la Loire"
+		"region": "Pays de la Loire",
+		"region_value": "52"
 		},
 		{
 		"value": "50",
 		"label": "Manche",
-		"region": "Basse-Normandie"
+		"region": "Normandie",
+		"region_value": "28"
 		},
 		{
 		"value": "51",
 		"label": "Marne",
-		"region": "Champagne-Ardenne"
+		"region": "Grand Est",
+		"region_value": "44"
 		},
 		{
 		"value": "52",
 		"label": "Haute-Marne",
-		"region": "Champagne-Ardenne"
+		"region": "Grand Est",
+		"region_value": "44"
 		},
 		{
 		"value": "53",
 		"label": "Mayenne",
-		"region": "Pays de la Loire"
+		"region": "Pays de la Loire",
+		"region_value": "52"
 		},
 		{
 		"value": "54",
 		"label": "Meurthe-et-Moselle",
-		"region": "Lorraine"
+		"region": "Grand Est",
+		"region_value": "44"
 		},
 		{
 		"value": "55",
 		"label": "Meuse",
-		"region": "Lorraine"
+		"region": "Grand Est",
+		"region_value": "44"
 		},
 		{
 		"value": "56",
 		"label": "Morbihan",
-		"region": "Bretagne"
+		"region": "Bretagne",
+		"region_value": "53"
 		},
 		{
 		"value": "57",
 		"label": "Moselle",
-		"region": "Lorraine"
+		"region": "Grand Est",
+		"region_value": "44"
 		},
 		{
 		"value": "58",
 		"label": "Nièvre",
-		"region": "Bourgogne"
+		"region": "Bourgogne-Franche-Comté",
+		"region_value": "27"
 		},
 		{
 		"value": "59",
 		"label": "Nord",
-		"region": "Nord-Pas-de-Calais"
+		"region": "Hauts-de-France",
+		"region_value": "32"
 		},
 		{
 		"value": "60",
 		"label": "Oise",
-		"region": "Picardie"
+		"region": "Hauts-de-France",
+		"region_value": "32"
 		},
 		{
 		"value": "61",
 		"label": "Orne",
-		"region": "Basse-Normandie"
+		"region": "Normandie",
+		"region_value": "28"
 		},
 		{
 		"value": "62",
 		"label": "Pas-de-Calais",
-		"region": "Nord-Pas-de-Calais"
+		"region": "Hauts-de-France",
+		"region_value": "32"
 		},
 		{
 		"value": "63",
 		"label": "Puy-de-Dôme",
-		"region": "Auvergne"
+		"region": "Auvergne-Rhône-Alpes",
+		"region_value": "84"
 		},
 		{
 		"value": "64",
 		"label": "Pyrénées-Atlantiques",
-		"region": "Aquitaine"
+		"region": "Nouvelle-Aquitaine",
+		"region_value": "75"
 		},
 		{
 		"value": "65",
 		"label": "Hautes-Pyrénées",
-		"region": "Midi-Pyrénées"
+		"region": "Occitanie",
+		"region_value": "76"
 		},
 		{
 		"value": "66",
 		"label": "Pyrénées-Orientales",
-		"region": "Languedoc-Roussillon"
+		"region": "Occitanie",
+		"region_value": "76"
 		},
 		{
 		"value": "67",
 		"label": "Bas-Rhin",
-		"region": "Alsace"
+		"region": "Grand Est",
+		"region_value": "44"
 		},
 		{
 		"value": "68",
 		"label": "Haut-Rhin",
-		"region": "Alsace"
+		"region": "Grand Est",
+		"region_value": "44"
 		},
 		{
 		"value": "69",
 		"label": "Rhône",
-		"region": "Rhône-Alpes"
+		"region": "Auvergne-Rhône-Alpes",
+		"region_value": "84"
 		},
 		{
 		"value": "70",
 		"label": "Haute-Saône",
-		"region": "Franche-Comté"
+		"region": "Bourgogne-Franche-Comté",
+		"region_value": "27"
 		},
 		{
 		"value": "71",
 		"label": "Saône-et-Loire",
-		"region": "Bourgogne"
+		"region": "Bourgogne-Franche-Comté",
+		"region_value": "27"
 		},
 		{
 		"value": "72",
 		"label": "Sarthe",
-		"region": "Pays de la Loire"
+		"region": "Pays de la Loire",
+		"region_value": "52"
 		},
 		{
 		"value": "73",
 		"label": "Savoie",
-		"region": "Rhône-Alpes"
+		"region": "Auvergne-Rhône-Alpes",
+		"region_value": "84"
 		},
 		{
 		"value": "74",
 		"label": "Haute-Savoie",
-		"region": "Rhône-Alpes"
+		"region": "Auvergne-Rhône-Alpes",
+		"region_value": "84"
 		},
 		{
 		"value": "75",
 		"label": "Paris",
-		"region": "Île-de-France"
+		"region": "Île-de-France",
+		"region_value": "11"
 		},
 		{
 		"value": "76",
 		"label": "Seine-Maritime",
-		"region": "Haute-Normandie"
+		"region": "Normandie",
+		"region_value": "28"
 		},
 		{
 		"value": "77",
 		"label": "Seine-et-Marne",
-		"region": "Île-de-France"
+		"region": "Île-de-France",
+		"region_value": "11"
 		},
 		{
 		"value": "78",
 		"label": "Yvelines",
-		"region": "Île-de-France"
+		"region": "Île-de-France",
+		"region_value": "11"
 		},
 		{
 		"value": "79",
 		"label": "Deux-Sèvres",
-		"region": "Poitou-Charentes"
+		"region": "Nouvelle-Aquitaine",
+		"region_value": "75"
 		},
 		{
 		"value": "80",
 		"label": "Somme",
-		"region": "Picardie"
+		"region": "Hauts-de-France",
+		"region_value": "32"
 		},
 		{
 		"value": "81",
 		"label": "Tarn",
-		"region": "Midi-Pyrénées"
+		"region": "Occitanie",
+		"region_value": "76"
 		},
 		{
 		"value": "82",
 		"label": "Tarn-et-Garonne",
-		"region": "Midi-Pyrénées"
+		"region": "Occitanie",
+		"region_value": "76"
 		},
 		{
 		"value": "83",
 		"label": "Var",
-		"region": "Provence-Alpes-Côte d'Azur"
+		"region": "Provence-Alpes-Côte d'Azur",
+		"region_value": "93"
 		},
 		{
 		"value": "84",
 		"label": "Vaucluse",
-		"region": "Provence-Alpes-Côte d'Azur"
+		"region": "Provence-Alpes-Côte d'Azur",
+		"region_value": "93"
 		},
 		{
 		"value": "85",
 		"label": "Vendée",
-		"region": "Pays de la Loire"
+		"region": "Pays de la Loire",
+		"region_value": "52"
 		},
 		{
 		"value": "86",
 		"label": "Vienne",
-		"region": "Poitou-Charentes"
+		"region": "Nouvelle-Aquitaine",
+		"region_value": "75"
 		},
 		{
 		"value": "87",
 		"label": "Haute-Vienne",
-		"region": "Limousin"
+		"region": "Nouvelle-Aquitaine",
+		"region_value": "75"
 		},
 		{
 		"value": "88",
 		"label": "Vosges",
-		"region": "Lorraine"
+		"region": "Grand Est",
+		"region_value": "44"
 		},
 		{
 		"value": "89",
 		"label": "Yonne",
-		"region": "Bourgogne"
+		"region": "Bourgogne-Franche-Comté",
+		"region_value": "27"
 		},
 		{
 		"value": "90",
 		"label": "Territoire-de-Belfort",
-		"region": "Franche-Comté"
+		"region": "Bourgogne-Franche-Comté",
+		"region_value": "27"
 		},
 		{
 		"value": "91",
 		"label": "Essonne",
-		"region": "Île-de-France"
+		"region": "Île-de-France",
+		"region_value": "11"
 		},
 		{
 		"value": "92",
 		"label": "Hauts-de-Seine",
-		"region": "Île-de-France"
+		"region": "Île-de-France",
+		"region_value": "11"
 		},
 		{
 		"value": "93",
 		"label": "Seine-Saint-Denis",
-		"region": "Île-de-France"
+		"region": "Île-de-France",
+		"region_value": "11"
 		},
 		{
 		"value": "94",
 		"label": "Val-de-Marne",
-		"region": "Île-de-France"
+		"region": "Île-de-France",
+		"region_value": "11"
 		},
 		{
 		"value": "95",
 		"label": "Val-d'Oise",
-		"region": "Île-de-France"
+		"region": "Île-de-France",
+		"region_value": "11"
 		},
 		{
 		"value": "971",
 		"label": "Guadeloupe",
-		"region": "Outre-Mer"
+		"region": "Guadeloupe",
+		"region_value": "01"
 		},
 		{
 		"value": "972",
 		"label": "Martinique",
-		"region": "Outre-Mer"
+		"region": "Martinique",
+		"region_value": "02"
 		},
 		{
 		"value": "973",
 		"label": "Guyane française",
-		"region": "Outre-Mer"
+		"region": "Guyane",
+		"region_value": "03"
 		},
 		{
 		"value": "974",
 		"label": "Réunion",
-		"region": "Outre-Mer"
+		"region": "La Réunion",
+		"region_value": "04"
 		},
 		{
 		"value": "976",
 		"label": "Mayotte",
-		"region": "Outre-Mer"
+		"region": "Mayotte",
+		"region_value": "06"
 		}
-	]
+		]
 
 	var reg = [
 		{

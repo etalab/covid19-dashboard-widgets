@@ -226,15 +226,30 @@ export default {
       if(geolevel == "France"){
         this.indicateur_data["departements"].forEach(function(d){
           var elCol =parentWidget.getElementsByClassName("FR-"+d["code_level"])
-          elCol[0].setAttribute("fill",x(d["last_value"]))
+          elCol.length != 0 && elCol[0].setAttribute("fill",x(d["last_value"]))
+        })
+      }else if(geolevel == "departements"){
+        this.indicateur_data["departements"].forEach(function(d){
+          var elCol =parentWidget.getElementsByClassName("FR-"+d["code_level"])
+          if(d["code_level"] == geocode){
+             elCol.length != 0 && elCol[0].setAttribute("fill",x(d["last_value"]))
+          }else{
+             elCol.length != 0 && elCol[0].setAttribute("fill","#e7e7e7")
+          }
         })
       }else{
         this.indicateur_data["departements"].forEach(function(d){
           var elCol =parentWidget.getElementsByClassName("FR-"+d["code_level"])
-          if(d["code_level"] == geocode){
-            elCol[0].setAttribute("fill",x(d["last_value"]))
-          }else{
-            elCol[0].setAttribute("fill","#e7e7e7")
+          var depObj = store.state.dep.find(obj => {
+            return obj["value"] === d["code_level"]
+          })
+          if(typeof depObj != "undefined"){
+            var parentRegion =  depObj["region_value"]
+            if(parentRegion == self.selectedGeoCode){
+               elCol.length != 0 && elCol[0].setAttribute("fill",x(d["last_value"]))
+            }else{
+               elCol.length != 0 && elCol[0].setAttribute("fill","#e7e7e7")
+            }
           }
         })
       }
