@@ -9,6 +9,7 @@ import DataBox from './components/DataBox'
 import LineChart from './components/LineChart'
 import MultiLineChart from './components/MultiLineChart'
 import BarChart from './components/BarChart'
+import MapChart from './components/MapChart'
 import GeoList from './components/GeoList'
 
 Vue.config.productionTip = false
@@ -22,4 +23,5 @@ Vue.customElement('data-box', DataBox)
 Vue.customElement('line-chart', LineChart)
 Vue.customElement('multiline-chart', MultiLineChart)
 Vue.customElement('bar-chart', BarChart)
+Vue.customElement('map-chart', MapChart)
 Vue.customElement('geo-list', GeoList)
