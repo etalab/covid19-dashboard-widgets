@@ -10,6 +10,7 @@
   "dependencies": {
     "chart.js": "^2.9.4",
     "core-js": "^3.6.5",
+    "d3-scale": "^3.3.0",
     "mapbox-gl": "^2.0.1",
     "sass": "^1.32.5",
     "sass-loader": "^10.1.1",
@@ -40,7 +41,9 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {
+      "no-unused-vars": "off"
+    }
   },
   "browserslist": [
     "> 1%",

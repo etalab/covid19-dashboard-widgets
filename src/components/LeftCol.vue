@@ -27,6 +27,15 @@
             </div>
           </div> 
         </div>
+
+        <div v-if="map" class="sep fr-my-4w fr-my-md-3w"></div>
+        <div class="scale" v-if="map">
+          <p class="l_box_title fr-text--xs fr-mb-1w">Légende</p>
+          <div class="scale_container">
+            <span class="min">{{min}}</span>
+            <span class="max">{{max}}</span>
+          </div>
+        </div>
     </div>
 </template>
 
@@ -50,6 +59,9 @@ export default {
     names: Array,
     evolcodes: Array,
     evolvalues : Array,
+    min: Number,
+    max: Number,
+    map: Boolean
   },
   computed: {
 
@@ -95,7 +107,6 @@ export default {
 
   created(){
     this.testEvolStyle()
-    console.log("test preprod")
   },
 
 }
@@ -152,6 +163,26 @@ export default {
             path {
               fill: #0768d5;
             }
+          }
+        }
+      } 
+    }
+    .scale{
+      .scale_container{
+        width: 100%;
+        height: 25px;
+        background-color: red;
+        position: relative;
+        background: linear-gradient(90deg, rgba(229,229,224,1) 0%, rgba(0,0,109,1) 100%);
+        span{
+          position: absolute;
+          bottom: -25px;
+          font-weight: bold;
+          &.min{
+            left:0;  
+          }
+          &.max{
+            right: 0;
           }
         }
       }

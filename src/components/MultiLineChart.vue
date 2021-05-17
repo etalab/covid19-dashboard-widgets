@@ -46,7 +46,8 @@ export default {
       evolcodes:[],
       evolvalues:[],
       chart:undefined,
-      loading:true
+      loading:true,
+      map:false
     }
   },
   props: {
@@ -245,7 +246,6 @@ export default {
           }
         }
       });
-      console.log(this.chart)
     },
 
     convertStringToLocaleNumber(string){
