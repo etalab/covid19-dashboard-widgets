@@ -32,8 +32,8 @@
         <div class="scale" v-if="map">
           <p class="l_box_title fr-text--xs fr-mb-1w">Légende</p>
           <div class="scale_container">
-            <span class="min">{{min}}</span>
-            <span class="max">{{max}}</span>
+            <span class="min">{{convertNumberToHuman(min)}}</span>
+            <span class="max">{{convertNumberToHuman(max)}}</span>
           </div>
         </div>
     </div>
@@ -173,7 +173,7 @@ export default {
         height: 25px;
         background-color: red;
         position: relative;
-        background: linear-gradient(90deg, rgba(229,229,224,1) 0%, rgba(0,0,109,1) 100%);
+        background: linear-gradient(90deg, rgba(255, 199, 0,1) 0%, rgba(113, 88, 69, 1) 100%);
         span{
           position: absolute;
           bottom: -25px;
