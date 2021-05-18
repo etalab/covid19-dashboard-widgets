@@ -254,7 +254,7 @@ export default {
       this.scaleMin = Math.min.apply(null, values)
       this.scaleMax = Math.max.apply(null, values)
 
-      var x = d3.scaleLinear().domain([this.scaleMin, this.scaleMax]).range(["#e5e5f4", "#00006d"]);
+      var x = d3.scaleLinear().domain([this.scaleMin, this.scaleMax]).range(["#ffc700", "#715845"]);
 
       var parentWidget = document.getElementById(this.widgetId)
       
@@ -269,7 +269,7 @@ export default {
           if(d["code_level"] == geocode){
              elCol.length != 0 && elCol[0].setAttribute("fill",x(d["last_value"]))
           }else{
-             elCol.length != 0 && elCol[0].setAttribute("fill","#e7e7e7")
+             elCol.length != 0 && elCol[0].setAttribute("fill","rgba(247, 237, 211, 0.72)")
           }
         })
       }else{
@@ -283,7 +283,7 @@ export default {
             if(parentRegion == self.selectedGeoCode){
                elCol.length != 0 && elCol[0].setAttribute("fill",x(d["last_value"]))
             }else{
-               elCol.length != 0 && elCol[0].setAttribute("fill","#e7e7e7")
+               elCol.length != 0 && elCol[0].setAttribute("fill","rgba(247, 237, 211, 0.72)")
             }
           }
         })
