@@ -169,6 +169,8 @@ import store from '@/store'
 import Chart from 'chart.js'
 import LeftCol from '@/components/LeftCol'
 import * as d3 from 'd3-scale'
+import { isMobile } from 'mobile-device-detect'
+
 export default {
   name: 'MapChart',
   components: {
@@ -349,7 +351,7 @@ export default {
     },
 
     displayTooltip(e){
-
+      if (isMobile) return
       var hoverdep = e.target.className["baseVal"].replace(/FR-/g,'');
 
       var dataObj = this.indicateur_data["departements"].find(obj => {
@@ -372,6 +374,7 @@ export default {
     },
 
     hideTooltip(){
+      if (isMobile) return
       this.tooltip.display = false
     }
 
