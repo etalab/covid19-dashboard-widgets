@@ -13,7 +13,7 @@
           
           
         </div>
-        <div class='france_container'>
+        <div class="france_container no_select">
           <svg viewBox="0 0 262 250" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <g fill-rule="nonzero" stroke="#FFFFFF">
                 <g class="France">
@@ -117,7 +117,7 @@
             </g>
           </svg>
         </div>
-        <div class="om_container fr-grid-row">
+        <div class="om_container fr-grid-row no_select">
           <div class="om fr-col-4 fr-col-sm">
             <span class="fr-text--xs fr-my-1w">Guadeloupe</span>
               <svg width="57px" height="50px" viewBox="0 0 57 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -166,9 +166,10 @@
 
 <script>
 import store from '@/store'
-import Chart from 'chart.js'
 import LeftCol from '@/components/LeftCol'
 import * as d3 from 'd3-scale'
+import { isMobile } from 'mobile-device-detect'
+
 export default {
   name: 'MapChart',
   components: {
@@ -349,7 +350,7 @@ export default {
     },
 
     displayTooltip(e){
-
+      if (isMobile) return
       var hoverdep = e.target.className["baseVal"].replace(/FR-/g,'');
 
       var dataObj = this.indicateur_data["departements"].find(obj => {
@@ -372,6 +373,7 @@ export default {
     },
 
     hideTooltip(){
+      if (isMobile) return
       this.tooltip.display = false
     }
 
@@ -407,6 +409,16 @@ export default {
   @import "../../css/overload-fonts.css";
   @import "../../css/dsfr.min.css";
   */
+
+  .no_select {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
 
   .widget_container{
     .m-lg {
