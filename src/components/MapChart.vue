@@ -13,7 +13,7 @@
           
           
         </div>
-        <div class="france_container" @touchstart.prevent.stop>
+        <div class="france_container no_select">
           <svg width="262px" height="250px" viewBox="0 0 262 250" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <g id="PMv7_SPECIFICATIONS_PAGE_TAG_COVID-19_DATA_BOX" fill-rule="nonzero" stroke="#FFFFFF">
                 <g class="France">
@@ -117,7 +117,7 @@
             </g>
           </svg>
         </div>
-        <div class="om_container" @touchstart.prevent.stop>
+        <div class="om_container no_select">
           <div class="om">
             <span>Guadeloupe</span>
               <svg width="57px" height="50px" viewBox="0 0 57 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -126,7 +126,7 @@
                   </g>
             </svg>
           </div>
-          <div class="om" @touchstart.prevent.stop>
+          <div class="om">
             <span>La Martinique</span>
               <svg width="43px" height="50px" viewBox="0 0 43 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <g class="FR-972" @mouseenter="displayTooltip($event)" @mouseleave="hideTooltip()" fill="#EEEEEE" fill-rule="nonzero" stroke="#FFFFFF">
@@ -134,7 +134,7 @@
                     </g>
                 </svg>
           </div>
-          <div class="om" @touchstart.prevent.stop>
+          <div class="om">
             <span>Guyane</span>
             <svg width="40px" height="50px" viewBox="0 0 40 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
               <g class="FR-973" @mouseenter="displayTooltip($event)" @mouseleave="hideTooltip()" fill="#EEEEEE" fill-rule="nonzero" stroke="#FFFFFF">
@@ -142,7 +142,7 @@
               </g>
             </svg>
           </div>
-          <div class="om" @touchstart.prevent.stop>
+          <div class="om">
             <span>La Réunion</span>
             <svg width="56px" height="50px" viewBox="0 0 56 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
               <g class="FR-974" @mouseenter="displayTooltip($event)" @mouseleave="hideTooltip()" fill="#EEEEEE" fill-rule="nonzero" stroke="#FFFFFF">
@@ -150,7 +150,7 @@
               </g>
             </svg>
           </div>
-          <div class="om" @touchstart.prevent.stop>
+          <div class="om">
             <span>Mayotte</span>
               <svg width="38px" height="50px" viewBox="0 0 38 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> 
                 <g class="FR-976" @mouseenter="displayTooltip($event)" @mouseleave="hideTooltip()" fill="#EEEEEE" fill-rule="nonzero" stroke="#FFFFFF">
@@ -409,6 +409,16 @@ export default {
   @import "../../css/overload-fonts.css";
   @import "../../css/dsfr.min.css";
   */
+
+  .no_select {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
 
   .widget_container{
     .ml-lg {
