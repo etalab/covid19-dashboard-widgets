@@ -11,10 +11,9 @@
     "chart.js": "^2.9.4",
     "core-js": "^3.6.5",
     "d3-scale": "^3.3.0",
-    "mapbox-gl": "^2.0.1",
+    "mobile-device-detect": "^0.4.3",
     "sass": "^1.32.5",
     "sass-loader": "^10.1.1",
-    "v-mapbox": "^1.6.4",
     "vue": "^2.6.11",
     "vue-custom-element": "^3.2.14",
     "vuex": "^3.6.0"
