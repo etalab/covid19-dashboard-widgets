@@ -13,7 +13,7 @@
           
           
         </div>
-        <div class='france_container'>
+        <div class="france_container" @touchstart.prevent.stop>
           <svg width="262px" height="250px" viewBox="0 0 262 250" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <g id="PMv7_SPECIFICATIONS_PAGE_TAG_COVID-19_DATA_BOX" fill-rule="nonzero" stroke="#FFFFFF">
                 <g class="France">
@@ -117,7 +117,7 @@
             </g>
           </svg>
         </div>
-        <div class="om_container">
+        <div class="om_container" @touchstart.prevent.stop>
           <div class="om">
             <span>Guadeloupe</span>
               <svg width="57px" height="50px" viewBox="0 0 57 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -126,7 +126,7 @@
                   </g>
             </svg>
           </div>
-          <div class="om">
+          <div class="om" @touchstart.prevent.stop>
             <span>La Martinique</span>
               <svg width="43px" height="50px" viewBox="0 0 43 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <g class="FR-972" @mouseenter="displayTooltip($event)" @mouseleave="hideTooltip()" fill="#EEEEEE" fill-rule="nonzero" stroke="#FFFFFF">
@@ -134,7 +134,7 @@
                     </g>
                 </svg>
           </div>
-          <div class="om">
+          <div class="om" @touchstart.prevent.stop>
             <span>Guyane</span>
             <svg width="40px" height="50px" viewBox="0 0 40 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
               <g class="FR-973" @mouseenter="displayTooltip($event)" @mouseleave="hideTooltip()" fill="#EEEEEE" fill-rule="nonzero" stroke="#FFFFFF">
@@ -142,7 +142,7 @@
               </g>
             </svg>
           </div>
-          <div class="om">
+          <div class="om" @touchstart.prevent.stop>
             <span>La Réunion</span>
             <svg width="56px" height="50px" viewBox="0 0 56 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
               <g class="FR-974" @mouseenter="displayTooltip($event)" @mouseleave="hideTooltip()" fill="#EEEEEE" fill-rule="nonzero" stroke="#FFFFFF">
@@ -150,7 +150,7 @@
               </g>
             </svg>
           </div>
-          <div class="om">
+          <div class="om" @touchstart.prevent.stop>
             <span>Mayotte</span>
               <svg width="38px" height="50px" viewBox="0 0 38 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> 
                 <g class="FR-976" @mouseenter="displayTooltip($event)" @mouseleave="hideTooltip()" fill="#EEEEEE" fill-rule="nonzero" stroke="#FFFFFF">
@@ -166,7 +166,6 @@
 
 <script>
 import store from '@/store'
-import Chart from 'chart.js'
 import LeftCol from '@/components/LeftCol'
 import * as d3 from 'd3-scale'
 import { isMobile } from 'mobile-device-detect'
