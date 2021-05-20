@@ -342,7 +342,6 @@ export default {
       align-self:center;
       .flex{
         display: flex;
-        align-items: center;
         .legende_dot{
           width: 1rem;
           height: 1rem;
@@ -350,6 +349,7 @@ export default {
           border-radius: 50%;
           background-color: #000091;
           display: inline-block;
+          margin-top: 0.25rem;
         }
       }
     }
