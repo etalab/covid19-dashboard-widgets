@@ -4,7 +4,7 @@
       <LeftCol :data-display="display" :localisation="localGeoLabel" :date="currentDate" :values="currentValues" :names="names" :evolcodes="evolcodes" :evolvalues="evolvalues" :min="scaleMin" :max="scaleMax" :map="map"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
       <div class="map m-lg">
-        <div class="map_tooltip" v-if="tooltip.display" :style="{top:tooltip.top,left:tooltip.left}">
+        <div ref="mapTooltip" class="map_tooltip" :style="{top:tooltip.top,left:tooltip.left,display:tooltip.display,visibility:tooltip.visibility}">
           <div class="tooltip_header">{{convertDateToHuman(tooltip.date)}}</div>
           <div class="tooltip_body">
             <div class="tooltip_place">{{tooltip.place}}</div>
@@ -168,7 +168,6 @@
 import store from '@/store'
 import LeftCol from '@/components/LeftCol'
 import * as d3 from 'd3-scale'
-import { isMobile } from 'mobile-device-detect'
 
 export default {
   name: 'MapChart',
@@ -202,10 +201,11 @@ export default {
       tooltip:{
         top:"0px",
         left:"0px",
-        display:false,
+        display:"none",
+        visibility:"hidden",
         value:0,
         date:"",
-        place:""
+        place:"",
       }
     }
   },
@@ -222,10 +222,6 @@ export default {
     selectedGeoLabel () {
       return store.state.user.selectedGeoLabel
     },
-    style () {
-      return 'margin-left: ' + this.legendLeftMargin + 'px';
-    },
-
   },
   methods: {
 
@@ -350,7 +346,6 @@ export default {
     },
 
     displayTooltip(e){
-      if (isMobile) return
       var hoverdep = e.target.className["baseVal"].replace(/FR-/g,'');
 
       var dataObj = this.indicateur_data["departements"].find(obj => {
@@ -364,17 +359,34 @@ export default {
       this.tooltip.value = dataObj["last_value"]
       this.tooltip.date = dataObj["last_date"]
       this.tooltip.place = depObj["label"]
-      
-      this.tooltip.top = (e.target.getBoundingClientRect().top-75)+"px"
-      this.tooltip.left = (e.target.getBoundingClientRect().left+15)+"px"
-      this.tooltip.display = true
+      this.$refs.mapTooltip.style.display = 'block' //don't know why I can't simply do this.tooltip.display = "block"
+      const tooltipHeight = this.$refs.mapTooltip.clientHeight
+      const tooltipWidth = this.$refs.mapTooltip.clientWidth
+      const containerRect = e.target.getBoundingClientRect()
+      const stickyMenuHeight = document.querySelector(".submenu").offsetHeight
+      let tooltipX = containerRect.left + (containerRect.width - tooltipWidth) / 2
+      let tooltipY = containerRect.top - tooltipHeight - 15
 
+      if ((tooltipX + tooltipWidth) > window.innerWidth) { // tooltip disappears at the right of the screen
+        console.log("sort à droite")
+        tooltipX = containerRect.right - tooltipWidth;
+      } else if (tooltipX < 0) { // tooltip disappears at the left of the screen
+        console.log("sort à gauche")
+        tooltipX = containerRect.left
+      }
+      if (tooltipY - stickyMenuHeight < 0) { // tooltip disappears at the top of the screen
+        console.log("sort en haut")
+        tooltipY = containerRect.bottom + 15;
+      }
 
+      this.tooltip.top = tooltipY+"px"
+      this.tooltip.left = tooltipX+"px"
+      this.tooltip.visibility = "visible"
     },
 
     hideTooltip(){
-      if (isMobile) return
-      this.tooltip.display = false
+      this.tooltip.visibility = "hidden"
+      this.tooltip.display = "none"
     }
 
   },
@@ -439,6 +451,7 @@ export default {
         box-shadow: 0 8px 16px 0 rgba(22, 22, 22, 0.12), 0 8px 16px -16px rgba(22, 22, 22, 0.32);
         text-align: left;
         font-size: 0.75rem;
+        pointer-events: none;
         .tooltip_header{
           width: 100%;
           height: 30px;
