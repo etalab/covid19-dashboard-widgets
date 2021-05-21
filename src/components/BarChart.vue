@@ -3,7 +3,6 @@
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
     <LeftCol :data-display="display" :localisation="selectedGeoLabel" :date="currentDate" :values="currentValues" :names="names" :evolcodes="evolcodes" :evolvalues="evolvalues"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
-      <div class="sep fr-my-4w fr-my-md-3w"></div>
       <div class="chart ml-lg">
         <canvas :id="chartId"></canvas>
       </div>
@@ -241,16 +240,10 @@ export default {
 
 
   .widget_container{
-    .sep {
-      border-bottom:1px solid #E5E5E5;
-    }
     .ml-lg {
       margin-left:0;
     }
     @media (min-width: 62em) {
-      .sep {
-        display: none;
-      }
       .ml-lg {
         margin-left:3rem;
       }
@@ -259,13 +252,13 @@ export default {
       align-self:center;
       .flex{
         display: flex;
-        align-items: center;
         .legende_dot{
           width: 1rem;
           height: 1rem;
           border-radius: 50%;
           background-color: #000091;
           display: inline-block;
+          margin-top: 0.25rem;
         }
       }
     }
