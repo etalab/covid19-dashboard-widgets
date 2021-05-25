@@ -10,8 +10,6 @@
             <div class="tooltip_place">{{tooltip.place}}</div>
             <div class="tooltip_value">{{convertStringToLocaleNumber(tooltip.value)}} {{units[0]}}</div>
           </div>
-          
-          
         </div>
         <div class="france_container no_select">
           <svg viewBox="0 0 262 250" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -368,8 +366,6 @@ export default {
       this.tooltip.top = (e.target.getBoundingClientRect().top-75)+"px"
       this.tooltip.left = (e.target.getBoundingClientRect().left+15)+"px"
       this.tooltip.display = true
-
-
     },
 
     hideTooltip(){
@@ -438,6 +434,7 @@ export default {
         border-radius: 4px;
         box-shadow: 0 8px 16px 0 rgba(22, 22, 22, 0.12), 0 8px 16px -16px rgba(22, 22, 22, 0.32);
         text-align: left;
+        pointer-events: none;
         font-size: 0.75rem;
         .tooltip_header{
           width: 100%;
