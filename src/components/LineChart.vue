@@ -8,7 +8,7 @@
         <p class="fr-text--sm fr-mb-0 fr-p-3v">{{geoFallbackMsg}}
         </p>
     </div>
-    <LeftCol :data-display="display" :localisation="localGeoLabel" :date="currentDate" :values="currentValues" :names="names" :evolcodes="evolcodes" :evolvalues="evolvalues"></LeftCol>
+    <LeftCol :props="leftColProps"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
       <div class="chart ml-lg">
         <canvas :id="chartId"></canvas>
@@ -38,20 +38,21 @@ export default {
       widgetId:"",
       chartId:"",
       display:"",
-      localisation:"",
-      currentValues:[],
-      currentDate:"",
-      names:[],
+      leftColProps:{
+        localisation:"",
+        currentValues:[],
+        currentDate:"",
+        names:[],
+        evolcodes:[],
+        evolvalues:[],
+        isMap:false
+      },
       units:[],
-      evolcodes:[],
-      evolvalues:[],
       chart:undefined,
       loading:true,
       legendLeftMargin: 0,
-      localGeoLabel:"",
       geoFallback:false,
       geoFallbackMsg:"",
-      map:false
     }
   },
   props: {
@@ -89,7 +90,7 @@ export default {
       var geolevel = this.selectedGeoLevel
       var geocode = this.selectedGeoCode
 
-      this.localGeoLabel = this.selectedGeoLabel
+      this.leftColProps["localisation"] = this.selectedGeoLabel
 
       var geoObject
 
@@ -98,7 +99,7 @@ export default {
       if(typeof geoObject === 'undefined'){
         if(geolevel == 'regions'){
           geoObject = this.getGeoObject("France","01")
-          this.localGeoLabel = "France entière"
+          this.leftColProps["localisation"] = "France entière"
           this.geoFallback=true
           this.geoFallbackMsg="Affichage des résultats au niveau national, faute de données au niveau régional"
         }else{
@@ -106,30 +107,30 @@ export default {
             return obj["value"] === geocode
           })
           geoObject = this.getGeoObject("regions",depObj["region_value"])
-          this.localGeoLabel = depObj["region"]
+          this.leftColProps["localisation"] = depObj["region"]
           this.geoFallback=true
           this.geoFallbackMsg="Affichage des résultats au niveau régional, faute de données au niveau départemental"
           if(typeof geoObject === 'undefined'){
             geoObject = this.getGeoObject("France","01")
-            this.localGeoLabel = "France entière"
+            this.leftColProps["localisation"] = "France entière"
             this.geoFallback=true
             this.geoFallbackMsg="Affichage des résultats au niveau national, faute de données au niveau régional ou départemental"
           }
         }
       }
 
-      this.names.length = 0
+      this.leftColProps['names'].length = 0
       this.units.length = 0
-      this.currentValues.length = 0
-      this.evolcodes.length = 0
-      this.evolvalues.length = 0
+      this.leftColProps['currentValues'].length = 0
+      this.leftColProps['evolcodes'].length = 0
+      this.leftColProps['evolvalues'].length = 0
 
-      this.names.push(this.indicateur_data["nom"])
+      this.leftColProps['names'].push(this.indicateur_data["nom"])
       this.units.push(this.indicateur_data["unite"])
-      this.currentValues.push(geoObject["last_value"])
-      this.currentDate = this.convertDateToHuman(geoObject["last_date"])
-      this.evolcodes.push(geoObject["evol_color"])
-      this.evolvalues.push(geoObject["evol_percentage"])
+      this.leftColProps['currentValues'].push(geoObject["last_value"])
+      this.leftColProps['currentDate'] = this.convertDateToHuman(geoObject["last_date"])
+      this.leftColProps['evolcodes'].push(geoObject["evol_color"])
+      this.leftColProps['evolvalues'].push(geoObject["evol_percentage"])
 
       this.labels.length = 0
       this.dataset.length = 0
