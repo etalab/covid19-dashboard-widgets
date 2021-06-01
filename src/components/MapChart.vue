@@ -167,6 +167,7 @@ import store from '@/store'
 import LeftCol from '@/components/LeftCol'
 import * as d3 from 'd3-scale'
 import { isMobile } from 'mobile-device-detect'
+import { capitalize, convertStringToLocaleNumber, convertFloatToHuman, convertDateToHuman} from '@/utils.js'
 
 export default {
   name: 'MapChart',
@@ -207,7 +208,11 @@ export default {
         value:0,
         date:"",
         place:""
-      }
+      },
+      capitalize:capitalize,
+      convertStringToLocaleNumber:convertStringToLocaleNumber,
+      convertFloatToHuman:convertFloatToHuman,
+      convertDateToHuman:convertDateToHuman
     }
   },
   props: {
@@ -331,29 +336,6 @@ export default {
       this.updateData()
     },
 
-    convertStringToLocaleNumber(string){
-      return parseInt(string).toLocaleString()
-    },
-
-    convertFloatToHuman(float){
-      if(Number.isInteger(parseFloat(float))){
-        return parseInt(float).toLocaleString()  
-      }else{
-        return parseFloat(float).toFixed(1).toLocaleString()
-      }
-    },
-
-    convertDateToHuman(string){
-      let date = new Date(string)
-      return date.toLocaleDateString()
-    },
-
-    capitalize(string){
-      if(string){
-        return string.charAt(0).toUpperCase() + string.slice(1)
-      }
-    },
-
     displayTooltip(e){
       if (isMobile) return
       var hoverdep = e.target.className["baseVal"].replace(/FR-/g,'');
@@ -399,19 +381,12 @@ export default {
 
   mounted(){
     document.getElementById(this.widgetId).offsetWidth > 486 ? this.display='big' : this.display='small'
-    // 502px to break
   }
 
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-
-  /* overload fonts path, to delete when parent has access 
-  @import "../../css/overload-fonts.css";
-  @import "../../css/dsfr.min.css";
-  */
 
   .no_select {
     -webkit-touch-callout: none;

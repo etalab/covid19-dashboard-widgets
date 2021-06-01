@@ -25,6 +25,7 @@
 import store from '@/store'
 import Chart from 'chart.js'
 import LeftCol from '@/components/LeftCol'
+import { capitalize, convertStringToLocaleNumber, convertFloatToHuman, convertDateToHuman} from '@/utils.js'
 export default {
   name: 'LineChart',
   components: {
@@ -53,6 +54,10 @@ export default {
       legendLeftMargin: 0,
       geoFallback:false,
       geoFallbackMsg:"",
+      capitalize:capitalize,
+      convertStringToLocaleNumber:convertStringToLocaleNumber,
+      convertFloatToHuman:convertFloatToHuman,
+      convertDateToHuman:convertDateToHuman
     }
   },
   props: {
@@ -245,31 +250,7 @@ export default {
           }
         }
       });
-    },
-
-    convertStringToLocaleNumber(string){
-      return parseInt(string).toLocaleString()
-    },
-
-    convertFloatToHuman(float){
-      if(Number.isInteger(parseFloat(float))){
-        return parseInt(float).toLocaleString()  
-      }else{
-        return parseFloat(float).toFixed(1).toLocaleString()
-      }
-    },
-
-    convertDateToHuman(string){
-      let date = new Date(string)
-      return date.toLocaleDateString()
-    },
-
-    capitalize(string){
-      if(string){
-        return string.charAt(0).toUpperCase() + string.slice(1)
-      }
     }
-
   },
 
   watch:{
@@ -289,19 +270,12 @@ export default {
 
   mounted(){
     document.getElementById(this.widgetId).offsetWidth > 486 ? this.display='big' : this.display='small'
-    // 502px to break
   }
 
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-
-  /* overload fonts path, to delete when parent has access
-  @import "../../css/overload-fonts.css";
-  @import "../../css/dsfr.min.css";
-   */
 
   .widget_container{
     .fr-warning {
