@@ -167,6 +167,7 @@ import store from '@/store'
 import LeftCol from '@/components/LeftCol'
 import * as d3 from 'd3-scale'
 import { isMobile } from 'mobile-device-detect'
+import { capitalize, convertStringToLocaleNumber, convertFloatToHuman, convertDateToHuman} from '@/utils.js'
 
 export default {
   name: 'MapChart',
@@ -207,7 +208,11 @@ export default {
         value:0,
         date:"",
         place:""
-      }
+      },
+      capitalize:capitalize,
+      convertStringToLocaleNumber:convertStringToLocaleNumber,
+      convertFloatToHuman:convertFloatToHuman,
+      convertDateToHuman:convertDateToHuman
     }
   },
   props: {
@@ -329,29 +334,6 @@ export default {
 
     updateMap () {
       this.updateData()
-    },
-
-    convertStringToLocaleNumber(string){
-      return parseInt(string).toLocaleString()
-    },
-
-    convertFloatToHuman(float){
-      if(Number.isInteger(parseFloat(float))){
-        return parseInt(float).toLocaleString()  
-      }else{
-        return parseFloat(float).toFixed(1).toLocaleString()
-      }
-    },
-
-    convertDateToHuman(string){
-      let date = new Date(string)
-      return date.toLocaleDateString()
-    },
-
-    capitalize(string){
-      if(string){
-        return string.charAt(0).toUpperCase() + string.slice(1)
-      }
     },
 
     displayTooltip(e){
