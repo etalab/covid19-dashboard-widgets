@@ -18,7 +18,7 @@ export const convertFloatToHuman = function (float){
 
 export const convertDateToHuman = function (string){
 	let date = new Date(string)
-    return date.toLocaleDateString()
+    return date.toLocaleDateString("fr-FR")
 }
 
 export const testIfNaN = function (float){
