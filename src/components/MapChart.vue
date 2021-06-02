@@ -378,12 +378,8 @@ export default {
     this.widgetId = "widget"+Math.floor(Math.random() * (1000));
     this.getData()
   },
-
-  mounted(){
-    document.getElementById(this.widgetId).offsetWidth > 486 ? this.display='big' : this.display='small'
-  }
-
 }
+
 </script>
 
 <style scoped lang="scss">
