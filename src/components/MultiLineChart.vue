@@ -30,29 +30,29 @@ export default {
     LeftCol
   },
   mixins: [mixin],
-  data(){
+  data () {
     return {
-      indicateur_data:undefined,
-      indicateur_data2:undefined,
-      labels:[],
-      dataset:[],
-      dataset2:[],
-      widgetId:"",
-      chartId:"",
-      display:"",
-      leftColProps:{
-        localisation:"",
-        currentValues:[],
-        currentDate:"",
-        names:[],
-        evolcodes:[],
-        evolvalues:[],
-        isMap:false
+      indicateur_data: undefined,
+      indicateur_data2: undefined,
+      labels: [],
+      dataset: [],
+      dataset2: [],
+      widgetId: '',
+      chartId: '',
+      display: '',
+      leftColProps: {
+        localisation: '',
+        currentValues: [],
+        currentDate: '',
+        names: [],
+        evolcodes: [],
+        evolvalues: [],
+        isMap: false
       },
-      units:[],
-      chart:undefined,
-      loading:true,
-      legendLeftMargin: 0,
+      units: [],
+      chart: undefined,
+      loading: true,
+      legendLeftMargin: 0
     }
   },
   props: {
@@ -70,14 +70,13 @@ export default {
       return store.state.user.selectedGeoLabel
     },
     style () {
-      return 'margin-left: ' + this.legendLeftMargin + 'px';
-    },
+      return 'margin-left: ' + this.legendLeftMargin + 'px'
+    }
 
   },
   methods: {
 
     async getData () {
-
       const promise1 = store.dispatch('getData', this.indicateur1).then(data => {
         this.indicateur_data = data
       })
@@ -89,196 +88,188 @@ export default {
       Promise.all([promise1, promise2]).then((values) => {
         this.loading = false
         this.createChart()
-      });
-
+      })
     },
 
     updateData () {
+      const self = this
 
-      var self = this
+      this.leftColProps.localisation = this.selectedGeoLabel
 
-      this.leftColProps["localisation"] = this.selectedGeoLabel
+      const geolevel = this.selectedGeoLevel
+      const geocode = this.selectedGeoCode
 
-      var geolevel = this.selectedGeoLevel
-      var geocode = this.selectedGeoCode
+      let geoObject
+      let geoObject2
 
-      var geoObject
-      var geoObject2
-
-      if(geolevel === "France"){
-        geoObject = this.indicateur_data["france"][0]
-        geoObject2 = this.indicateur_data2["france"][0]
-      }else{
+      if (geolevel === 'France') {
+        geoObject = this.indicateur_data.france[0]
+        geoObject2 = this.indicateur_data2.france[0]
+      } else {
         geoObject = this.indicateur_data[geolevel].find(obj => {
-          return obj["code_level"] === geocode
+          return obj.code_level === geocode
         })
         geoObject2 = this.indicateur_data2[geolevel].find(obj => {
-          return obj["code_level"] === geocode
+          return obj.code_level === geocode
         })
-
       }
 
-      this.leftColProps['names'].length = 0
+      this.leftColProps.names.length = 0
       this.units.length = 0
-      this.leftColProps['currentValues'].length = 0
-      this.leftColProps['evolcodes'].length = 0
-      this.leftColProps['evolvalues'].length = 0
+      this.leftColProps.currentValues.length = 0
+      this.leftColProps.evolcodes.length = 0
+      this.leftColProps.evolvalues.length = 0
 
-      this.leftColProps['names'].push(this.indicateur_data["nom"],this.indicateur_data2["nom"])
-      this.units.push(this.indicateur_data["unite"],this.indicateur_data2["unite"])
-      this.leftColProps['currentValues'].push(geoObject["last_value"],geoObject2["last_value"])
-      this.leftColProps['currentDate'] = this.convertDateToHuman(geoObject["last_date"])
-      this.leftColProps['evolcodes'].push(geoObject["evol_color"],geoObject2["evol_color"])
-      this.leftColProps['evolvalues'].push(geoObject["evol_percentage"],geoObject2["evol_percentage"])
+      this.leftColProps.names.push(this.indicateur_data.nom, this.indicateur_data2.nom)
+      this.units.push(this.indicateur_data.unite, this.indicateur_data2.unite)
+      this.leftColProps.currentValues.push(geoObject.last_value, geoObject2.last_value)
+      this.leftColProps.currentDate = this.convertDateToHuman(geoObject.last_date)
+      this.leftColProps.evolcodes.push(geoObject.evol_color, geoObject2.evol_color)
+      this.leftColProps.evolvalues.push(geoObject.evol_percentage, geoObject2.evol_percentage)
 
       this.labels.length = 0
       this.dataset.length = 0
       this.dataset2.length = 0
 
-      geoObject["values"].forEach(function(d){
+      geoObject.values.forEach(function (d) {
+        self.labels.push(self.convertDateToHuman(d.date))
+        self.dataset.push((d.value))
 
-        self.labels.push(self.convertDateToHuman(d["date"]))
-        self.dataset.push((d["value"]))
-
-        var corresponding_value = geoObject2["values"].find(obj => {
-          return obj["date"] === d["date"]
+        const correspondingValue = geoObject2.values.find(obj => {
+          return obj.date === d.date
         })
 
-        self.dataset2.push(corresponding_value["value"])
-
+        self.dataset2.push(correspondingValue.value)
       })
-
     },
 
     updateChart () {
-
       this.updateData()
       this.chart.update()
-
     },
 
     createChart () {
-      var self = this
+      const self = this
 
       this.updateData()
 
-      var xTickLimit
-      this.display=== 'big' ? xTickLimit = 6 : xTickLimit = 1
+      let xTickLimit
+      this.display === 'big' ? xTickLimit = 6 : xTickLimit = 1
 
-      var ctx = document.getElementById(self.chartId).getContext('2d')
+      const ctx = document.getElementById(self.chartId).getContext('2d')
 
-      var gradientFill
+      let gradientFill
 
-      this.display=== 'big' ? gradientFill = ctx.createLinearGradient(0, 0, 0, 500) : gradientFill = ctx.createLinearGradient(0, 0, 0, 250)
+      this.display === 'big' ? gradientFill = ctx.createLinearGradient(0, 0, 0, 500) : gradientFill = ctx.createLinearGradient(0, 0, 0, 250)
 
-      gradientFill.addColorStop(0, "rgba(218, 218, 254, 0.6)")
-      gradientFill.addColorStop(0.6, "rgba(245, 245, 255, 0)")
+      gradientFill.addColorStop(0, 'rgba(218, 218, 254, 0.6)')
+      gradientFill.addColorStop(0.6, 'rgba(245, 245, 255, 0)')
 
-      var gradientFill2
+      let gradientFill2
 
-      this.display=== 'big' ? gradientFill2 = ctx.createLinearGradient(0, 0, 0, 350) : gradientFill2 = ctx.createLinearGradient(0, 0, 0, 225)
+      this.display === 'big' ? gradientFill2 = ctx.createLinearGradient(0, 0, 0, 350) : gradientFill2 = ctx.createLinearGradient(0, 0, 0, 225)
 
-      gradientFill2.addColorStop(0, "rgba(0, 124, 58, 0.6)")
-      gradientFill2.addColorStop(0.6, "rgba(0, 124, 58, 0)")
+      gradientFill2.addColorStop(0, 'rgba(0, 124, 58, 0.6)')
+      gradientFill2.addColorStop(0.6, 'rgba(0, 124, 58, 0)')
 
       this.chart = new Chart(ctx, {
-          data: {
-              labels: self.labels,
-              datasets: [
-                {
-                  data: self.dataset,
-                  backgroundColor:gradientFill,
-                  borderColor:"#000091",
-                  type:'line',
-                  pointRadius:8,
-                  pointBackgroundColor:"rgba(0, 0, 0, 0)",
-                  pointBorderColor:"rgba(0, 0, 0, 0)",
-                },
-                {
-                  data: self.dataset2,
-                  backgroundColor:gradientFill2,
-                  borderColor:"#007c3a",
-                  type:'line',
-                  pointRadius:8,
-                  pointBackgroundColor:"rgba(0, 0, 0, 0)",
-                  pointBorderColor:"rgba(0, 0, 0, 0)",
-                }
-              ]
-          },
-          options: {
-            animation: {
-              easing: "easeInOutBack"
+        data: {
+          labels: self.labels,
+          datasets: [
+            {
+              data: self.dataset,
+              backgroundColor: gradientFill,
+              borderColor: '#000091',
+              type: 'line',
+              pointRadius: 8,
+              pointBackgroundColor: 'rgba(0, 0, 0, 0)',
+              pointBorderColor: 'rgba(0, 0, 0, 0)'
             },
-            scales: {
-              xAxes: [{
-                gridLines: {
-                  color: "rgba(0, 0, 0, 0)",
-                },
-                ticks: {
-                  autoSkip: true,
-                  maxTicksLimit: xTickLimit,
-                  maxRotation: 0,
-                  minRotation: 0,
-                  callback: function(value) {
-                    return value.toString().substring(3,5)+"/"+value.toString().substring(8,10)
-                  }
-                },
-              }],
-              yAxes: [{
-                gridLines: {
-                  color: "#e5e5e5",
-                  borderDash:[3]
-                },
-                ticks: {
-                  autoSkip: true,
-                  maxTicksLimit: 5
-                },
-                afterFit: function(axis) {
-                  self.legendLeftMargin = axis.width;
-                },
+            {
+              data: self.dataset2,
+              backgroundColor: gradientFill2,
+              borderColor: '#007c3a',
+              type: 'line',
+              pointRadius: 8,
+              pointBackgroundColor: 'rgba(0, 0, 0, 0)',
+              pointBorderColor: 'rgba(0, 0, 0, 0)'
+            }
+          ]
+        },
+        options: {
+          animation: {
+            easing: 'easeInOutBack'
+          },
+          scales: {
+            xAxes: [{
+              gridLines: {
+                color: 'rgba(0, 0, 0, 0)'
+              },
+              ticks: {
+                autoSkip: true,
+                maxTicksLimit: xTickLimit,
+                maxRotation: 0,
+                minRotation: 0,
+                callback: function (value) {
+                  return value.toString().substring(3, 5) + '/' + value.toString().substring(8, 10)
+                }
+              }
+            }],
+            yAxes: [{
+              gridLines: {
+                color: '#e5e5e5',
+                borderDash: [3]
+              },
+              ticks: {
+                autoSkip: true,
+                maxTicksLimit: 5
+              },
+              afterFit: function (axis) {
+                self.legendLeftMargin = axis.width
+              }
             }]
           },
           legend: {
-              display: false
+            display: false
           },
-          tooltips:{
-            displayColors:false,
-            backgroundColor:"#6b6b6b",
+          tooltips: {
+            displayColors: false,
+            backgroundColor: '#6b6b6b',
             callbacks: {
-              label: function(tooltipItems) {
-                var int = self.convertFloatToHuman(tooltipItems["value"])
-                return int+" "+self.units[tooltipItems["datasetIndex"]]
+              label: function (tooltipItems) {
+                const int = self.convertFloatToHuman(tooltipItems.value)
+                return int + ' ' + self.units[tooltipItems.datasetIndex]
               },
-              title: function(tooltipItems) {
-                return tooltipItems[0]["label"]
+              title: function (tooltipItems) {
+                return tooltipItems[0].label
               },
-              labelTextColor: function(){
-                return "#eeeeee"
+              labelTextColor: function () {
+                return '#eeeeee'
               }
-            },
+            }
           }
         }
-      });
+      })
     }
   },
 
-  watch:{
-    selectedGeoCode:function(){
+  watch: {
+    selectedGeoCode: function () {
       this.updateChart()
     },
-    selectedGeoLevel:function(){
+    selectedGeoLevel: function () {
       this.updateChart()
     }
   },
 
-  created(){
-    this.chartId = "myChart"+Math.floor(Math.random() * (1000));
-    this.widgetId = "widget"+Math.floor(Math.random() * (1000));
+  created () {
+    this.chartId = 'myChart' + Math.floor(Math.random() * (1000))
+    this.widgetId = 'widget' + Math.floor(Math.random() * (1000))
     this.getData()
   },
 
-  mounted(){
-    document.getElementById(this.widgetId).offsetWidth > 486 ? this.display='big' : this.display='small'
+  mounted () {
+    document.getElementById(this.widgetId).offsetWidth > 486 ? this.display = 'big' : this.display = 'small'
   }
 
 }
