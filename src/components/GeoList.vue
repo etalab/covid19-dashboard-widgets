@@ -26,63 +26,62 @@
 import store from '@/store'
 export default {
   name: 'GeoList',
-  data(){
+  data () {
     return {
-      departements:[],
-      regions:[]
+      departements: [],
+      regions: []
     }
   },
   props: {
-    
+
   },
   computed: {
-    
+
   },
 
   methods: {
-    populateLists(){
-      var self = this
+    populateLists () {
+      const self = this
 
       store.state.dep.forEach(function (dep) {
-        var depObj = { "label":dep["label"],"value":dep["value"]}
+        const depObj = { label: dep.label, value: dep.value }
         self.departements.push(depObj)
       })
       store.state.reg.forEach(function (reg) {
-        var regObj = { "label":reg["label"],"value":reg["value"]}
+        const regObj = { label: reg.label, value: reg.value }
         self.regions.push(regObj)
       })
     },
-    changeGeoLevel(level,event){
-      
-      var originalObj
-      var geoLabel
+    changeGeoLevel (level, event) {
+      let originalObj
+      let geoLabel
 
-      if(level=="departements"){
-        document.querySelector('#select-reg').value = ""
+      if (level === 'departements') {
+        document.querySelector('#select-reg').value = ''
         originalObj = store.state.dep.find(obj => {
-          return obj["value"] === event.target.value
+          return obj.value === event.target.value
         })
-        geoLabel = originalObj["label"]
-      }else{
-        document.querySelector('#select-dep').value = ""
+        geoLabel = originalObj.label
+      } else {
+        document.querySelector('#select-dep').value = ''
         originalObj = store.state.reg.find(obj => {
-          return obj["value"] === event.target.value
+          return obj.value === event.target.value
         })
-        geoLabel = originalObj["label"]
+        geoLabel = originalObj.label
       }
 
-      store.commit("setUserChoices",{level:level,code:event.target.value,label:geoLabel})
+      store.commit('setUserChoices', { level: level, code: event.target.value, label: geoLabel })
     },
 
-    resetGeoFilters(){
-      document.querySelector('#select-reg').value = ""
-      document.querySelector('#select-dep').value = ""
-      store.commit("setUserChoices",{level:"France",code:"01",label:"France entière"})
+    resetGeoFilters () {
+      document.querySelector('#select-reg').value = ''
+      document.querySelector('#select-dep').value = ''
+      store.commit('setUserChoices', { level: 'France', code: '01', label: 'France entière' })
     }
 
   },
-  
-  created(){
+
+  created () {
     this.populateLists()
   }
 }
@@ -99,4 +98,3 @@ button.fr-link {
 }
 
 </style>
-

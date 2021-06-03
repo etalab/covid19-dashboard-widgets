@@ -56,45 +56,45 @@ export default {
     LeftCol,
     ...maps
   },
-  data(){
+  data () {
     return {
-      indicateur_data:undefined,
-      labels:[],
-      dataset:[],
-      widgetId:"",
-      chartId:"",
-      display:"",
-      leftColProps:{
-        localisation:"",
-        currentValues:[],
-        currentDate:"",
-        names:[],
-        evolcodes:[],
-        evolvalues:[],
-        min:0,
-        max:0,
-        isMap:true
+      indicateur_data: undefined,
+      labels: [],
+      dataset: [],
+      widgetId: '',
+      chartId: '',
+      display: '',
+      leftColProps: {
+        localisation: '',
+        currentValues: [],
+        currentDate: '',
+        names: [],
+        evolcodes: [],
+        evolvalues: [],
+        min: 0,
+        max: 0,
+        isMap: true
       },
-      scaleMin:0,
-      scaleMax:0,
-      units:[],
-      chart:undefined,
-      loading:true,
+      scaleMin: 0,
+      scaleMax: 0,
+      units: [],
+      chart: undefined,
+      loading: true,
       legendLeftMargin: 0,
-      geoFallback:false,
-      geoFallbackMsg:"",
-      tooltip:{
-        top:"0px",
-        left:"0px",
-        display:false,
-        value:0,
-        date:"",
-        place:""
+      geoFallback: false,
+      geoFallbackMsg: '',
+      tooltip: {
+        top: '0px',
+        left: '0px',
+        display: false,
+        value: 0,
+        date: '',
+        place: ''
       }
     }
   },
   props: {
-    indicateur: String,
+    indicateur: String
   },
   computed: {
     selectedGeoLevel () {
@@ -107,8 +107,8 @@ export default {
       return store.state.user.selectedGeoLabel
     },
     style () {
-      return 'margin-left: ' + this.legendLeftMargin + 'px';
-    },
+      return 'margin-left: ' + this.legendLeftMargin + 'px'
+    }
 
   },
   methods: {
@@ -121,89 +121,83 @@ export default {
     },
 
     updateData () {
+      const self = this
 
-      var self = this
+      const geolevel = this.selectedGeoLevel
+      const geocode = this.selectedGeoCode
 
-      var geolevel = this.selectedGeoLevel
-      var geocode = this.selectedGeoCode
+      this.leftColProps.localisation = this.selectedGeoLabel
 
-      this.leftColProps["localisation"] = this.selectedGeoLabel
+      const geoObject = this.getGeoObject(geolevel, geocode)
 
-      var geoObject
-
-      geoObject = this.getGeoObject(geolevel,geocode)
-
-      this.leftColProps['names'].length = 0
+      this.leftColProps.names.length = 0
       this.units.length = 0
-      this.leftColProps['currentValues'].length = 0
-      this.leftColProps['evolcodes'].length = 0
-      this.leftColProps['evolvalues'].length = 0
+      this.leftColProps.currentValues.length = 0
+      this.leftColProps.evolcodes.length = 0
+      this.leftColProps.evolvalues.length = 0
 
-      this.leftColProps['names'].push(this.indicateur_data["nom"])
-      this.units.push(this.indicateur_data["unite"])
-      this.leftColProps['currentValues'].push(geoObject["last_value"])
-      this.leftColProps['currentDate'] = this.convertDateToHuman(geoObject["last_date"])
-      this.leftColProps['evolcodes'].push(geoObject["evol_color"])
-      this.leftColProps['evolvalues'].push(geoObject["evol_percentage"])
+      this.leftColProps.names.push(this.indicateur_data.nom)
+      this.units.push(this.indicateur_data.unite)
+      this.leftColProps.currentValues.push(geoObject.last_value)
+      this.leftColProps.currentDate = this.convertDateToHuman(geoObject.last_date)
+      this.leftColProps.evolcodes.push(geoObject.evol_color)
+      this.leftColProps.evolvalues.push(geoObject.evol_percentage)
 
-      var values = []
+      const values = []
 
-      this.indicateur_data["departements"].forEach(function(d){
-        values.push(parseInt(d["last_value"]))
+      this.indicateur_data.departements.forEach(function (d) {
+        values.push(parseInt(d.last_value))
       })
 
       this.scaleMin = Math.min.apply(null, values)
       this.scaleMax = Math.max.apply(null, values)
 
-      this.leftColProps['min'] = this.scaleMin
-      this.leftColProps['max'] = this.scaleMax
+      this.leftColProps.min = this.scaleMin
+      this.leftColProps.max = this.scaleMax
 
+      const x = d3.scaleLinear().domain([this.scaleMin, this.scaleMax]).range(['#ffc700', '#715845'])
 
-      var x = d3.scaleLinear().domain([this.scaleMin, this.scaleMax]).range(["#ffc700", "#715845"]);
+      const parentWidget = document.getElementById(this.widgetId)
 
-      var parentWidget = document.getElementById(this.widgetId)
-
-      if(geolevel == "France"){
-        this.indicateur_data["departements"].forEach(function(d){
-          var elCol =parentWidget.getElementsByClassName("FR-"+d["code_level"])
-          elCol.length != 0 && elCol[0].setAttribute("fill",x(d["last_value"]))
+      if (geolevel === 'France') {
+        this.indicateur_data.departements.forEach(function (d) {
+          const elCol = parentWidget.getElementsByClassName('FR-' + d.code_level)
+          elCol.length !== 0 && elCol[0].setAttribute('fill', x(d.last_value))
         })
-      }else if(geolevel == "departements"){
-        this.indicateur_data["departements"].forEach(function(d){
-          var elCol =parentWidget.getElementsByClassName("FR-"+d["code_level"])
-          if(d["code_level"] == geocode){
-             elCol.length != 0 && elCol[0].setAttribute("fill",x(d["last_value"]))
-          }else{
-             elCol.length != 0 && elCol[0].setAttribute("fill","rgba(247, 237, 211, 0.72)")
+      } else if (geolevel === 'departements') {
+        this.indicateur_data.departements.forEach(function (d) {
+          const elCol = parentWidget.getElementsByClassName('FR-' + d.code_level)
+          if (d.code_level === geocode) {
+            elCol.length !== 0 && elCol[0].setAttribute('fill', x(d.last_value))
+          } else {
+            elCol.length !== 0 && elCol[0].setAttribute('fill', 'rgba(247, 237, 211, 0.72)')
           }
         })
-      }else{
-        this.indicateur_data["departements"].forEach(function(d){
-          var elCol =parentWidget.getElementsByClassName("FR-"+d["code_level"])
-          var depObj = store.state.dep.find(obj => {
-            return obj["value"] === d["code_level"]
+      } else {
+        this.indicateur_data.departements.forEach(function (d) {
+          const elCol = parentWidget.getElementsByClassName('FR-' + d.code_level)
+          const depObj = store.state.dep.find(obj => {
+            return obj.value === d.code_level
           })
-          if(typeof depObj != "undefined"){
-            var parentRegion =  depObj["region_value"]
-            if(parentRegion == self.selectedGeoCode){
-               elCol.length != 0 && elCol[0].setAttribute("fill",x(d["last_value"]))
-            }else{
-               elCol.length != 0 && elCol[0].setAttribute("fill","rgba(247, 237, 211, 0.72)")
+          if (typeof depObj !== 'undefined') {
+            const parentRegion = depObj.region_value
+            if (parentRegion === self.selectedGeoCode) {
+              elCol.length !== 0 && elCol[0].setAttribute('fill', x(d.last_value))
+            } else {
+              elCol.length !== 0 && elCol[0].setAttribute('fill', 'rgba(247, 237, 211, 0.72)')
             }
           }
         })
       }
-
     },
 
-    getGeoObject(geolevel,geocode){
-
-      var geoObject
-      if(geolevel === "France"){
-        geoObject = this.indicateur_data["france"][0]
-      }else{
+    getGeoObject (geolevel, geocode) {
+      let geoObject
+      if (geolevel === 'France') {
+        geoObject = this.indicateur_data.france[0]
+      } else {
         geoObject = this.indicateur_data[geolevel].find(obj => {
-          return obj["code_level"] === geocode
+          return obj.code_level === geocode
         })
       }
       return geoObject
@@ -213,48 +207,48 @@ export default {
       this.updateData()
     },
 
-    displayTooltip(e){
+    displayTooltip (e) {
       if (isMobile) return
-      var hoverdep = e.target.className["baseVal"].replace(/FR-/g,'');
+      const hoverdep = e.target.className.baseVal.replace(/FR-/g, '')
 
-      var dataObj = this.indicateur_data["departements"].find(obj => {
-        return obj["code_level"] === hoverdep
+      const dataObj = this.indicateur_data.departements.find(obj => {
+        return obj.code_level === hoverdep
       })
 
-      var depObj = store.state.dep.find(obj => {
-        return obj["value"] === dataObj["code_level"]
+      const depObj = store.state.dep.find(obj => {
+        return obj.value === dataObj.code_level
       })
 
-      this.tooltip.value = dataObj["last_value"]
-      this.tooltip.date = dataObj["last_date"]
-      this.tooltip.place = depObj["label"]
+      this.tooltip.value = dataObj.last_value
+      this.tooltip.date = dataObj.last_date
+      this.tooltip.place = depObj.label
 
-      this.tooltip.top = (e.target.getBoundingClientRect().top-75)+"px"
-      this.tooltip.left = (e.target.getBoundingClientRect().left+15)+"px"
+      this.tooltip.top = (e.target.getBoundingClientRect().top - 75) + 'px'
+      this.tooltip.left = (e.target.getBoundingClientRect().left + 15) + 'px'
       this.tooltip.display = true
     },
 
-    hideTooltip(){
+    hideTooltip () {
       if (isMobile) return
       this.tooltip.display = false
     }
 
   },
 
-  watch:{
-    selectedGeoCode:function(){
+  watch: {
+    selectedGeoCode: function () {
       this.updateData()
     },
-    selectedGeoLevel:function(){
+    selectedGeoLevel: function () {
       this.updateData()
     }
   },
 
-  created(){
-    this.chartId = "myChart"+Math.floor(Math.random() * (1000));
-    this.widgetId = "widget"+Math.floor(Math.random() * (1000));
+  created () {
+    this.chartId = 'myChart' + Math.floor(Math.random() * (1000))
+    this.widgetId = 'widget' + Math.floor(Math.random() * (1000))
     this.getData()
-  },
+  }
 }
 
 </script>

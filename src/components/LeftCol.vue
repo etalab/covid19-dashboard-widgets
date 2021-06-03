@@ -46,35 +46,35 @@ import { mixin } from '@/utils.js'
 export default {
   name: 'LeftCol',
   mixins: [mixin],
-  data(){
+  data () {
     return {
-      isDown:[false,false],
-      isGreen:[false,false],
-      isRed:[false,false],
-      isBlue:[false,false],
+      isDown: [false, false],
+      isGreen: [false, false],
+      isRed: [false, false],
+      isBlue: [false, false]
     }
   },
   props: {
-    props:Object,
+    props: Object
   },
   computed: {
 
   },
   methods: {
-    testEvolStyle(){
-      var self = this
-      this.props['names'].forEach(function(n,i){
-        if(self.props['evolcodes'][i]=="green"){
+    testEvolStyle () {
+      const self = this
+      this.props.names.forEach(function (n, i) {
+        if (self.props.evolcodes[i] === 'green') {
           self.isGreen[i] = true
           self.isRed[i] = false
           self.isBlue[i] = false
-          self.props['evolvalues'][i] > 0 ? self.isDown[i] = false : self.isDown[i] = true
-        }else if(self.props['evolcodes'][i]=="red"){
+          self.props.evolvalues[i] > 0 ? self.isDown[i] = false : self.isDown[i] = true
+        } else if (self.props.evolcodes[i] === 'red') {
           self.isGreen[i] = false
           self.isRed[i] = true
           self.isBlue[i] = false
-          self.props['evolvalues'][i] > 0 ? self.isDown[i] = false : self.isDown[i] = true
-        }else{
+          self.props.evolvalues[i] > 0 ? self.isDown[i] = false : self.isDown[i] = true
+        } else {
           self.isGreen[i] = false
           self.isRed[i] = false
           self.isBlue[i] = true
@@ -84,18 +84,18 @@ export default {
     }
   },
 
-  watch:{
+  watch: {
     props: {
-      handler(){
+      handler () {
         this.testEvolStyle()
       },
       deep: true
     }
   },
 
-  created(){
+  created () {
     this.testEvolStyle()
-  },
+  }
 
 }
 </script>
@@ -182,6 +182,5 @@ export default {
       }
     }
   }
-
 
 </style>

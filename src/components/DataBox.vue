@@ -23,25 +23,25 @@ import { mixin } from '@/utils.js'
 export default {
   name: 'DataBox',
   mixins: [mixin],
-  data(){
+  data () {
     return {
-      display:"",
-      indicateur_data:undefined,
-      currentValue:"",
-      currentDate:"",
-      name:"",
-      unit:"",
-      evolcode:"",
-      evolvalue:"",
-      isDown:false,
-      isGreen:false,
-      isRed:false,
-      isBlue:false,
-      loading:true
+      display: '',
+      indicateur_data: undefined,
+      currentValue: '',
+      currentDate: '',
+      name: '',
+      unit: '',
+      evolcode: '',
+      evolvalue: '',
+      isDown: false,
+      isGreen: false,
+      isRed: false,
+      isBlue: false,
+      loading: true
     }
   },
   props: {
-    indicateur: String,
+    indicateur: String
   },
   computed: {
     selectedGeoLevel () {
@@ -49,58 +49,57 @@ export default {
     },
     selectedGeoCode () {
       return store.state.user.selectedGeoCode
-    },
+    }
   },
   methods: {
 
-    testEvolStyle(){
-      if(this.evolcode=="green"){
+    testEvolStyle () {
+      if (this.evolcode === 'green') {
         this.isGreen = true
         this.isRed = false
         this.isBlue = false
         this.evolvalue > 0 ? this.isDown = false : this.isDown = true
-      }else if(this.evolcode=="red"){
+      } else if (this.evolcode === 'red') {
         this.isGreen = false
         this.isRed = true
         this.isBlue = false
         this.evolvalue > 0 ? this.isDown = false : this.isDown = true
-      }else{
+      } else {
         this.isGreen = false
         this.isRed = false
         this.isBlue = true
         this.isDown = false
       }
-
     },
 
     updateData () {
-      var geolevel = this.selectedGeoLevel
-      var geocode = this.selectedGeoCode
+      const geolevel = this.selectedGeoLevel
+      const geocode = this.selectedGeoCode
 
-      var geoObject
+      let geoObject
 
-      if(geolevel === "France"){
-        geoObject = this.indicateur_data["france"][0]
-        this.localisation = "France entière"
-      }else{
+      if (geolevel === 'France') {
+        geoObject = this.indicateur_data.france[0]
+        this.localisation = 'France entière'
+      } else {
         this.localisation = geocode
 
         geoObject = this.indicateur_data[geolevel].find(obj => {
-          return obj["code_level"] === geocode
+          return obj.code_level === geocode
         })
       }
 
-      this.name = this.indicateur_data["nom"]
-      this.unit = this.indicateur_data["unite"]
-      this.currentValue = this.indicateur_data["france"][0]["last_value"]
-      this.currentValue = geoObject["last_value"]
-      this.currentDate = this.convertDateToHuman(geoObject["last_date"])
-      this.evolcode = geoObject["evol_color"]
-      this.evolvalue = geoObject["evol_percentage"]
+      this.name = this.indicateur_data.nom
+      this.unit = this.indicateur_data.unite
+      this.currentValue = this.indicateur_data.france[0].last_value
+      this.currentValue = geoObject.last_value
+      this.currentDate = this.convertDateToHuman(geoObject.last_date)
+      this.evolcode = geoObject.evol_color
+      this.evolvalue = geoObject.evol_percentage
     },
 
     async getData () {
-      store.dispatch('getData', this.indicateur+"_short").then(data => {
+      store.dispatch('getData', this.indicateur + '_short').then(data => {
         this.indicateur_data = data
         this.loading = false
         this.updateData()
@@ -109,29 +108,28 @@ export default {
 
   },
 
-  watch:{
-    selectedGeoCode:function(){
+  watch: {
+    selectedGeoCode: function () {
       this.updateData()
     },
-    selectedGeoLevel:function(){
+    selectedGeoLevel: function () {
       this.updateData()
     },
-    evolcode:function(){
+    evolcode: function () {
       this.testEvolStyle()
     },
-    evolvalue:function(){
+    evolvalue: function () {
       this.testEvolStyle()
-    },
+    }
   },
 
-  created(){
-    this.widgetId = "widget"+Math.floor(Math.random() * (1000));
+  created () {
+    this.widgetId = 'widget' + Math.floor(Math.random() * (1000))
     this.getData()
-  },
+  }
 
 }
 </script>
-
 
 <style scoped lang="scss">
 
