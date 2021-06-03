@@ -6,10 +6,10 @@ import Reunion from './Reunion'
 import Mayotte from './Mayotte'
 
 export default {
-    France,
-    Guadeloupe,
-    Martinique,
-    Guyane,
-    Reunion,
-    Mayotte
+  France,
+  Guadeloupe,
+  Martinique,
+  Guyane,
+  Reunion,
+  Mayotte
 }
