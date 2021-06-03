@@ -1,7 +1,7 @@
 <template>
 
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
-    <LeftCol :data-display="display" :localisation="selectedGeoLabel" :date="currentDate" :values="currentValues" :names="names" :evolcodes="evolcodes" :evolvalues="evolvalues"></LeftCol>
+    <LeftCol :props="leftColProps"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
       <div class="chart ml-lg">
         <canvas :id="chartId"></canvas>
@@ -21,12 +21,15 @@
 <script>
 import store from '@/store'
 import Chart from 'chart.js'
-import LeftCol from '@/components/LeftCol' 
+import LeftCol from '@/components/LeftCol'
+import { mixin } from '@/utils.js'
+
 export default {
   name: 'MultiLineChart',
   components: {
     LeftCol
   },
+  mixins: [mixin],
   data(){
     return {
       indicateur_data:undefined,
@@ -37,17 +40,19 @@ export default {
       widgetId:"",
       chartId:"",
       display:"",
-      localisation:"",
-      currentValues:[],
-      currentDate:"",
-      names:[],
+      leftColProps:{
+        localisation:"",
+        currentValues:[],
+        currentDate:"",
+        names:[],
+        evolcodes:[],
+        evolvalues:[],
+        isMap:false
+      },
       units:[],
-      evolcodes:[],
-      evolvalues:[],
       chart:undefined,
       loading:true,
       legendLeftMargin: 0,
-      map:false
     }
   },
   props: {
@@ -91,7 +96,9 @@ export default {
     updateData () {
 
       var self = this
-      
+
+      this.leftColProps["localisation"] = this.selectedGeoLabel
+
       var geolevel = this.selectedGeoLevel
       var geocode = this.selectedGeoCode
 
@@ -111,25 +118,25 @@ export default {
 
       }
 
-      this.names.length = 0
+      this.leftColProps['names'].length = 0
       this.units.length = 0
-      this.currentValues.length = 0
-      this.evolcodes.length = 0
-      this.evolvalues.length = 0      
+      this.leftColProps['currentValues'].length = 0
+      this.leftColProps['evolcodes'].length = 0
+      this.leftColProps['evolvalues'].length = 0
 
-      this.names.push(this.indicateur_data["nom"],this.indicateur_data2["nom"])
+      this.leftColProps['names'].push(this.indicateur_data["nom"],this.indicateur_data2["nom"])
       this.units.push(this.indicateur_data["unite"],this.indicateur_data2["unite"])
-      this.currentValues.push(geoObject["last_value"],geoObject2["last_value"])
-      this.currentDate = this.convertDateToHuman(geoObject["last_date"])
-      this.evolcodes.push(geoObject["evol_color"],geoObject2["evol_color"])
-      this.evolvalues.push(geoObject["evol_percentage"],geoObject2["evol_percentage"])
+      this.leftColProps['currentValues'].push(geoObject["last_value"],geoObject2["last_value"])
+      this.leftColProps['currentDate'] = this.convertDateToHuman(geoObject["last_date"])
+      this.leftColProps['evolcodes'].push(geoObject["evol_color"],geoObject2["evol_color"])
+      this.leftColProps['evolvalues'].push(geoObject["evol_percentage"],geoObject2["evol_percentage"])
 
       this.labels.length = 0
       this.dataset.length = 0
       this.dataset2.length = 0
 
       geoObject["values"].forEach(function(d){
-        
+
         self.labels.push(self.convertDateToHuman(d["date"]))
         self.dataset.push((d["value"]))
 
@@ -144,20 +151,20 @@ export default {
     },
 
     updateChart () {
-      
+
       this.updateData()
       this.chart.update()
-    
+
     },
 
     createChart () {
       var self = this
-    
+
       this.updateData()
-      
+
       var xTickLimit
       this.display=== 'big' ? xTickLimit = 6 : xTickLimit = 1
-      
+
       var ctx = document.getElementById(self.chartId).getContext('2d')
 
       var gradientFill
@@ -168,7 +175,7 @@ export default {
       gradientFill.addColorStop(0.6, "rgba(245, 245, 255, 0)")
 
       var gradientFill2
-      
+
       this.display=== 'big' ? gradientFill2 = ctx.createLinearGradient(0, 0, 0, 350) : gradientFill2 = ctx.createLinearGradient(0, 0, 0, 225)
 
       gradientFill2.addColorStop(0, "rgba(0, 124, 58, 0.6)")
@@ -238,11 +245,11 @@ export default {
             displayColors:false,
             backgroundColor:"#6b6b6b",
             callbacks: {
-              label: function(tooltipItems) { 
+              label: function(tooltipItems) {
                 var int = self.convertFloatToHuman(tooltipItems["value"])
                 return int+" "+self.units[tooltipItems["datasetIndex"]]
               },
-              title: function(tooltipItems) { 
+              title: function(tooltipItems) {
                 return tooltipItems[0]["label"]
               },
               labelTextColor: function(){
@@ -252,31 +259,7 @@ export default {
           }
         }
       });
-    },
-
-    convertStringToLocaleNumber(string){
-      return parseInt(string).toLocaleString()
-    },
-
-    convertDateToHuman(string){
-      let date = new Date(string)
-      return date.toLocaleDateString()
-    },
-
-    convertFloatToHuman(float){
-      if(Number.isInteger(parseFloat(float))){
-        return parseInt(float).toLocaleString()  
-      }else{
-        return parseFloat(float).toFixed(1).toLocaleString()
-      }
-    },
-
-    capitalize(string){
-      if(string){
-        return string.charAt(0).toUpperCase() + string.slice(1)
-      }
     }
-  
   },
 
   watch:{
@@ -296,20 +279,12 @@ export default {
 
   mounted(){
     document.getElementById(this.widgetId).offsetWidth > 486 ? this.display='big' : this.display='small'
-    // 502px to break
   }
 
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-  
-  /* overload fonts path, to delete when parent has access */
-  @import "../../css/overload-fonts.css";
-  @import "../../css/dsfr.min.css";
-
-
 
   .widget_container{
     .ml-lg {
@@ -348,5 +323,5 @@ export default {
     }
 
   }
-  
+
 </style>

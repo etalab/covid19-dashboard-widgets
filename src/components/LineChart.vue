@@ -8,7 +8,7 @@
         <p class="fr-text--sm fr-mb-0 fr-p-3v">{{geoFallbackMsg}}
         </p>
     </div>
-    <LeftCol :data-display="display" :localisation="localGeoLabel" :date="currentDate" :values="currentValues" :names="names" :evolcodes="evolcodes" :evolvalues="evolvalues"></LeftCol>
+    <LeftCol :props="leftColProps"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
       <div class="chart ml-lg">
         <canvas :id="chartId"></canvas>
@@ -25,11 +25,14 @@
 import store from '@/store'
 import Chart from 'chart.js'
 import LeftCol from '@/components/LeftCol'
+import { mixin } from '@/utils.js'
+
 export default {
   name: 'LineChart',
   components: {
     LeftCol
   },
+  mixins: [mixin],
   data(){
     return {
       indicateur_data:undefined,
@@ -38,20 +41,21 @@ export default {
       widgetId:"",
       chartId:"",
       display:"",
-      localisation:"",
-      currentValues:[],
-      currentDate:"",
-      names:[],
+      leftColProps:{
+        localisation:"",
+        currentValues:[],
+        currentDate:"",
+        names:[],
+        evolcodes:[],
+        evolvalues:[],
+        isMap:false
+      },
       units:[],
-      evolcodes:[],
-      evolvalues:[],
       chart:undefined,
       loading:true,
       legendLeftMargin: 0,
-      localGeoLabel:"",
       geoFallback:false,
-      geoFallbackMsg:"",
-      map:false
+      geoFallbackMsg:""
     }
   },
   props: {
@@ -70,10 +74,8 @@ export default {
     style () {
       return 'margin-left: ' + this.legendLeftMargin + 'px';
     },
-
   },
   methods: {
-
     async getData () {
       store.dispatch('getData', this.indicateur).then(data => {
         this.indicateur_data = data
@@ -89,7 +91,7 @@ export default {
       var geolevel = this.selectedGeoLevel
       var geocode = this.selectedGeoCode
 
-      this.localGeoLabel = this.selectedGeoLabel
+      this.leftColProps["localisation"] = this.selectedGeoLabel
 
       var geoObject
 
@@ -98,7 +100,7 @@ export default {
       if(typeof geoObject === 'undefined'){
         if(geolevel == 'regions'){
           geoObject = this.getGeoObject("France","01")
-          this.localGeoLabel = "France entière"
+          this.leftColProps["localisation"] = "France entière"
           this.geoFallback=true
           this.geoFallbackMsg="Affichage des résultats au niveau national, faute de données au niveau régional"
         }else{
@@ -106,30 +108,30 @@ export default {
             return obj["value"] === geocode
           })
           geoObject = this.getGeoObject("regions",depObj["region_value"])
-          this.localGeoLabel = depObj["region"]
+          this.leftColProps["localisation"] = depObj["region"]
           this.geoFallback=true
           this.geoFallbackMsg="Affichage des résultats au niveau régional, faute de données au niveau départemental"
           if(typeof geoObject === 'undefined'){
             geoObject = this.getGeoObject("France","01")
-            this.localGeoLabel = "France entière"
+            this.leftColProps["localisation"] = "France entière"
             this.geoFallback=true
             this.geoFallbackMsg="Affichage des résultats au niveau national, faute de données au niveau régional ou départemental"
           }
         }
       }
 
-      this.names.length = 0
+      this.leftColProps['names'].length = 0
       this.units.length = 0
-      this.currentValues.length = 0
-      this.evolcodes.length = 0
-      this.evolvalues.length = 0
+      this.leftColProps['currentValues'].length = 0
+      this.leftColProps['evolcodes'].length = 0
+      this.leftColProps['evolvalues'].length = 0
 
-      this.names.push(this.indicateur_data["nom"])
+      this.leftColProps['names'].push(this.indicateur_data["nom"])
       this.units.push(this.indicateur_data["unite"])
-      this.currentValues.push(geoObject["last_value"])
-      this.currentDate = this.convertDateToHuman(geoObject["last_date"])
-      this.evolcodes.push(geoObject["evol_color"])
-      this.evolvalues.push(geoObject["evol_percentage"])
+      this.leftColProps['currentValues'].push(geoObject["last_value"])
+      this.leftColProps['currentDate'] = this.convertDateToHuman(geoObject["last_date"])
+      this.leftColProps['evolcodes'].push(geoObject["evol_color"])
+      this.leftColProps['evolvalues'].push(geoObject["evol_percentage"])
 
       this.labels.length = 0
       this.dataset.length = 0
@@ -244,31 +246,7 @@ export default {
           }
         }
       });
-    },
-
-    convertStringToLocaleNumber(string){
-      return parseInt(string).toLocaleString()
-    },
-
-    convertFloatToHuman(float){
-      if(Number.isInteger(parseFloat(float))){
-        return parseInt(float).toLocaleString()  
-      }else{
-        return parseFloat(float).toFixed(1).toLocaleString()
-      }
-    },
-
-    convertDateToHuman(string){
-      let date = new Date(string)
-      return date.toLocaleDateString()
-    },
-
-    capitalize(string){
-      if(string){
-        return string.charAt(0).toUpperCase() + string.slice(1)
-      }
     }
-
   },
 
   watch:{
@@ -288,19 +266,12 @@ export default {
 
   mounted(){
     document.getElementById(this.widgetId).offsetWidth > 486 ? this.display='big' : this.display='small'
-    // 502px to break
   }
 
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-
-  /* overload fonts path, to delete when parent has access
-  @import "../../css/overload-fonts.css";
-  @import "../../css/dsfr.min.css";
-   */
 
   .widget_container{
     .fr-warning {

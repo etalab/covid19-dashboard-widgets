@@ -11,18 +11,18 @@
       </svg>
       <span class="fr-ml-1v">{{convertFloatToHuman(evolvalue)}} % en 7 jours</span>
     </div>
-    <p class="fr-text--xs fr-mb-0"><span v-if="(!testIfNaN(evolvalue))">soit</span> <span class="fr-text--bold">{{convertNumberToHuman(currentValue)}} {{unit}}</span></p>
+    <p class="fr-text--xs fr-mb-0"><span v-if="(!testIfNaN(evolvalue))">soit</span> <span class="fr-text--bold">{{convertFloatToHuman(currentValue)}} {{unit}}</span></p>
   </div>
 
 </template>
 
 <script>
 import store from '@/store'
+import { mixin } from '@/utils.js'
+
 export default {
   name: 'DataBox',
-  components: {
-    
-  },
+  mixins: [mixin],
   data(){
     return {
       display:"",
@@ -52,27 +52,6 @@ export default {
     },
   },
   methods: {
-
-    convertStringToLocaleNumber(string){
-      return parseInt(string).toLocaleString()
-    },
-
-    convertDateToHuman(string){
-      let date = new Date(string)
-      return date.toLocaleDateString()
-    },
-
-    convertNumberToHuman(float){
-      return parseFloat(float).toLocaleString()
-    },
-
-    convertFloatToHuman(float){
-      return parseFloat(float).toFixed(1).toLocaleString()
-    },
-
-    testIfNaN(float){
-      return isNaN(parseFloat(float))
-    },
 
     testEvolStyle(){
       if(this.evolcode=="green"){
@@ -108,9 +87,9 @@ export default {
 
         geoObject = this.indicateur_data[geolevel].find(obj => {
           return obj["code_level"] === geocode
-        })  
-      }      
-      
+        })
+      }
+
       this.name = this.indicateur_data["nom"]
       this.unit = this.indicateur_data["unite"]
       this.currentValue = this.indicateur_data["france"][0]["last_value"]
@@ -127,7 +106,7 @@ export default {
         this.updateData()
       })
     }
-    
+
   },
 
   watch:{
@@ -148,24 +127,13 @@ export default {
   created(){
     this.widgetId = "widget"+Math.floor(Math.random() * (1000));
     this.getData()
-
   },
-
-  mounted(){
-    document.getElementById(this.widgetId).offsetWidth > 486 ? this.display='big' : this.display='small'
-    // 502px to break
-  }
 
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+
 <style scoped lang="scss">
-  
-  /* overload fonts path, to delete when parent has access 
-  @import "../../css/overload-fonts.css";
-  @import "../../css/dsfr.min.css";
-  */
 
   .data_box{
     background-color: white;
@@ -221,5 +189,5 @@ export default {
       }
     }
   }
-  
+
 </style>

@@ -1,33 +1,72 @@
-# widget-demo
+# How to integrate widgets
 
-This demonstrates a very dummy widget-based application using Vuejs.
+Widgets need two files in order to work : [app.css](https://widgets.dashboard.covid19.data.gouv.fr/css/app.css) and [app.js](https://widgets.dashboard.covid19.data.gouv.fr/js/app.js)
+Add those two files to your html head.
 
-## Concepts
+The CSS file of the [DSE](https://systeme-de-design.gouv.fr/) is expected to be present on the hosting page.
 
-This uses [vue-custom-element](https://github.com/karol-f/vue-custom-element) to build, well, custom element that can be used as widgets.
+Widgets can now be called directly into the page as custom html elements.
+Widgets takes a least one parameter *indicateur*. The value should be a string corresponding to the name of a JSON file available in [this repository](https://data.widgets.dashboard.covid19.data.gouv.fr/).
 
-Two components are defined: `HelloWorld` and `GoodBye`, and they're exposed as `<hello-world>` and `<good-bye>` custom elements.
+## Box with number
 
-`index.html` includes those components. It mocks an embedding web page that can use whatever style or javascript it wants.
+![](screenshot-box.png)
 
-### Features
+```
+<data-box indicateur="cas_positifs"></data-box>
+```
 
-- components share a store, and thus a state — demonstrated by the counter incremented in `hello` and shown in `goodbye`
-- components can communicate to the parent page — demonstrated by an event sent from `hello` (`hello:increment`) and received by some vanilla JS on `index.html`
-- components have scoped styles — demonstrated by the link colors (orange in embedding page, green and red in components)
-- components have styles shared by all components (:warning: and probably the embedding page), demonstrated by the border around components on class `.hello`
-- embedding page can dynamically update component props and they're reactive — demonstrated by `index.html:setTimeout` -> `<good-bye>.msg`
+Require one parameter *indicateur*
 
-![](screenshot.png)
+## Line chart
 
-### Todo
+![](screenshot-line.png)
 
-- do we really need `vue-custom-element` vs regular Vue apps mounted to specific DOM elements in the parent page?
-- static assets handling (fonts, img...)
-- separate builds for each component, without pulling all the dependencies of all the components (`--target lib`), which impact on the store?
-- communication from parent window to components (event based probably)
-- url routing
-- disable chunked build when the app will grow large
+```
+<line-chart indicateur="cas_positifs"></line-chart>
+```
+
+Require one parameter *indicateur*
+
+## Bar chart
+
+![](screenshot-bar.png)
+
+```
+<bar-chart indicateur="cas_positifs"></bar-chart>
+```
+
+Require one parameter *indicateur*
+
+## Multiline chart
+
+![](screenshot-multi.png)
+
+```
+<bar-chart indicateur="cas_positifs"></bar-chart>
+```
+
+Require 2 parameters *indicateur1* and *indicateur2*
+
+## Choropleth map
+
+![](screenshot-map.png)
+
+```
+<map-chart indicateur="cas_positifs"></map-chart>
+```
+
+Require 1 parameters *indicateur*
+
+## Localisation input list
+
+![](screenshot-geolist.png)
+
+```
+<geo-list></geo-list>
+```
+
+Require no parameter. If included, the change of localisation will trigger the update of every widgets on the same page.
 
 ## Resources
 
