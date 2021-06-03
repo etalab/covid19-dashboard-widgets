@@ -3,6 +3,8 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+const BASE_URL = "https://data.widgets.dashboard.covid19.data.gouv.fr"
+
 export default new Vuex.Store({
   state: {
     dep:[],
@@ -20,7 +22,7 @@ export default new Vuex.Store({
       if (state.promises[indicator]) {
         return state.promises[indicator]
       }
-      const url = "https://data.widgets.dashboard.covid19.data.gouv.fr/"+indicator+".json"
+      const url = `${BASE_URL}/${indicator}.json`
       const promise = fetch(url).then(res => {
         return res.json()
       }).then(data => {

@@ -25,9 +25,10 @@
 import store from '@/store'
 import Chart from 'chart.js'
 import LeftCol from '@/components/LeftCol'
-import { capitalize, convertStringToLocaleNumber, convertFloatToHuman, convertDateToHuman} from '@/utils.js'
+import { mixin } from '@/utils.js'
 export default {
   name: 'BarChart',
+  mixins: [mixin],
   components: {
     LeftCol
   },
@@ -53,11 +54,7 @@ export default {
       loading:true,
       legendLeftMargin: 0,
       geoFallback:false,
-      geoFallbackMsg:"",
-      capitalize:capitalize,
-      convertStringToLocaleNumber:convertStringToLocaleNumber,
-      convertFloatToHuman:convertFloatToHuman,
-      convertDateToHuman:convertDateToHuman
+      geoFallbackMsg:""
     }
   },
   props: {
@@ -169,12 +166,12 @@ export default {
 
     createChart () {
       var self = this
-    
+
       this.updateData()
-      
+
       var xTickLimit
       this.display=== 'big' ? xTickLimit = 6 : xTickLimit = 1
-      
+
       var ctx = document.getElementById(self.chartId).getContext('2d')
 
       this.chart = new Chart(ctx, {
@@ -191,7 +188,7 @@ export default {
           options: {
             animation: {
               easing: "easeInOutBack"
-            },      
+            },
 
             scales: {
               xAxes: [{
@@ -216,7 +213,7 @@ export default {
                 ticks: {
                   autoSkip: true,
                   maxTicksLimit: 5
-                }   
+                }
             }]
           },
           legend: {
@@ -226,11 +223,11 @@ export default {
             displayColors:false,
             backgroundColor:"#6b6b6b",
             callbacks: {
-              label: function(tooltipItems) { 
+              label: function(tooltipItems) {
                 var int = self.convertStringToLocaleNumber(tooltipItems["value"])
                 return int+" "+self.unit
               },
-              title: function(tooltipItems) { 
+              title: function(tooltipItems) {
                 return tooltipItems[0]["label"]
               },
               labelTextColor: function(){

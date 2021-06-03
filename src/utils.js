@@ -10,7 +10,7 @@ export const convertStringToLocaleNumber = function (string){
 
 export const convertFloatToHuman = function (float){
 	if(Number.isInteger(parseFloat(float))){
-		return parseInt(float).toLocaleString()  
+		return parseInt(float).toLocaleString()
 	}else{
 		return parseFloat(float).toFixed(1).toLocaleString()
 	}
@@ -23,4 +23,14 @@ export const convertDateToHuman = function (string){
 
 export const testIfNaN = function (float){
 	return isNaN(parseFloat(float))
+}
+
+export const mixin = {
+	methods: {
+		capitalize,
+		convertStringToLocaleNumber,
+		convertFloatToHuman,
+		convertDateToHuman,
+		testIfNaN
+	}
 }
