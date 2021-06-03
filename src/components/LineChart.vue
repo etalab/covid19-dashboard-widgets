@@ -25,12 +25,14 @@
 import store from '@/store'
 import Chart from 'chart.js'
 import LeftCol from '@/components/LeftCol'
-import { capitalize, convertStringToLocaleNumber, convertFloatToHuman, convertDateToHuman} from '@/utils.js'
+import { mixin } from '@/utils.js'
+
 export default {
   name: 'LineChart',
   components: {
     LeftCol
   },
+  mixins: [mixin],
   data(){
     return {
       indicateur_data:undefined,
@@ -53,11 +55,7 @@ export default {
       loading:true,
       legendLeftMargin: 0,
       geoFallback:false,
-      geoFallbackMsg:"",
-      capitalize:capitalize,
-      convertStringToLocaleNumber:convertStringToLocaleNumber,
-      convertFloatToHuman:convertFloatToHuman,
-      convertDateToHuman:convertDateToHuman
+      geoFallbackMsg:""
     }
   },
   props: {
@@ -76,10 +74,8 @@ export default {
     style () {
       return 'margin-left: ' + this.legendLeftMargin + 'px';
     },
-
   },
   methods: {
-
     async getData () {
       store.dispatch('getData', this.indicateur).then(data => {
         this.indicateur_data = data

@@ -18,12 +18,11 @@
 
 <script>
 import store from '@/store'
-import { convertFloatToHuman, convertDateToHuman, testIfNaN} from '@/utils.js'
+import { mixin } from '@/utils.js'
+
 export default {
   name: 'DataBox',
-  components: {
-    
-  },
+  mixins: [mixin],
   data(){
     return {
       display:"",
@@ -38,10 +37,7 @@ export default {
       isGreen:false,
       isRed:false,
       isBlue:false,
-      loading:true,
-      convertFloatToHuman:convertFloatToHuman,
-      convertDateToHuman:convertDateToHuman,
-      testIfNaN:testIfNaN
+      loading:true
     }
   },
   props: {
@@ -91,9 +87,9 @@ export default {
 
         geoObject = this.indicateur_data[geolevel].find(obj => {
           return obj["code_level"] === geocode
-        })  
-      }      
-      
+        })
+      }
+
       this.name = this.indicateur_data["nom"]
       this.unit = this.indicateur_data["unite"]
       this.currentValue = this.indicateur_data["france"][0]["last_value"]
@@ -110,7 +106,7 @@ export default {
         this.updateData()
       })
     }
-    
+
   },
 
   watch:{
@@ -193,5 +189,5 @@ export default {
       }
     }
   }
-  
+
 </style>

@@ -25,7 +25,7 @@
                 <span class="fr-ml-1v">{{convertFloatToHuman(props['evolvalues'][i])}} % en 7j</span>
               </p>
             </div>
-          </div> 
+          </div>
         </div>
 
         <div v-if="props['isMap']" class="sep fr-my-4w fr-my-md-3w"></div>
@@ -42,17 +42,16 @@
 </template>
 
 <script>
-import { convertFloatToHuman} from '@/utils.js'
+import { mixin } from '@/utils.js'
 export default {
   name: 'LeftCol',
-
+  mixins: [mixin],
   data(){
     return {
       isDown:[false,false],
       isGreen:[false,false],
       isRed:[false,false],
       isBlue:[false,false],
-      convertFloatToHuman:convertFloatToHuman
     }
   },
   props: {
@@ -62,7 +61,6 @@ export default {
 
   },
   methods: {
-
     testEvolStyle(){
       var self = this
       this.props['names'].forEach(function(n,i){
@@ -81,7 +79,7 @@ export default {
           self.isRed[i] = false
           self.isBlue[i] = true
           self.isDown[i] = false
-        } 
+        }
       })
     }
   },
@@ -163,7 +161,7 @@ export default {
             }
           }
         }
-      } 
+      }
     }
     .scale{
       .scale_container{
