@@ -12,7 +12,7 @@
         <div class="sep fr-my-4w fr-my-md-3w"></div>
         <div data-box="number">
           <p class="l_box_title fr-text--xs fr-mb-1w">Mise à jour : {{date}}</p>
-
+  <!--
           <div class="indicateur_info" :class="i>0 ? 'fr-mt-2w' : ''" v-for="(n,i) in names" :key="n">
             <p class="fr-text--sm fr-text--bold fr-mt-0 fr-mb-1w">{{names[i]}}</p>
             <div class="l_box_number_container">
@@ -26,6 +26,7 @@
               </p>
             </div>
           </div> 
+          -->
         </div>
 
         <div v-if="map" class="sep fr-my-4w fr-my-md-3w"></div>

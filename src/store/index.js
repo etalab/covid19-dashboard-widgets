@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import dataP from '../../donnee_jupiter/json/Entrées_de_jeunes_en_CIE.json'
 
 Vue.use(Vuex)
 
@@ -20,6 +21,7 @@ export default new Vuex.Store({
       if (state.promises[indicator]) {
         return state.promises[indicator]
       }
+      /*
       const url = "https://data.widgets.dashboard.covid19.data.gouv.fr/"+indicator+".json"
       const promise = fetch(url).then(res => {
         return res.json()
@@ -28,7 +30,8 @@ export default new Vuex.Store({
         return data
       })
       commit('setPromise', {'indicator': indicator, 'promise': promise})
-      return promise
+      */
+      return dataP
     }
   },
   mutations: {
