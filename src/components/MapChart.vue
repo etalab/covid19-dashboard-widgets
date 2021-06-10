@@ -73,7 +73,8 @@ export default {
         evolvalues: [],
         min: 0,
         max: 0,
-        isMap: true
+        isMap: true,
+        date: ''
       },
       scaleMin: 0,
       scaleMax: 0,
@@ -127,8 +128,8 @@ export default {
       const geocode = this.selectedGeoCode
 
       this.leftColProps.localisation = this.selectedGeoLabel
-
       const geoObject = this.getGeoObject(geolevel, geocode)
+      this.leftColProps.date = this.convertDateToHuman(geoObject.last_date)
 
       this.leftColProps.names.length = 0
       this.units.length = 0
