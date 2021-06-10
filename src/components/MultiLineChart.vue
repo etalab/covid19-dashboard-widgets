@@ -47,7 +47,8 @@ export default {
         names: [],
         evolcodes: [],
         evolvalues: [],
-        isMap: false
+        isMap: false,
+        date: ''
       },
       units: [],
       chart: undefined,
@@ -113,6 +114,8 @@ export default {
           return obj.code_level === geocode
         })
       }
+
+      this.leftColProps.date = this.convertDateToHuman(geoObject.last_date)
 
       this.leftColProps.names.length = 0
       this.units.length = 0
