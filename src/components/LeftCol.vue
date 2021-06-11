@@ -119,8 +119,8 @@ export default {
 <style scoped lang="scss">
 
   /* overload fonts path, to delete when parent has access */
-  @import "../../css/overload-fonts.css";
-  @import "../../css/dsfr.min.css";
+  @import "../../public/css/overload-fonts.css";
+  @import "../../public/css/dsfr.min.css";
 
   .l_col{
 
