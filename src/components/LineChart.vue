@@ -48,7 +48,8 @@ export default {
         names: [],
         evolcodes: [],
         evolvalues: [],
-        isMap: false
+        isMap: false,
+        date: ''
       },
       units: [],
       chart: undefined,
@@ -95,6 +96,7 @@ export default {
       let geoObject
 
       geoObject = this.getGeoObject(geolevel, geocode)
+      this.leftColProps.date = this.convertDateToHuman(geoObject.last_date)
 
       if (typeof geoObject === 'undefined') {
         if (geolevel === 'regions') {
