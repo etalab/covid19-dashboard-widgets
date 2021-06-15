@@ -2,7 +2,7 @@
 
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
     <LeftCol :data-display="display" :localisation="selectedGeoLabel" :date="currentDate" :values="currentValues" :names="names" :evolcodes="evolcodes" :evolvalues="evolvalues"></LeftCol>
-    <div class="r_col fr-col-12 fr-col-lg-9">
+    <div class="r_col r-col-12 fr-col-lg-9">
       <div class="chart ml-lg">
         <canvas :id="chartId"></canvas>
         <div class="flex fr-mt-3v fr-mb-1v" :style="style">
