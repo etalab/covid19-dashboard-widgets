@@ -1,7 +1,7 @@
 <template>
 
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
-      <LeftCol :data-display="display" :localisation="localGeoLabel" :date="currentDate" :values="currentValues" :names="names" :evolcodes="evolcodes" :evolvalues="evolvalues" :min="scaleMin" :max="scaleMax" :map="map"></LeftCol>
+    <LeftCol :data-display="display" :localisation="localGeoLabel" :date="currentDate" :values="currentValues" :names="names" :evolcodes="evolcodes" :evolvalues="evolvalues" :min="scaleMin" :max="scaleMax" :map="map"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
       <div class="map m-lg">
         <div class="map_tooltip" v-if="tooltip.display" :style="{top:tooltip.top,left:tooltip.left}">
@@ -164,7 +164,7 @@
 
 <script>
 import store from '@/store'
-import LeftCol from '@/components/LeftCol'
+import LeftCol from '@/components/LeftCol_1'
 import * as d3 from 'd3-scale'
 import { isMobile } from 'mobile-device-detect'
 

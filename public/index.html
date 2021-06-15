@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,307 +9,295 @@
     <link rel="stylesheet" href="css/dsfr.min.css">
     <link rel="stylesheet" href="css/overload-fonts.css">
 
-
-    <title><%= htmlWebpackPlugin.options.title %></title>
+    <title>
+        <%= htmlWebpackPlugin.options.title %>
+    </title>
     <style>
         a {
             color: orange;
         }
-
+        
         body {
             background-color: #f9f8f6;
         }
-
+        
         .chart_container {
             max-width: 750px;
             margin: 0 auto 50px;
         }
-
+        
         .box_container {
             max-width: 270px;
             margin: 0 auto 50px;
         }
-
+        
         .geo_container {
             max-width: 200px;
             margin: 0 auto 50px;
         }
     </style>
 </head>
+
 <body>
 
-<noscript>
+    <noscript>
     <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
         Please enable it to continue.</strong>
-</noscript>
+    </noscript>
 
-<div class="fr-container--fluid">
-    <div class="fr-grid-row">
-        <div class="fr-col-12 fr-col-md-4 fr-col-lg-3">
-            <nav class="fr-sidemenu fr-sidemenu--sticky-full-height fr-pr-0" role="navigation"
-                 aria-label="Menu latéral">
-                <div class="fr-sidemenu__inner">
-                    <button class="fr-sidemenu__btn" aria-controls="fr-sidemenu-wrapper" aria-expanded="false">Dans
-                        cette rubrique
-                    </button>
-                    <div class="fr-collapse fr-pt-0 fr-pt-md-4w fr-pb-md-11w" id="fr-sidemenu-wrapper">
-                        <div class="fr-sidemenu__title">Affiner la recherche</div>
-                        <geo-list></geo-list>
-<!--                        <div class="fr-sidemenu__title">Pour en savoir plus :</div>-->
-<!--                        <ul class="fr-sidemenu__list">-->
-<!--                            <li class="fr-sidemenu__item">-->
-<!--                                <button class="fr-sidemenu__btn" aria-expanded="true" aria-controls="vue_d_ensemble">-->
-<!--                                    Vue d'ensemble-->
-<!--                                </button>-->
-<!--                                <div class="fr-collapse fr-collapse&#45;&#45;expanded" id="vue_d_ensemble"-->
-<!--                                     style="max-height: none; &#45;&#45;collapse:-312px;">-->
-<!--                                    <ul class="fr-sidemenu__list">-->
-<!--                                        <li class="fr-sidemenu__item fr-sidemenu__item&#45;&#45;active">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="vue_d_ensemble"-->
-<!--                                               data-name="point_de_situation" href="#vue_d_ensemble-point_de_situation"-->
-<!--                                               target="_self">Point de situation</a>-->
-<!--                                        </li>-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="vue_d_ensemble"-->
-<!--                                               data-name="taux_d_incidence" href="#vue_d_ensemble-taux_d_incidence"-->
-<!--                                               target="_self">Taux d'incidence</a>-->
-<!--                                        </li>-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="vue_d_ensemble"-->
-<!--                                               data-name="nouvelles_hospitalisations"-->
-<!--                                               href="#vue_d_ensemble-nombre_moyen_de_nouvelles_hospitalisations_quotidiennes"-->
-<!--                                               target="_self">Nouvelles hospitalisations</a>-->
-<!--                                        </li>-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="vue_d_ensemble"-->
-<!--                                               data-name="nouvelles_entrees_en_soins_critiques"-->
-<!--                                               href="#vue_d_ensemble-nombre_moyen_de_nouvelles_entrees_en_soins_critiques_quotidiennes"-->
-<!--                                               target="_self">Nouvelles entrées en soins critiques</a>-->
-<!--                                        </li>-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="vue_d_ensemble"-->
-<!--                                               data-name="vaccination_quotidienne"-->
-<!--                                               href="#vue_d_ensemble-nombre_quotidien_de_personnes_ayant_recu_au_moins_une_dose"-->
-<!--                                               target="_self">Vaccination quotidienne</a>-->
-<!--                                        </li>-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="vue_d_ensemble"-->
-<!--                                               data-name="suivi_de_la_vaccination"-->
-<!--                                               href="#vue_d_ensemble-nombre_de_personnes_vaccinees" target="_self">Suivi-->
-<!--                                                de la vaccination</a>-->
-<!--                                        </li>-->
-<!--                                    </ul>-->
-<!--                                </div>-->
-<!--                            </li>-->
-<!--                            <li class="fr-sidemenu__item">-->
-<!--                                <button class="fr-sidemenu__btn" aria-expanded="false"-->
-<!--                                        aria-controls="situation_epidemiologique">-->
-<!--                                    Situation épidémiologique-->
-<!--                                </button>-->
-<!--                                <div class="fr-collapse" id="situation_epidemiologique">-->
-<!--                                    <ul class="fr-sidemenu__list">-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="situation_epidemiologique"-->
-<!--                                               data-name="point_de_situation"-->
-<!--                                               href="#situation_epidemiologique-point_de_situation" target="_self">Point-->
-<!--                                                de situation</a>-->
-<!--                                        </li>-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="situation_epidemiologique"-->
-<!--                                               data-name="cas_confirmes"-->
-<!--                                               href="#situation_epidemiologique-nombre_moyen_de_nouveaux_cas_confirmes_quotidiens"-->
-<!--                                               target="_self">Cas confirmés</a>-->
-<!--                                        </li>-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="situation_epidemiologique"-->
-<!--                                               data-name="taux_d_incidence"-->
-<!--                                               href="#situation_epidemiologique-taux_d_incidence" target="_self">Taux-->
-<!--                                                d'incidence</a>-->
-<!--                                        </li>-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="situation_epidemiologique"-->
-<!--                                               data-name="taux_de_positivite"-->
-<!--                                               href="#situation_epidemiologique-taux_de_positivite" target="_self">Taux-->
-<!--                                                de positivité</a>-->
-<!--                                        </li>-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="situation_epidemiologique"-->
-<!--                                               data-name="taux_de_reproduction_effectif"-->
-<!--                                               href="#situation_epidemiologique-taux_de_reproduction_effectif"-->
-<!--                                               target="_self">Taux de reproduction effectif</a>-->
-<!--                                        </li>-->
-<!--                                    </ul>-->
-<!--                                </div>-->
-<!--                            </li>-->
-<!--                            <li class="fr-sidemenu__item">-->
-<!--                                <button class="fr-sidemenu__btn" aria-expanded="false"-->
-<!--                                        aria-controls="situation_hospitaliere">-->
-<!--                                    Situation hospitalière-->
-<!--                                </button>-->
-<!--                                <div class="fr-collapse" id="situation_hospitaliere">-->
-<!--                                    <ul class="fr-sidemenu__list">-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="situation_hospitaliere"-->
-<!--                                               data-name="point_de_situation"-->
-<!--                                               href="#situation_hospitaliere-point_de_situation" target="_self">Point de-->
-<!--                                                situation</a>-->
-<!--                                        </li>-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="situation_hospitaliere"-->
-<!--                                               data-name="retours_a_domicile"-->
-<!--                                               href="#situation_hospitaliere-nombre_moyen_de_nouveaux_retours_a_domicile_quotidiens"-->
-<!--                                               target="_self">Retours à domicile</a>-->
-<!--                                        </li>-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="situation_hospitaliere"-->
-<!--                                               data-name="nouvelles_hospitalisations"-->
-<!--                                               href="#situation_hospitaliere-nombre_moyen_de_nouvelles_hospitalisations_quotidiennes"-->
-<!--                                               target="_self">Nouvelles hospitalisations</a>-->
-<!--                                        </li>-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="situation_hospitaliere"-->
-<!--                                               data-name="nouvelles_entrees_en_soins_critiques"-->
-<!--                                               href="#situation_hospitaliere-nombre_moyen_de_nouvelles_entrees_en_soins_critiques_quotidiennes"-->
-<!--                                               target="_self">Nouvelles entrées en soins critiques</a>-->
-<!--                                        </li>-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="situation_hospitaliere"-->
-<!--                                               data-name="deces_a_l_hopital"-->
-<!--                                               href="#situation_hospitaliere-nombre_moyen_de_deces_quotidiens_a_l_hopital"-->
-<!--                                               target="_self">Décès à l'hôpital</a>-->
-<!--                                        </li>-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="situation_hospitaliere"-->
-<!--                                               data-name="hospitalisations"-->
-<!--                                               href="#situation_hospitaliere-nombre_de_personnes_actuellement_hospitalisees"-->
-<!--                                               target="_self">Hospitalisations</a>-->
-<!--                                        </li>-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="situation_hospitaliere"-->
-<!--                                               data-name="soins_critiques"-->
-<!--                                               href="#situation_hospitaliere-nombre_de_personnes_actuellement_en_soins_critiques"-->
-<!--                                               target="_self">Soins critiques</a>-->
-<!--                                        </li>-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="situation_hospitaliere"-->
-<!--                                               data-name="taux_d_occupation"-->
-<!--                                               href="#situation_hospitaliere-taux_d_occupation" target="_self">Taux-->
-<!--                                                d'occupation</a>-->
-<!--                                        </li>-->
-<!--                                    </ul>-->
-<!--                                </div>-->
-<!--                            </li>-->
-<!--                            <li class="fr-sidemenu__item">-->
-<!--                                <button class="fr-sidemenu__btn" aria-expanded="false"-->
-<!--                                        aria-controls="suivi_de_la_vaccination">-->
-<!--                                    Suivi de la vaccination-->
-<!--                                </button>-->
-<!--                                <div class="fr-collapse" id="suivi_de_la_vaccination">-->
-<!--                                    <ul class="fr-sidemenu__list">-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="suivi_de_la_vaccination"-->
-<!--                                               data-name="point_de_situation"-->
-<!--                                               href="#suivi_de_la_vaccination-point_de_situation" target="_self">Point-->
-<!--                                                de situation</a>-->
-<!--                                        </li>-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="suivi_de_la_vaccination"-->
-<!--                                               data-name="vaccination"-->
-<!--                                               href="#suivi_de_la_vaccination-nombre_de_personnes_vaccinees"-->
-<!--                                               target="_self">Vaccination</a>-->
-<!--                                        </li>-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="suivi_de_la_vaccination"-->
-<!--                                               data-name="vaccination_quotidienne"-->
-<!--                                               href="#suivi_de_la_vaccination-nombre_quotidien_de_personnes_ayant_recu_au_moins_une_dose"-->
-<!--                                               target="_self">Vaccination quotidienne</a>-->
-<!--                                        </li>-->
-<!--                                        <li class="fr-sidemenu__item">-->
-<!--                                            <a class="fr-sidemenu__link" data-section="suivi_de_la_vaccination"-->
-<!--                                               data-name="vaccination_complete"-->
-<!--                                               href="#suivi_de_la_vaccination-nombre_quotidien_de_personnes_completement_vaccinees"-->
-<!--                                               target="_self">Vaccination complète</a>-->
-<!--                                        </li>-->
-<!--                                    </ul>-->
-<!--                                </div>-->
-<!--                            </li>-->
-<!--                        </ul>-->
+    <div class="fr-container--fluid">
+
+        <div class="fr-grid-row">
+
+            <div class="fr-col-2 fr-col-md-4 fr-col-lg-3">
+                <nav class="fr-sidemenu fr-sidemenu--sticky-full-height fr-pr-0" role="navigation" aria-label="Menu latéral">
+
+                    <img src="Logo-ME.png" alt="Logo ME" width="400" height="400">
+
+                    <div class="fr-sidemenu__inner">
+                        <button class="fr-sidemenu__btn" aria-controls="fr-sidemenu-wrapper" aria-expanded="false">
+                            Dans cette rubrique
+                        </button>
+                        <div class="fr-collapse fr-pt-0 fr-pt-md-4w fr-pb-md-11w" id="fr-sidemenu-wrapper">
+                            <div class="fr-sidemenu__title">Affiner la recherche</div>
+                            <geo-list></geo-list>
+                            <div class="fr-sidemenu__title">Pour en savoir plus :</div>
+                            <ul class="fr-sidemenu__list">
+
+                                <!-- Menu déroulant permettant d'accéder aux divers indicateurs de mesures -->
+
+
+                                <li class="fr-sidemenu__item">
+                                    <button class="fr-sidemenu__btn" aria-expanded="true" aria-controls="volet_cohesion">
+                                        Volet verdissement 
+                                    </button>
+                                    <div class="fr-collapse fr-collapse&#45;&#45;expanded" id="volet_cohesion" style="max-height: none; &#45;&#45;collapse:-312px;">
+
+                                        <!-- Type :
+
+                                        <ul class="fr-sidemenu__list">
+                                            <li class="fr-sidemenu__item fr-sidemenu__item&#45;&#45;active">
+                                                <a class="fr-sidemenu__link" data-section="volet" data-name="point_de_situation" href="#refonglet" target="_self">
+                                                    Texte</a>
+                                            </li>
+                                        </ul> -->
+
+                                        <ul class="fr-sidemenu__list">
+                                            <li class="fr-sidemenu__item fr-sidemenu__item&#45;&#45;active">
+                                                <a class="fr-sidemenu__link" data-section="volet_cohesion" data-name="point_de_situation" href="#Nombre_de_contrats_d’apprentissage_bénéficiaires_de_l’aide_exceptionnelle_-_APP" target="_self">
+                                                    Nombre de contrats d'apprentissage bénéficiaires de l'aide exceptionnelle - APP</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li class="fr-sidemenu__item">
+                                    <button class="fr-sidemenu__btn" aria-expanded="true" aria-controls="volet_verdissement">
+                                        Volet cohésion
+                                    </button>
+                                    <div class="fr-collapse fr-collapse&#45;&#45;expanded" id="volet_verdissement" style="max-height: none; &#45;&#45;collapse:-312px;">
+                                        <ul class="fr-sidemenu__list">
+                                            <li class="fr-sidemenu__item fr-sidemenu__item&#45;&#45;active">
+                                                <a class="fr-sidemenu__link" data-section="volet_verdissement" data-name="point_de_situation" href="#Nombre_de_dossiers_MaPrimeRénov_bénéficiaires_(particulier_et_copropriété)_-_MPR" target="_self">
+                                                    Nombre de dossiers MaPrimeRénov bénéficiaires (particulier et copropriété) - MPR</a>
+                                            </li>
+                                    </div>
+                                </li>
+
+                                <li class="fr-sidemenu__item">
+                                    <button class="fr-sidemenu__btn" aria-expanded="true" aria-controls="volet_compétitivité">
+                                        Volet compétitivité
+                                    </button>
+                                    <div class="fr-collapse fr-collapse&#45;&#45;expanded" id="volet_compétitivité" style="max-height: none; &#45;&#45;collapse:-312px;">
+                                        <ul class="fr-sidemenu__list">
+                                            <li class="fr-sidemenu__item fr-sidemenu__item&#45;&#45;active">
+                                                <a class="fr-sidemenu__link" data-section="volet_compétitivité" data-name="point_de_situation" href="#Nombre_d'entreprises_beneficiaires" target="_self">
+                                                    Nombre d'entreprises bénéficiaires</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                        </div>
                     </div>
+                </nav>
+            </div>
+
+            <div class="fr-col-12 fr-col-md-8 fr-col-lg-7 fr-col-offset-md-1 fr-mb-6w">
+
+                <img src="Logo-France-Relance.png" alt="Logo FR" width="1000" height="500">
+
+                <p class="fr-text--lead fr-mt-10w fr-mb-0">
+                    Retrouvez par mois et par département l'état d'avancement des mesures phares de France Relance.
+                </p>
+                <p></p>
+
+
+                <!-- 
+
+    Template pour les boites
+
+                <a class="anchor" id="ref_onglet"></a>
+                <div class="lvl2-header fr-px-2w fr-px-md-3w fr-pt-3w">
+                    <h3> Titre_mesure   
+                    </h3>
+                    <p class="fr-text--xs fr-mb-3w">Source :
+                        <a title="vers data.gouv.fr" href="source_http" target="_blank" rel="noopener" data-section="nom_section" data-subsection="nom_subsection">
+                            Vers_fichiers_opendata</a>
+                    </p>
                 </div>
-            </nav>
-        </div>
-        <div class="fr-col-12 fr-col-md-8 fr-col-lg-9">
-            <section class="fr-grid-row fr-mt-10w">
-                <div class="fr-col-12">
-                    <div class="box">
-                        <div id="Emissions_de_gaz_à_effet_de_serre_évitées"
-                             class="fr-tabs__panel fr-p-3w fr-tabs__panel--selected" role="tabpanel"
-                             aria-labelledby="tabpanel-0-2" tabindex="0" style="">
-                            <map-chart indicateur="Emissions_de_gaz_a_effet_de_serre_evitees"></map-chart>
-                        </div>
-                        <div class="fr-grid-row">
-                            <div class="chart_container fr-col-3">
-                                <line-chart indicateur="Emissions_de_gaz_a_effet_de_serre_evitees"></line-chart>
-                            </div>
-                            <div class="chart_container fr-col-3">
-                                <bar-chart indicateur="Emissions_de_gaz_a_effet_de_serre_evitees"></bar-chart>
-                            </div>
-                            <!--                            <div class="box_container fr-col-3">-->
-                            <!--                                <data-box indicateur="Emissions_de_gaz_a_effet_de_serre_evitees"></data-box>-->
-                            <!--                            </div>-->
-                        </div>
+                <div class="fr-tabs" style="height: 200px; transition: none 0s ease 0s;">
+
+                    <ul class="fr-tabs__list" role="tablist" aria-label="changer d'onglet">
+                        <li role="presentation">
+                            <button id="tabpanel-2-1" class="fr-tabs__tab" tabindex="0" role="tab" aria-selected="true" aria-controls="tabpanel-2-1-Indicateur_1">Indicateur_1
+                            </button>
+                        </li>
+                        <li role="presentation">
+                            <button id="tabpanel-2-2" class="fr-tabs__tab" tabindex="-1" role="tab" aria-selected="false" aria-controls="tabpanel-2-2-Indicateur_2">Indicateut_2
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div id="tabpanel-2-1-Indicateur_1" class="fr-tabs__panel fr-tabs__panel--selected fr-p-7w" role="tabpanel" aria-labelledby="tabpanel-2-1" tabindex="0">
+                        <line-chart indicateur="json_Indicateur_1"> </multiline-chart>
+                        <map-chart indicateur="json_Indicateur_1"></map-chart>
                     </div>
 
-                    <div class="box">
-                        <div id="Entrees_de_jeunes_en_CIE"
-                             class="fr-tabs__panel fr-tabs__panel--selected fr-col-8" role="tabpanel"
-                             aria-labelledby="tabpanel-0-2" tabindex="0">
-                            <map-chart indicateur="Entrees_de_jeunes_en_CIE"></map-chart>
-                        </div>
-                        <div class="fr-grid-row">
-                            <div class="chart_container fr-col-6">
-                                <line-chart indicateur="Entrees_de_jeunes_en_CIE"></line-chart>
-                            </div>
-                            <div class="chart_container fr-col-6">
-                                <bar-chart indicateur="Entrees_de_jeunes_en_CIE"></bar-chart>
-                            </div>
-                            <!--                            <div class="box_container fr-col-3">-->
-                            <!--                                <data-box indicateur="Emissions_de_gaz_a_effet_de_serre_evitees"></data-box>-->
-                            <!--                            </div>-->
-                        </div>
+                    <div id="tabpanel-2-2-Indicateur_2" class="fr-tabs__panel fr-p-7w" role="tabpanel" aria-labelledby="tabpanel-2-2" tabindex="0" style="transform: translate(100%);">
+                        <line-chart indicateur="json_Indicateur_2"></line-chart>
+                        <map-chart indicateur="json_Indicateur_2"></map-chart>
                     </div>
 
-                    <div class="box">
-                        <div class="chart_container fr-col-12">
-                            <multiline-chart indicateur1="Entrees_de_jeunes_en_PEC"
-                                             indicateur2="Entrees_de_jeunes_en_CIE"></multiline-chart>
-                        </div>
-                    </div>
-
-
-                    <!--                    <div id="tabpanel-0-2-panel" class="fr-tabs__panel fr-p-3w fr-tabs__panel&#45;&#45;selected"-->
-                    <!--                         role="tabpanel" aria-labelledby="tabpanel-0-2" tabindex="0" style="">-->
-                    <!--                        <map-chart indicateur="Entrees_de_jeunes_en_CIE"></map-chart>-->
-                    <!--                    </div>-->
-                    <!--                    &lt;!&ndash;                    </div>&ndash;&gt;-->
-                    <!--                    &lt;!&ndash;                    <div class="box fr-mt-6w">&ndash;&gt;-->
-                    <!--                    <div id="Nombre_d'installations_CSR_soutenues"-->
-                    <!--                         class="fr-tabs__panel fr-p-3w fr-tabs__panel&#45;&#45;selected"-->
-                    <!--                         role="tabpanel" aria-labelledby="tabpanel-0-2" tabindex="0" style="">-->
-                    <!--                        <map-chart indicateur="Nombre_d'installations_CSR_soutenues"></map-chart>-->
-                    <!--                    </div>-->
-                    <!--                    <div class="chart_container">-->
-                    <!--                        <line-chart indicateur="installations_CSR_soutenues"></line-chart>-->
-                    <!--                    </div>-->
-                    <!--                    <div class="chart_container">-->
-                    <!--                        <multiline-chart indicateur1="vaccins_premiere_dose"-->
-                    <!--                                         indicateur2="vaccins_vaccines"></multiline-chart>-->
-                    <!--                    </div>-->
                 </div>
-            </section>
-        </div>
 
+                <section class="fr-accordion">
+                    <h3 class="fr-accordion__title">
+                        <button class="fr-accordion__btn fr-text--sm" aria-expanded="false" aria-controls="accordion-1">
+                            En savoir plus sur l'indicateur
+                        </button>
+                    </h3>
+                    <div class="fr-collapse fr-mx-0" id="accordion-1">
+                        <p class="fr-mb-0 fr-text--sm">
+                            Propriétés_indicateur
+                        </p>
+                    </div>
+                </section>
+        
+        -->
+
+
+                <!-- Volet verdissement -->
+
+
+                <a class="anchor" id="refonglet"></a>
+                <div class="lvl2-header fr-px-2w fr-px-md-3w fr-pt-3w">
+                    <h3> Modernisation de la filière (BPI)
+                    </h3>
+                    <p class="fr-text--xs fr-mb-3w">Source :
+                        <a title="vers data.gouv.fr" href="source_http" target="_blank" rel="noopener" data-section="nom_section" data-subsection="nom_subsection">
+                            Vers des fichiers d'open-data</a>
+                    </p>
+                </div>
+                <div class="fr-tabs" style="height: 200px; transition: none 0s ease 0s;">
+
+                    <ul class="fr-tabs__list" role="tablist" aria-label="changer d'onglet">
+                        <li role="presentation">
+                            <button id="tabpanel-2-1" class="fr-tabs__tab" tabindex="0" role="tab" aria-selected="true" aria-controls="tabpanel-2-1-panel_BPI">Nombre d'entreprises
+                            </button>
+                        </li>
+                        <li role="presentation">
+                            <button id="tabpanel-2-2" class="fr-tabs__tab" tabindex="-1" role="tab" aria-selected="false" aria-controls="tabpanel-2-2-panel_BPI">Montant total de l'investissement ainsi déclenché
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div id="tabpanel-2-1-panel_BPI" class="fr-tabs__panel fr-tabs__panel--selected fr-p-7w" role="tabpanel" aria-labelledby="tabpanel-2-1" tabindex="0">
+                        <multiline-chart indicateur1="Nombre_d’entreprises_-_BPI" indicateur2="Nombre_de_PME_-_BPI"> </multiline-chart>
+                        <map-chart indicateur="Nombre_d’entreprises_-_BPI"></map-chart>
+                    </div>
+
+                    <div id="tabpanel-2-2-panel_BPI" class="fr-tabs__panel fr-p-7w" role="tabpanel" aria-labelledby="tabpanel-2-2" tabindex="0" style="transform: translate(100%);">
+                        <line-chart indicateur="Montant_de_l’investissement_total_déclenché_- _ETE"></line-chart>
+                        <map-chart indicateur="Montant_de_l’investissement_total_déclenché_- _ETE"></map-chart>
+                    </div>
+
+                </div>
+
+                <section class="fr-accordion">
+                    <h3 class="fr-accordion__title">
+                        <button class="fr-accordion__btn fr-text--sm" aria-expanded="false" aria-controls="accordion_BPI">
+                            En savoir plus sur l'indicateur
+                        </button>
+                    </h3>
+                    <div class="fr-collapse fr-mx-0" id="accordion_BPI">
+                        <p class="fr-mb-0 fr-text--sm">
+                            Propriétés_indicateur
+                        </p>
+                    </div>
+                </section>
+
+                <a class="anchor" id="refonglet"></a>
+                <div class="lvl2-header fr-px-2w fr-px-md-3w fr-pt-3w">
+                    <h3> Soutien à chaleur bas carbone
+                    </h3>
+                    <p class="fr-text--xs fr-mb-3w">Source :
+                        <a title="vers data.gouv.fr" href="source_http" target="_blank" rel="noopener" data-section="nom_section" data-subsection="nom_subsection">
+                            Vers des fichiers d'open-data</a>
+                    </p>
+                </div>
+                <div class="fr-tabs" style="height: 200px; transition: none 0s ease 0s;">
+
+                    <ul class="fr-tabs__list" role="tablist" aria-label="changer d'onglet">
+                        <li role="presentation">
+                            <button id="tabpanel-2-1" class="fr-tabs__tab" tabindex="0" role="tab" aria-selected="true" aria-controls="tabpanel-2-1-panel_CBC">Nombre d'entreprises ayant reçu l'aide
+                            </button>
+                        </li>
+                        <li role="presentation">
+                            <button id="tabpanel-2-2" class="fr-tabs__tab" tabindex="-1" role="tab" aria-selected="false" aria-controls="tabpanel-2-2-panel_CBC">Montant total de l'investissement ainsi déclenché
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div id="tabpanel-2-1-panel_CBC" class="fr-tabs__panel fr-tabs__panel--selected fr-p-7w" role="tabpanel" aria-labelledby="tabpanel-2-1" tabindex="0">
+                        <multiline-chart indicateur1="Nombre_d’entreprises_-_BPI" indicateur2="Nombre_de_PME_-_BPI"> </multiline-chart>
+                        <map-chart indicateur="Nombre_d’entreprises_-_BPI"></map-chart>
+                    </div>
+
+                    <div id="tabpanel-2-2-panel_CBC" class="fr-tabs__panel fr-p-7w" role="tabpanel" aria-labelledby="tabpanel-2-2" tabindex="0" style="transform: translate(100%);">
+                        <line-chart indicateur="Montant_cumulé_de_l’investissement_total_ainsi_déclenché_-_CBC"></line-chart>
+                        <map-chart indicateur="Montant_cumulé_de_l’investissement_total_ainsi_déclenché_-_CBC"></map-chart>
+                    </div>
+
+                </div>
+
+                <section class="fr-accordion">
+                    <h3 class="fr-accordion__title">
+                        <button class="fr-accordion__btn fr-text--sm" aria-expanded="false" aria-controls="accordion_CBC">
+                            En savoir plus sur l'indicateur
+                        </button>
+                    </h3>
+                    <div class="fr-collapse fr-mx-0" id="accordion_CBC">
+                        <p class="fr-mb-0 fr-text--sm">
+                            Propriétés_indicateur
+                        </p>
+                    </div>
+                </section>
+
+
+                <!-- Volet cohésion -->
+
+                <!-- Volet compétitivité -->
+
+
+            </div>
+        </div>
     </div>
-</div>
+
+    <script type="module" src="js/dsfr.module.min.js"></script>
+    <script type="text/javascript" nomodule src="js/dsfr.nomodule.min.js"></script>
+
 </body>
+
+
 </html>
