@@ -34,26 +34,27 @@ export default {
   },
   data() {
     return {
-      indicateur_data: undefined,
-      labels: [],
-      dataset: [],
-      widgetId: "",
-      chartId: "",
-      display: "",
-      localisation: "",
-      currentValues: [],
-      currentDate: "",
-      names: [],
-      units: [],
-      evolcodes: [],
-      evolvalues: [],
-      chart: undefined,
-      loading: true,
+      indicateur_data:undefined,
+      labels:[],
+      dataset:[],
+      widgetId:"",
+      chartId:"",
+      display:"",
+      leftColProps:{
+        localisation:"",
+        currentValues:[],
+        currentDate:"",
+        names:[],
+        evolcodes:[],
+        evolvalues:[],
+        isMap:false
+      },
+      units:[],
+      chart:undefined,
+      loading:true,
       legendLeftMargin: 0,
-      localGeoLabel: "",
-      geoFallback: false,
-      geoFallbackMsg: "",
-      map: false
+      geoFallback:false,
+      geoFallbackMsg:"",
     }
   },
   props: {
@@ -91,7 +92,7 @@ export default {
       var geolevel = this.selectedGeoLevel
       var geocode = this.selectedGeoCode
 
-      this.localGeoLabel = this.selectedGeoLabel
+      this.leftColProps["localisation"] = this.selectedGeoLabel
 
       var geoObject
 
@@ -120,18 +121,18 @@ export default {
         }
       }
 
-      this.names.length = 0
+      this.leftColProps['names'].length = 0
       this.units.length = 0
-      this.currentValues.length = 0
-      this.evolcodes.length = 0
-      this.evolvalues.length = 0
+      this.leftColProps['currentValues'].length = 0
+      this.leftColProps['evolcodes'].length = 0
+      this.leftColProps['evolvalues'].length = 0
 
-      this.names.push(this.indicateur_data["nom"])
+      this.leftColProps['names'].push(this.indicateur_data["nom"])
       this.units.push(this.indicateur_data["unite"])
-      this.currentValues.push(geoObject["last_value"])
-      this.currentDate = this.convertDateToHuman(geoObject["last_date"])
-      this.evolcodes.push(geoObject["evol_color"])
-      this.evolvalues.push(geoObject["evol_percentage"])
+      this.leftColProps['currentValues'].push(geoObject["last_value"])
+      this.leftColProps['currentDate'] = this.convertDateToHuman(geoObject["last_date"])
+      this.leftColProps['evolcodes'].push(geoObject["evol_color"])
+      this.leftColProps['evolvalues'].push(geoObject["evol_percentage"])
 
       this.labels.length = 0
       this.dataset.length = 0

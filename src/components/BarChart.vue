@@ -1,14 +1,21 @@
 <template>
 
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
-    <LeftCol :data-display="display" :localisation="selectedGeoLabel" :date="currentDate" :values="currentValues" :names="names" :evolcodes="evolcodes" :evolvalues="evolvalues"></LeftCol>
+      <div class="fr-warning" v-if="geoFallback">
+        <div class="scheme-border">
+            <span class="fr-fi-information-fill fr-px-1w fr-py-3v" aria-hidden="true"></span>
+        </div>
+        <p class="fr-text--sm fr-mb-0 fr-p-3v">{{geoFallbackMsg}}
+        </p>
+    </div>
+    <LeftCol :data-display="display" :props="leftColProps"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
       <div class="chart ml-lg">
         <canvas :id="chartId"></canvas>
-      </div>
-      <div class="flex fr-mt-3v ml-lg">
-        <span class="legende_dot"></span>
-        <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(units[0])}}</p>
+        <div class="flex fr-mt-3v" :style="style">
+          <span class="legende_dot"></span>
+          <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(units[0])}}</p>
+        </div>
       </div>
     </div>
   </div>
@@ -17,7 +24,7 @@
 <script>
 import store from '@/store'
 import Chart from 'chart.js'
-import LeftCol from '@/components/LeftCol' 
+import LeftCol from '@/components/LeftCol'
 export default {
   name: 'BarChart',
   components: {
@@ -31,16 +38,21 @@ export default {
       widgetId:"",
       chartId:"",
       display:"",
-      localisation:"",
-      currentValues:[],
-      currentDate:"",
-      names:[],
+      leftColProps:{
+        localisation:"",
+        currentValues:[],
+        currentDate:"",
+        names:[],
+        evolcodes:[],
+        evolvalues:[],
+        isMap:false
+      },
       units:[],
-      evolcodes:[],
-      evolvalues:[],
       chart:undefined,
       loading:true,
-      map:false
+      legendLeftMargin: 0,
+      geoFallback:false,
+      geoFallbackMsg:"",
     }
   },
   props: {
@@ -55,6 +67,9 @@ export default {
     },
     selectedGeoLabel () {
       return store.state.user.selectedGeoLabel
+    },
+    style () {
+      return 'margin-left: ' + this.legendLeftMargin + 'px';
     },
 
   },
@@ -71,32 +86,51 @@ export default {
     updateData () {
 
       var self = this
-      
+
       var geolevel = this.selectedGeoLevel
       var geocode = this.selectedGeoCode
 
+      this.leftColProps["localisation"] = this.selectedGeoLabel
+
       var geoObject
 
-      if(geolevel === "France"){
-        geoObject = this.indicateur_data["france"][0]
-      }else{
-        geoObject = this.indicateur_data[geolevel].find(obj => {
-          return obj["code_level"] === geocode
-        })  
-      }      
+      geoObject = this.getGeoObject(geolevel,geocode)
 
-      this.names.length = 0
+      if(typeof geoObject === 'undefined'){
+        if(geolevel == 'regions'){
+          geoObject = this.getGeoObject("France","01")
+          this.leftColProps["localisation"] = "France entière"
+          this.geoFallback=true
+          this.geoFallbackMsg="Affichage des résultats au niveau national, faute de données au niveau régional"
+        }else{
+          var depObj = store.state.dep.find(obj => {
+            return obj["value"] === geocode
+          })
+          geoObject = this.getGeoObject("regions",depObj["region_value"])
+          this.leftColProps["localisation"] = depObj["region"]
+          this.geoFallback=true
+          this.geoFallbackMsg="Affichage des résultats au niveau régional, faute de données au niveau départemental"
+          if(typeof geoObject === 'undefined'){
+            geoObject = this.getGeoObject("France","01")
+            this.leftColProps["localisation"] = "France entière"
+            this.geoFallback=true
+            this.geoFallbackMsg="Affichage des résultats au niveau national, faute de données au niveau régional ou départemental"
+          }
+        }
+      }
+
+      this.leftColProps['names'].length = 0
       this.units.length = 0
-      this.currentValues.length = 0
-      this.evolcodes.length = 0
-      this.evolvalues.length = 0      
+      this.leftColProps['currentValues'].length = 0
+      this.leftColProps['evolcodes'].length = 0
+      this.leftColProps['evolvalues'].length = 0
 
-      this.names.push(this.indicateur_data["nom"])
+      this.leftColProps['names'].push(this.indicateur_data["nom"])
       this.units.push(this.indicateur_data["unite"])
-      this.currentValues.push(geoObject["last_value"])
-      this.currentDate = this.convertDateToHuman(geoObject["last_date"])
-      this.evolcodes.push(geoObject["evol_color"])
-      this.evolvalues.push(geoObject["evol_percentage"])
+      this.leftColProps['currentValues'].push(geoObject["last_value"])
+      this.leftColProps['currentDate'] = this.convertDateToHuman(geoObject["last_date"])
+      this.leftColProps['evolcodes'].push(geoObject["evol_color"])
+      this.leftColProps['evolvalues'].push(geoObject["evol_percentage"])
 
       this.labels.length = 0
       this.dataset.length = 0
@@ -108,11 +142,24 @@ export default {
 
     },
 
+    getGeoObject(geolevel,geocode){
+
+      var geoObject
+      if(geolevel === "France"){
+        geoObject = this.indicateur_data["france"][0]
+      }else{
+        geoObject = this.indicateur_data[geolevel].find(obj => {
+          return obj["code_level"] === geocode
+        })
+      }
+      return geoObject
+    },
+
     updateChart () {
-      
+
       this.updateData()
       this.chart.update()
-    
+
     },
 
     createChart () {
@@ -194,6 +241,14 @@ export default {
       return parseInt(string).toLocaleString()
     },
 
+    convertFloatToHuman(float){
+      if(Number.isInteger(parseFloat(float))){
+        return parseInt(float).toLocaleString()  
+      }else{
+        return parseFloat(float).toFixed(1).toLocaleString()
+      }
+    },
+
     convertDateToHuman(string){
       let date = new Date(string)
       return date.toLocaleDateString()
@@ -204,7 +259,7 @@ export default {
         return string.charAt(0).toUpperCase() + string.slice(1)
       }
     }
-  
+
   },
 
   watch:{
@@ -232,20 +287,44 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-  
   /* overload fonts path, to delete when parent has access */
   @import "../../public/css/overload-fonts.css";
   @import "../../public/css/dsfr.min.css";
 
-
-
   .widget_container{
+    .fr-warning {
+      display: flex;
+      min-width: 100%;
+      margin: 0 0 0.75rem;
+      background-color: var(--w);
+      width: 100%;
+      .scheme-border {
+          min-width: 2.5rem;
+          background-color: #0768d5;
+          display: flex;
+          justify-content: center;
+      }
+      span {
+          display: block;
+          color: var(--w);
+      }
+      p {
+          border: solid 1px #0768d5;
+          width: 100%;
+
+      }
+    }
     .ml-lg {
       margin-left:0;
     }
     @media (min-width: 62em) {
       .ml-lg {
         margin-left:3rem;
+      }
+    }
+    @media (max-width: 62em) {
+      .chart .flex {
+        margin-left:0!important
       }
     }
     .r_col {
@@ -255,6 +334,7 @@ export default {
         .legende_dot{
           width: 1rem;
           height: 1rem;
+          min-width: 1rem;
           border-radius: 50%;
           background-color: #000091;
           display: inline-block;
@@ -268,5 +348,5 @@ export default {
     }
 
   }
-  
+
 </style>

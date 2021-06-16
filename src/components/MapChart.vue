@@ -181,22 +181,25 @@ export default {
       widgetId:"",
       chartId:"",
       display:"",
-      localisation:"",
-      currentValues:[],
-      currentDate:"",
-      names:[],
+      leftColProps:{
+        localisation:"",
+        currentValues:[],
+        currentDate:"",
+        names:[],
+        evolcodes:[],
+        evolvalues:[],
+        min:0,
+        max:0,
+        isMap:true
+      },
+      scaleMin:0,
+      scaleMax:0,
       units:[],
-      evolcodes:[],
-      evolvalues:[],
       chart:undefined,
       loading:true,
       legendLeftMargin: 0,
-      localGeoLabel:"",
       geoFallback:false,
       geoFallbackMsg:"",
-      scaleMin:0,
-      scaleMax:0,
-      map:true,
       tooltip:{
         top:"0px",
         left:"0px",
@@ -242,24 +245,24 @@ export default {
       var geolevel = this.selectedGeoLevel
       var geocode = this.selectedGeoCode
 
-      this.localGeoLabel = this.selectedGeoLabel
+      this.leftColProps["localisation"] = this.selectedGeoLabel
 
       var geoObject
 
       geoObject = this.getGeoObject(geolevel,geocode)
 
-      this.names.length = 0
+      this.leftColProps['names'].length = 0
       this.units.length = 0
-      this.currentValues.length = 0
-      this.evolcodes.length = 0
-      this.evolvalues.length = 0
+      this.leftColProps['currentValues'].length = 0
+      this.leftColProps['evolcodes'].length = 0
+      this.leftColProps['evolvalues'].length = 0
 
-      this.names.push(this.indicateur_data["nom"])
+      this.leftColProps['names'].push(this.indicateur_data["nom"])
       this.units.push(this.indicateur_data["unite"])
-      this.currentValues.push(geoObject["last_value"])
-      this.currentDate = this.convertDateToHuman(geoObject["last_date"])
-      this.evolcodes.push(geoObject["evol_color"])
-      this.evolvalues.push(geoObject["evol_percentage"])
+      this.leftColProps['currentValues'].push(geoObject["last_value"])
+      this.leftColProps['currentDate'] = this.convertDateToHuman(geoObject["last_date"])
+      this.leftColProps['evolcodes'].push(geoObject["evol_color"])
+      this.leftColProps['evolvalues'].push(geoObject["evol_percentage"])
 
       var values = []
 
@@ -269,6 +272,10 @@ export default {
 
       this.scaleMin = Math.min.apply(null, values)
       this.scaleMax = Math.max.apply(null, values)
+
+      this.leftColProps['min'] = this.scaleMin
+      this.leftColProps['max'] = this.scaleMax
+
 
       var x = d3.scaleLinear().domain([this.scaleMin, this.scaleMax]).range(["#ffc700", "#715845"]);
 
