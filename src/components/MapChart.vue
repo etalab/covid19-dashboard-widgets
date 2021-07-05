@@ -74,7 +74,8 @@ export default {
         min: 0,
         max: 0,
         isMap: true,
-        date: ''
+        date: '',
+        trendType: ''
       },
       scaleMin: 0,
       scaleMax: 0,
@@ -143,6 +144,7 @@ export default {
       this.leftColProps.currentDate = this.convertDateToHuman(geoObject.last_date)
       this.leftColProps.evolcodes.push(geoObject.evol_color)
       this.leftColProps.evolvalues.push(geoObject.evol_percentage)
+      this.leftColProps.trendType = this.indicateur_data.trendType
 
       const values = []
 
@@ -156,7 +158,8 @@ export default {
       this.leftColProps.min = this.scaleMin
       this.leftColProps.max = this.scaleMax
 
-      const x = d3.scaleLinear().domain([this.scaleMin, this.scaleMax]).range(['#ffc700', '#715845'])
+      let x
+      this.indicateur_data.trendType === 'normal' ? x = d3.scaleLinear().domain([this.scaleMin, this.scaleMax]).range(['#ffc700', '#715845']) : x = d3.scaleLinear().domain([this.scaleMin, this.scaleMax]).range(['#715845', '#ffc700'])
 
       const parentWidget = document.getElementById(this.widgetId)
 
