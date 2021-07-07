@@ -12,28 +12,28 @@
           </div>
         </div>
         <div class="france_container no_select">
-          <france :onenter="displayTooltip" :onleave="hideTooltip"></france>
+          <france :onclick="changeGeoLevel" :ondblclick="resetGeoFilters" :onenter="displayTooltip" :onleave="hideTooltip"></france>
         </div>
         <div class="om_container fr-grid-row no_select">
           <div class="om fr-col-4 fr-col-sm">
             <span class="fr-text--xs fr-my-1w">Guadeloupe</span>
-            <guadeloupe :onenter="displayTooltip" :onleave="hideTooltip"></guadeloupe>
+            <guadeloupe :onclick="changeGeoLevel" :ondblclick="resetGeoFilters" :onenter="displayTooltip" :onleave="hideTooltip"></guadeloupe>
           </div>
           <div class="om fr-col-4 fr-col-sm">
             <span class="fr-text--xs fr-my-1w">Martinique</span>
-            <martinique :onenter="displayTooltip" :onleave="hideTooltip"></martinique>
+            <martinique :onclick="changeGeoLevel" :ondblclick="resetGeoFilters" :onenter="displayTooltip" :onleave="hideTooltip"></martinique>
           </div>
           <div class="om fr-col-4 fr-col-sm">
             <span class="fr-text--xs fr-my-1w">Guyane</span>
-            <guyane :onenter="displayTooltip" :onleave="hideTooltip"></guyane>
+            <guyane :onclick="changeGeoLevel" :ondblclick="resetGeoFilters" :onenter="displayTooltip" :onleave="hideTooltip"></guyane>
           </div>
           <div class="om fr-col-4 fr-col-sm">
             <span class="fr-text--xs fr-my-1w">La Réunion</span>
-            <reunion :onenter="displayTooltip" :onleave="hideTooltip"></reunion>
+            <reunion :onclick="changeGeoLevel" :ondblclick="resetGeoFilters" :onenter="displayTooltip" :onleave="hideTooltip"></reunion>
           </div>
           <div class="om fr-col-4 fr-col-sm">
             <span class="fr-text--xs fr-my-1w">Mayotte</span>
-            <mayotte :onenter="displayTooltip" :onleave="hideTooltip"></mayotte>
+            <mayotte :onclick="changeGeoLevel" :ondblclick="resetGeoFilters" :onenter="displayTooltip" :onleave="hideTooltip"></mayotte>
           </div>
         </div>
       </div>
@@ -235,8 +235,34 @@ export default {
     hideTooltip () {
       if (isMobile) return
       this.tooltip.display = false
-    }
+    },
+    changeGeoLevel (e) {
+      let clickdep
 
+      clickdep = e.path[1]._prevClass
+      if (clickdep === 'France') {
+        clickdep = e.target._prevClass.replace(/FR-/, '')
+      } else {
+        clickdep = clickdep.replace(/FR-/g, '')
+      }
+
+      const dataObj = this.indicateur_data.departements.find(obj => {
+        return obj.code_level === clickdep
+      })
+
+      const depObj = store.state.dep.find(obj => {
+        return obj.value === dataObj.code_level
+      })
+
+      document.querySelector('#select-dep').value = clickdep
+
+      store.commit('setUserChoices', { level: 'departements', code: clickdep, label: depObj.label })
+    },
+    resetGeoFilters () {
+      document.querySelector('#select-reg').value = ''
+      document.querySelector('#select-dep').value = ''
+      store.commit('setUserChoices', { level: 'France', code: '01', label: 'France entière' })
+    }
   },
 
   watch: {
