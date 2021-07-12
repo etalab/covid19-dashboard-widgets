@@ -6,12 +6,16 @@
       <div class="chart ml-lg">
         <canvas :id="chartId"></canvas>
         <div class="flex fr-mt-3v fr-mb-1v" :style="style">
-          <span class="legende_dot"></span>
-          <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(units[0])}}</p>
+          <span v-if="showLine" class="legende_dot" @click = "ChangeShowLine(1)"></span>
+          <span v-else class="legende_dot" showLine = false @click = "ChangeShowLine(1)"></span>
+          <p v-if="showLine" class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(units[0])}}</p>
+          <p v-else class="fr-text--sm fr-ml-1v fr-mb-0" style="color:#E7E7E7">{{capitalize(units[0])}}</p>
         </div>
         <div class="flex" :style="style">
-          <span class="legende_dot" data-serie="2"></span>
-          <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(units[1])}}</p>
+          <span v-if="showLine2" class="legende_dot" data-serie="2" @click = "ChangeShowLine(2)"></span>
+          <span v-else class="legende_dot" data-serie="2" showLine = false @click = "ChangeShowLine(2)"></span>
+          <p v-if="showLine2" class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0 ">{{capitalize(units[1])}}</p>
+          <p v-else class="fr-text--sm fr-ml-1v fr-mb-0 " style="color:#E7E7E7">{{capitalize(units[1])}}</p>
         </div>
       </div>
     </div>
@@ -37,6 +41,8 @@ export default {
       labels: [],
       dataset: [],
       dataset2: [],
+      showLine: true,
+      showLine2: true,
       widgetId: '',
       chartId: '',
       display: '',
@@ -151,6 +157,18 @@ export default {
       this.chart.update()
     },
 
+    ChangeShowLine (IdLine) {
+      if (IdLine === 1) {
+        this.showLine = !this.showLine
+        this.chart.data.datasets[0].showLine = this.showLine
+        this.chart.update()
+      } else {
+        this.showLine2 = !this.showLine2
+        this.chart.data.datasets[1].showLine = this.showLine2
+        this.chart.update()
+      }
+    },
+
     createChart () {
       const self = this
 
@@ -186,7 +204,10 @@ export default {
               type: 'line',
               pointRadius: 8,
               pointBackgroundColor: 'rgba(0, 0, 0, 0)',
-              pointBorderColor: 'rgba(0, 0, 0, 0)'
+              pointBorderColor: 'rgba(0, 0, 0, 0)',
+              showLine: self.showLine,
+              pointHoverBackgroundColor: 'rgba(0, 0, 145, 1)',
+              pointHoverRadius: 6
             },
             {
               data: self.dataset2,
@@ -195,7 +216,10 @@ export default {
               type: 'line',
               pointRadius: 8,
               pointBackgroundColor: 'rgba(0, 0, 0, 0)',
-              pointBorderColor: 'rgba(0, 0, 0, 0)'
+              pointBorderColor: 'rgba(0, 0, 0, 0)',
+              showLine: self.showLine2,
+              pointHoverBackgroundColor: 'rgba(0, 124, 58, 1)',
+              pointHoverRadius: 6
             }
           ]
         },
@@ -303,10 +327,16 @@ export default {
           height: 1rem;
           border-radius: 50%;
           background-color: #000091;
+          &[showLine=false]{
+            background-color: rgba(0, 0, 145, 0.3)
+          }
           display: inline-block;
           margin-top: 0.25rem;
           &[data-serie="2"]{
             background-color: #007c3a;
+            &[showLine=false]{
+              background-color: rgba(0, 124, 58, 0.3)
+            }
           }
         }
       }
