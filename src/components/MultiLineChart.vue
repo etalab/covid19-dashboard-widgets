@@ -4,7 +4,19 @@
     <LeftCol :props="leftColProps"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
       <div class="chart ml-lg">
-        <canvas :id="chartId"></canvas>
+        <div class="multiline_tooltip" v-if="tooltip.display" :style="{top:tooltip.top,left:tooltip.left}">
+          <div class="tooltip_header">{{tooltip.date}}</div>
+          <div class="tooltip_body">
+            <div class="tooltip_value">
+              <span class="legende_dot"></span>
+              {{convertStringToLocaleNumber(tooltip.value)}} {{units[0]}}
+            </div>
+            <div class="tooltip_value">
+              <span class="legende_dot" data-serie="2"></span>
+              {{convertStringToLocaleNumber(tooltip.value2)}} {{units[1]}}</div>
+          </div>
+        </div>
+        <canvas :id="chartId" @mouseleave = 'hideTooltip'></canvas>
         <div class="flex fr-mt-3v fr-mb-1v" :style="style">
           <span v-if="showLine" class="legende_dot" @click = "ChangeShowLine(1)"></span>
           <span v-else class="legende_dot" showLine = false @click = "ChangeShowLine(1)"></span>
@@ -59,7 +71,15 @@ export default {
       units: [],
       chart: undefined,
       loading: true,
-      legendLeftMargin: 0
+      legendLeftMargin: 0,
+      tooltip: {
+        top: '0px',
+        left: '0px',
+        display: false,
+        value: 0,
+        value2: 0,
+        date: ''
+      }
     }
   },
   props: {
@@ -82,7 +102,6 @@ export default {
 
   },
   methods: {
-
     async getData () {
       const promise1 = store.dispatch('getData', this.indicateur1).then(data => {
         this.indicateur_data = data
@@ -168,7 +187,9 @@ export default {
         this.chart.update()
       }
     },
-
+    hideTooltip () {
+      this.tooltip.display = false
+    },
     createChart () {
       const self = this
 
@@ -227,6 +248,21 @@ export default {
           animation: {
             easing: 'easeInOutBack'
           },
+          onHover: (e) => {
+            if (this.chart.getElementsAtEvent(e).length !== 0) {
+              const index = this.chart.getElementsAtEvent(e)[0]._index
+              const pxTop = Math.min(this.chart.scales['y-axis-0'].getPixelForValue(this.dataset[index], index), this.chart.scales['y-axis-0'].getPixelForValue(this.dataset2[index], index))
+              this.tooltip.top = (e.target.getBoundingClientRect().top + pxTop - 50) + 'px'
+              this.tooltip.left = (e.target.getBoundingClientRect().left + this.chart.scales['x-axis-0'].getPixelForTick(index) + 25) + 'px'
+              this.tooltip.display = true
+
+              this.tooltip.value = this.dataset[index]
+              this.tooltip.value2 = this.dataset2[index]
+              this.tooltip.date = this.labels[index]
+            } else {
+              this.tooltip.display = false
+            }
+          },
           scales: {
             xAxes: [{
               gridLines: {
@@ -260,20 +296,7 @@ export default {
             display: false
           },
           tooltips: {
-            displayColors: false,
-            backgroundColor: '#6b6b6b',
-            callbacks: {
-              label: function (tooltipItems) {
-                const int = self.convertFloatToHuman(tooltipItems.value)
-                return int + ' ' + self.units[tooltipItems.datasetIndex]
-              },
-              title: function (tooltipItems) {
-                return tooltipItems[0].label
-              },
-              labelTextColor: function () {
-                return '#eeeeee'
-              }
-            }
+            enabled: false
           }
         }
       })
@@ -344,6 +367,55 @@ export default {
 
     .chart canvas {
       max-width:100%;
+    }
+    .multiline_tooltip{
+      width: 165px;
+      height: auto;
+      background-color: white;
+      position: fixed;
+      z-index: 999;
+      border-radius: 4px;
+      box-shadow: 0 8px 16px 0 rgba(22, 22, 22, 0.12), 0 8px 16px -16px rgba(22, 22, 22, 0.32);
+      text-align: left;
+      pointer-events: none;
+      font-size: 0.75rem;
+      .tooltip_header{
+        width: 100%;
+        height: 30px;
+        background-color: #f6f6f6;
+        color:#6b6b6b;
+        padding-left: 5px;
+        padding-top: 3px;
+      }
+      .tooltip_body{
+        padding-left: 5px;
+        padding-bottom: 5px;
+        line-height: 1.67;
+        .legende_dot{
+          width: 0.7rem;
+          height: 0.7rem;
+          border-radius: 50%;
+          background-color: #000091;
+          &[showLine=false]{
+            background-color: rgba(0, 0, 145, 0.3)
+          }
+          display: inline-block;
+          margin-top: 0.25rem;
+          &[data-serie="2"]{
+            background-color: #007c3a;
+            &[showLine=false]{
+              background-color: rgba(0, 124, 58, 0.3)
+            }
+          }
+        }
+        .tooltip_place{
+          color:#242424;
+        }
+        .tooltip_value{
+          color:#242424;
+          font-weight: bold;
+        }
+      }
     }
 
   }
