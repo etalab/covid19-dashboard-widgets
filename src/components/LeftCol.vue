@@ -49,10 +49,10 @@ export default {
   mixins: [mixin],
   data () {
     return {
-      isDown: [false, false],
-      isGreen: [false, false],
-      isRed: [false, false],
-      isBlue: [false, false]
+      isDown: [],
+      isGreen: [],
+      isRed: [],
+      isBlue: []
     }
   },
   props: {

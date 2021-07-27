@@ -10,6 +10,8 @@ import MultiLineChart from './components/MultiLineChart'
 import BarChart from './components/BarChart'
 import MapChart from './components/MapChart'
 import GeoList from './components/GeoList'
+import ThreeLineChart from './components/ThreeLineChart'
+import NewMultiLineChart from './components/NewMultiLineChart'
 
 import vueCustomElement from 'vue-custom-element'
 Vue.use(getData(store))
@@ -25,3 +27,5 @@ Vue.customElement('multiline-chart', MultiLineChart)
 Vue.customElement('bar-chart', BarChart)
 Vue.customElement('map-chart', MapChart)
 Vue.customElement('geo-list', GeoList)
+Vue.customElement('threeline-chart', ThreeLineChart)
+Vue.customElement('new-multiline-chart', NewMultiLineChart)

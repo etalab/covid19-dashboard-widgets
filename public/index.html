@@ -167,12 +167,6 @@
               <!-- mimic complete integration inside a tab -->
               <div class="box fr-mt-6w">
                 <div id="tabpanel-0-2-panel" class="fr-tabs__panel fr-p-3w fr-tabs__panel--selected" role="tabpanel" aria-labelledby="tabpanel-0-2" tabindex="0" style="">
-                  <map-chart indicateur="vaccins_vaccines_couv_majeurs"></map-chart>
-                </div>
-              </div>
-
-              <div class="box fr-mt-6w">
-                <div id="tabpanel-0-2-panel" class="fr-tabs__panel fr-p-3w fr-tabs__panel--selected" role="tabpanel" aria-labelledby="tabpanel-0-2" tabindex="0" style="">
                   <map-chart indicateur="taux_incidence"></map-chart>
                 </div>
               </div>
@@ -285,8 +279,26 @@
                 <line-chart indicateur="vaccins_vaccines"></line-chart>
               </div>
         
-        
-        
+              <div class="chart_container">
+                <line-chart indicateur="prop_variant_A"></line-chart>
+              </div>
+
+              <div class="chart_container">
+                <line-chart indicateur="prop_variant_B"></line-chart>
+              </div>
+
+              <div class="chart_container">
+                <line-chart indicateur="prop_variant_C"></line-chart>
+              </div>
+
+              <div class="chart_container">
+                <threeline-chart indicateur1="prop_variant_A" indicateur2="prop_variant_B" indicateur3="prop_variant_C"></threeline-chart>
+              </div>
+
+              <div class="chart_container">
+                <new-multiline-chart indicateurs="prop_variant_A prop_variant_B prop_variant_C"></new-multiline-chart>
+              </div>        
+
               <div class="box_container">
                 <data-box indicateur="cas_positifs"></data-box>
               </div>

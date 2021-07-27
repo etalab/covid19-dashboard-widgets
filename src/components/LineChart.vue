@@ -32,7 +32,7 @@
 
 <script>
 import store from '@/store'
-import Chart from 'chart.js'
+import { Chart } from 'chart.js'
 import LeftCol from '@/components/LeftCol'
 import { mixin } from '@/utils.js'
 
@@ -67,8 +67,8 @@ export default {
       geoFallback: false,
       geoFallbackMsg: '',
       tooltip: {
-        top: '0px',
-        left: '0px',
+        top: '100px',
+        left: '100px',
         display: false,
         value: 0,
         date: ''
@@ -100,7 +100,6 @@ export default {
         this.createChart()
       })
     },
-
     updateData () {
       const self = this
 
@@ -212,6 +211,7 @@ export default {
             easing: 'easeInOutBack'
           },
           onHover: (e) => {
+            console.log(e)
             if (this.chart.getElementsAtEvent(e).length !== 0) {
               const index = this.chart.getElementsAtEvent(e)[0]._index
               const pxTop = this.chart.scales['y-axis-0'].getPixelForValue(this.dataset[index])
@@ -258,6 +258,8 @@ export default {
             display: false
           },
           tooltips: {
+            intersect: false,
+            axis: 'x',
             enabled: false
           }
         }
