@@ -346,6 +346,7 @@ export default {
       .flex{
         display: flex;
         .legende_dot{
+          min-width: 1rem;
           width: 1rem;
           height: 1rem;
           border-radius: 50%;

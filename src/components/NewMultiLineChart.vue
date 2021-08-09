@@ -7,7 +7,7 @@
         <div class="multiline_tooltip" v-if="tooltip.display" :style="{top:tooltip.top,left:tooltip.left}">
           <div class="tooltip_header">{{tooltip.date}}</div>
           <div class="tooltip_body">
-            <div class="tooltip_value" v-for="index in nbIndicateurs" :key="index">
+            <div class="tooltip_value" v-for="index in nbIndicateurs" :key="index"  v-bind:style="{'display':tooltip.listDisplay[index - 1]}">
               <span class="legende_dot" v-bind:style="{'background-color':colors[index - 1]}"></span>
               {{convertStringToLocaleNumber(tooltip.values[index - 1])}} {{units[index- 1]}}
             </div>
@@ -16,7 +16,9 @@
         <canvas :id="chartId" @mouseleave = 'hideTooltip'></canvas>
         <div v-for="index in nbIndicateurs" :key="index" class="flex fr-mt-3v fr-mb-1v" :style="style">
           <span class="legende_dot" v-bind:style="{'background-color':colors_legend[index-1]}" @click = "ChangeShowLine(index)"></span>
-          <p v-bind:class="classLegend[index - 1]" v-bind:style="{'color':styleLegend[index - 1]}">{{capitalize(units[index - 1])}}</p>
+          <p v-bind:class="classLegend[index - 1]" v-bind:style="{'color':styleLegend[index - 1]}" @click = "ChangeShowLine(index)">
+            {{capitalize(units[index - 1])}}
+          </p>
         </div>
       </div>
     </div>
@@ -71,7 +73,8 @@ export default {
         left: '0px',
         display: false,
         values: [],
-        date: ''
+        date: '',
+        listDisplay: []
       }
     }
   },
@@ -116,11 +119,15 @@ export default {
       this.showLine.length = this.nbIndicateurs
       this.showLine = this.showLine.fill(true)
 
+      this.tooltip.listDisplay.length = this.nbIndicateurs
+      this.tooltip.listDisplay = this.tooltip.listDisplay.fill('')
+
       this.classLegend.length = this.nbIndicateurs
       this.classLegend = this.classLegend.fill('fr-text--sm fr-text--bold fr-ml-1v fr-mb-0')
 
-      this.colors = chroma.brewer.Set1.slice(0, this.nbIndicateurs)
-      this.colors_legend = chroma.brewer.Set1.slice(0, this.nbIndicateurs)
+      const listColors = ['#000091', '#007c3a'].concat(chroma.brewer.Set2.reverse())
+      this.colors = listColors.slice(0, this.nbIndicateurs)
+      this.colors_legend = listColors.slice(0, this.nbIndicateurs)
       this.colors_gradient.length = 0
       this.colors.forEach(function (col) {
         self.colors_gradient.push(chroma(col).alpha(0.3).hex())
@@ -214,22 +221,24 @@ export default {
       const i = IdLine - 1
       this.showLine[i] = !this.showLine[i]
       this.chart.data.datasets[i].showLine = this.showLine[i]
-      this.chart.update()
       this.colors_legend.length = 0
       this.classLegend.length = 0
       this.styleLegend.length = 0
+      this.tooltip.listDisplay.length = 0
       this.colors.forEach(function (col, index) {
         if (self.showLine[index]) {
+          self.tooltip.listDisplay.push('')
           self.colors_legend.push(col)
           self.classLegend.push('fr-text--sm fr-text--bold fr-ml-1v fr-mb-0')
           self.styleLegend.push('#1E1E1E')
         } else {
+          self.tooltip.listDisplay.push('none')
           self.colors_legend.push(chroma(col).alpha(0.3).hex())
           self.classLegend.push('fr-text--sm fr-ml-1v fr-mb-0')
           self.styleLegend.push('#E7E7E7')
         }
       })
-      console.log(this.classLegend)
+      this.chart.update()
     },
     hideTooltip () {
       this.tooltip.display = false
@@ -251,7 +260,8 @@ export default {
         },
         options: {
           animation: {
-            easing: 'easeInOutBack'
+            easing: 'easeInOutBack',
+            duration: 0
           },
           onHover: (e) => {
             if (this.chart.getElementsAtEvent(e).length !== 0) {
@@ -355,27 +365,12 @@ export default {
       .flex{
         display: flex;
         .legende_dot{
+          min-width: 1rem;
           width: 1rem;
           height: 1rem;
           border-radius: 50%;
-          background-color: #000091;
-          &[showLine=false]{
-            background-color: rgba(0, 0, 145, 0.3)
-          }
           display: inline-block;
           margin-top: 0.25rem;
-          &[data-serie="2"]{
-            background-color: #007c3a;
-            &[showLine=false]{
-              background-color: rgba(0, 124, 58, 0.3)
-            }
-          }
-          &[data-serie="3"]{
-            background-color: #FF0000;
-            &[showLine=false]{
-              background-color: rgba(255, 0, 0, 0.3)
-            }
-          }
         }
       }
     }

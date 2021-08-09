@@ -4,7 +4,7 @@
     <LeftCol :props="leftColProps"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
       <div class="map m-lg">
-        <div class="map_tooltip" v-if="tooltip.display" :style="{top:tooltip.top,left:tooltip.left}">
+          <div ref="mapTooltip" class="map_tooltip" :style="{top:tooltip.top,left:tooltip.left,display:tooltip.display,visibility:tooltip.visibility}">
           <div class="tooltip_header">{{convertDateToHuman(tooltip.date)}}</div>
           <div class="tooltip_body">
             <div class="tooltip_place">{{tooltip.place}}</div>
@@ -88,7 +88,8 @@ export default {
       tooltip: {
         top: '0px',
         left: '0px',
-        display: false,
+        display: 'none',
+        visibility: 'hidden',
         value: 0,
         date: '',
         place: ''
@@ -227,14 +228,31 @@ export default {
       this.tooltip.date = dataObj.last_date
       this.tooltip.place = depObj.label
 
-      this.tooltip.top = (e.target.getBoundingClientRect().top - 75) + 'px'
-      this.tooltip.left = (e.target.getBoundingClientRect().left + 15) + 'px'
-      this.tooltip.display = true
+      this.tooltip.display = 'block'
+      const tooltipHeight = this.$refs.mapTooltip.clientHeight
+      const tooltipWidth = this.$refs.mapTooltip.clientWidth
+      const containerRect = e.target.getBoundingClientRect()
+      // const stickyMenuHeight = document.querySelector('.submenu').offsetHeight
+      const stickyMenuHeight = 10
+      let tooltipX = containerRect.left + (containerRect.width - tooltipWidth) / 2
+      let tooltipY = containerRect.top - tooltipHeight - 15
+      if ((tooltipX + tooltipWidth) > window.innerWidth) {
+        tooltipX = containerRect.right - tooltipWidth
+      } else if (tooltipX < 0) {
+        tooltipX = containerRect.left
+      }
+      if (tooltipY - stickyMenuHeight < 0) {
+        tooltipY = containerRect.bottom + 15
+      }
+      this.tooltip.top = tooltipY + 'px'
+      this.tooltip.left = tooltipX + 'px'
+      this.tooltip.visibility = 'visible'
     },
 
     hideTooltip () {
       if (isMobile) return
-      this.tooltip.display = false
+      this.tooltip.visibility = 'hidden'
+      this.tooltip.display = 'none'
     },
     changeGeoLevel (e) {
       let clickdep
