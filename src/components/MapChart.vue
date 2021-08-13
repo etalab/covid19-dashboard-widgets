@@ -69,6 +69,7 @@ export default {
         currentValues: [],
         currentDate: '',
         names: [],
+        units: [],
         evolcodes: [],
         evolvalues: [],
         min: 0,
@@ -134,12 +135,14 @@ export default {
       this.leftColProps.date = this.convertDateToHuman(geoObject.last_date)
 
       this.leftColProps.names.length = 0
+      this.leftColProps.units.length = 0
       this.units.length = 0
       this.leftColProps.currentValues.length = 0
       this.leftColProps.evolcodes.length = 0
       this.leftColProps.evolvalues.length = 0
 
       this.leftColProps.names.push(this.indicateur_data.nom)
+      this.leftColProps.units.push(this.indicateur_data.unite)
       this.units.push(this.indicateur_data.unite)
       this.leftColProps.currentValues.push(geoObject.last_value)
       this.leftColProps.currentDate = this.convertDateToHuman(geoObject.last_date)
@@ -229,20 +232,14 @@ export default {
       this.tooltip.place = depObj.label
 
       this.tooltip.display = 'block'
-      const tooltipHeight = this.$refs.mapTooltip.clientHeight
-      const tooltipWidth = this.$refs.mapTooltip.clientWidth
       const containerRect = e.target.getBoundingClientRect()
-      // const stickyMenuHeight = document.querySelector('.submenu').offsetHeight
-      const stickyMenuHeight = 10
-      let tooltipX = containerRect.left + (containerRect.width - tooltipWidth) / 2
-      let tooltipY = containerRect.top - tooltipHeight - 15
-      if ((tooltipX + tooltipWidth) > window.innerWidth) {
-        tooltipX = containerRect.right - tooltipWidth
-      } else if (tooltipX < 0) {
-        tooltipX = containerRect.left
+      let tooltipX = (containerRect.left + containerRect.right) / 2 - 165 / 2
+      let tooltipY = containerRect.top - 70
+      if ((tooltipX + 165 / 2) > window.innerWidth) {
+        tooltipX = containerRect.right - 165
       }
-      if (tooltipY - stickyMenuHeight < 0) {
-        tooltipY = containerRect.bottom + 15
+      if (tooltipY + 70 > window.innerHeight) {
+        tooltipY = containerRect.bottom
       }
       this.tooltip.top = tooltipY + 'px'
       this.tooltip.left = tooltipX + 'px'
