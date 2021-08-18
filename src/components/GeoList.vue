@@ -55,9 +55,10 @@ export default {
     changeGeoLevel (level, event) {
       let originalObj
       let geoLabel
+      const self = this
 
       if (level === 'departements') {
-        document.querySelector('#select-reg').value = ''
+        // document.querySelector('#select-reg').value = ''
         originalObj = store.state.dep.find(obj => {
           return obj.value === event.target.value
         })
@@ -68,6 +69,14 @@ export default {
           return obj.value === event.target.value
         })
         geoLabel = originalObj.label
+
+        this.departements.length = 0
+        store.state.dep.forEach(function (d) {
+          if (d.region_value === event.target.value) {
+            const depObj = { label: d.label, value: d.value }
+            self.departements.push(depObj)
+          }
+        })
       }
 
       store.commit('setUserChoices', { level: level, code: event.target.value, label: geoLabel })
@@ -77,6 +86,7 @@ export default {
       document.querySelector('#select-reg').value = ''
       document.querySelector('#select-dep').value = ''
       store.commit('setUserChoices', { level: 'France', code: '01', label: 'France entière' })
+      this.populateLists()
     }
 
   },

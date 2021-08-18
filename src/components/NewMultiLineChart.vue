@@ -1,29 +1,24 @@
 <template>
 
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
-      <div class="fr-warning" v-if="geoFallback">
-        <div class="scheme-border">
-            <span class="fr-fi-information-fill fr-px-1w fr-py-3v" aria-hidden="true"></span>
-        </div>
-        <p class="fr-text--sm fr-mb-0 fr-p-3v">{{geoFallbackMsg}}
-        </p>
-    </div>
     <LeftCol :props="leftColProps"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
       <div class="chart ml-lg">
-        <div class="linechart_tooltip" v-if="tooltip.display" :style="{top:tooltip.top,left:tooltip.left}">
+        <div class="multiline_tooltip" v-if="tooltip.display" :style="{top:tooltip.top,left:tooltip.left}">
           <div class="tooltip_header">{{tooltip.date}}</div>
           <div class="tooltip_body">
-            <div class="tooltip_value">
-              <span class="legende_dot"></span>
-              {{convertStringToLocaleNumber(tooltip.value)}} {{units[0]}}
+            <div class="tooltip_value" v-for="index in nbIndicateurs" :key="index"  v-bind:style="{'display':tooltip.listDisplay[index - 1]}">
+              <span class="legende_dot" v-bind:style="{'background-color':colors[index - 1]}"></span>
+              {{convertStringToLocaleNumber(tooltip.values[index - 1])}} {{units[index- 1]}}
             </div>
           </div>
         </div>
-        <canvas :id="chartId"></canvas>
-        <div class="flex fr-mt-3v" :style="style">
-          <span class="legende_dot"></span>
-          <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(units[0])}}</p>
+        <canvas :id="chartId" @mouseleave = 'hideTooltip'></canvas>
+        <div v-for="index in nbIndicateurs" :key="index" class="flex fr-mt-3v fr-mb-1v" :style="style">
+          <span class="legende_dot" v-bind:style="{'background-color':colors_legend[index-1]}" @click = "ChangeShowLine(index)"></span>
+          <p v-bind:class="classLegend[index - 1]" v-bind:style="{'color':styleLegend[index - 1]}" @click = "ChangeShowLine(index)">
+            {{capitalize(units[index - 1])}}
+          </p>
         </div>
       </div>
     </div>
@@ -32,21 +27,30 @@
 
 <script>
 import store from '@/store'
-import { Chart } from 'chart.js'
+import Chart from 'chart.js'
+import chroma from 'chroma-js'
 import LeftCol from '@/components/LeftCol'
 import { mixin } from '@/utils.js'
 
 export default {
-  name: 'LineChart',
+  name: 'MultiLineChart',
   components: {
     LeftCol
   },
   mixins: [mixin],
   data () {
     return {
-      indicateur_data: undefined,
+      listIndicateurs: [],
+      nbIndicateurs: undefined,
+      colors: [],
+      colors_legend: [],
+      colors_gradient: [],
+      indicateur_data: [],
+      classLegend: [],
+      styleLegend: [],
       labels: [],
       dataset: [],
+      showLine: [],
       widgetId: '',
       chartId: '',
       display: '',
@@ -64,19 +68,18 @@ export default {
       chart: undefined,
       loading: true,
       legendLeftMargin: 0,
-      geoFallback: false,
-      geoFallbackMsg: '',
       tooltip: {
-        top: '100px',
-        left: '100px',
+        top: '0px',
+        left: '0px',
         display: false,
-        value: 0,
-        date: ''
+        values: [],
+        date: '',
+        listDisplay: []
       }
     }
   },
   props: {
-    indicateur: String
+    indicateurs: String
   },
   computed: {
     selectedGeoLevel () {
@@ -94,47 +97,49 @@ export default {
   },
   methods: {
     async getData () {
-      store.dispatch('getData', this.indicateur).then(data => {
-        this.indicateur_data = data
+      this.listIndicateurs = this.indicateurs.split(' ')
+      this.nbIndicateurs = this.listIndicateurs.length
+      const promises = []
+      this.indicateur_data.length = 0
+      promises.length = 0
+      for (let i = 0; i < this.nbIndicateurs; i++) {
+        const promise = store.dispatch('getData', this.listIndicateurs[i]).then(data => {
+          this.indicateur_data.push(data)
+        })
+        promises.push(promise)
+      }
+      Promise.all(promises).then((values) => {
         this.loading = false
         this.createChart()
       })
     },
+
     updateData () {
       const self = this
+      this.showLine.length = this.nbIndicateurs
+      this.showLine = this.showLine.fill(true)
+
+      this.tooltip.listDisplay.length = this.nbIndicateurs
+      this.tooltip.listDisplay = this.tooltip.listDisplay.fill('')
+
+      this.classLegend.length = this.nbIndicateurs
+      this.classLegend = this.classLegend.fill('fr-text--sm fr-text--bold fr-ml-1v fr-mb-0')
+
+      const listColors = ['#000091', '#007c3a', '#A558A0'].concat(chroma.brewer.Set2.reverse())
+      this.colors = listColors.slice(0, this.nbIndicateurs)
+      this.colors_legend = listColors.slice(0, this.nbIndicateurs)
+      this.colors_gradient.length = 0
+      this.colors.forEach(function (col) {
+        self.colors_gradient.push(chroma(col).alpha(0.3).hex())
+      })
+
+      this.leftColProps.localisation = this.selectedGeoLabel
 
       const geolevel = this.selectedGeoLevel
       const geocode = this.selectedGeoCode
 
-      this.leftColProps.localisation = this.selectedGeoLabel
-
       let geoObject
-
-      geoObject = this.getGeoObject(geolevel, geocode)
-      this.leftColProps.date = this.convertDateToHuman(geoObject.last_date)
-
-      if (typeof geoObject === 'undefined') {
-        if (geolevel === 'regions') {
-          geoObject = this.getGeoObject('France', '01')
-          this.leftColProps.localisation = 'France entière'
-          this.geoFallback = true
-          this.geoFallbackMsg = 'Affichage des résultats au niveau national, faute de données au niveau régional'
-        } else {
-          const depObj = store.state.dep.find(obj => {
-            return obj.value === geocode
-          })
-          geoObject = this.getGeoObject('regions', depObj.region_value)
-          this.leftColProps.localisation = depObj.region
-          this.geoFallback = true
-          this.geoFallbackMsg = 'Affichage des résultats au niveau régional, faute de données au niveau départemental'
-          if (typeof geoObject === 'undefined') {
-            geoObject = this.getGeoObject('France', '01')
-            this.leftColProps.localisation = 'France entière'
-            this.geoFallback = true
-            this.geoFallbackMsg = 'Affichage des résultats au niveau national, faute de données au niveau régional ou départemental'
-          }
-        }
-      }
+      const listGeoObject = []
 
       this.leftColProps.names.length = 0
       this.units.length = 0
@@ -142,32 +147,68 @@ export default {
       this.leftColProps.evolcodes.length = 0
       this.leftColProps.evolvalues.length = 0
 
-      this.leftColProps.names.push(this.indicateur_data.nom)
-      this.units.push(this.indicateur_data.unite)
-      this.leftColProps.currentValues.push(geoObject.last_value)
-      this.leftColProps.currentDate = this.convertDateToHuman(geoObject.last_date)
-      this.leftColProps.evolcodes.push(geoObject.evol_color)
-      this.leftColProps.evolvalues.push(geoObject.evol_percentage)
-
       this.labels.length = 0
       this.dataset.length = 0
 
-      geoObject.values.forEach(function (d) {
-        self.labels.push(self.convertDateToHuman(d.date))
-        self.dataset.push((d.value))
-      })
-    },
+      const data = []
+      data.length = 0
 
-    getGeoObject (geolevel, geocode) {
-      let geoObject
-      if (geolevel === 'France') {
-        geoObject = this.indicateur_data.france[0]
-      } else {
-        geoObject = this.indicateur_data[geolevel].find(obj => {
-          return obj.code_level === geocode
-        })
+      for (let i = 0; i < this.nbIndicateurs; i++) {
+        data[i] = []
+        if (geolevel === 'France') {
+          geoObject = this.indicateur_data[i].france[0]
+        } else {
+          geoObject = this.indicateur_data[i][geolevel].find(obj => {
+            return obj.code_level === geocode
+          })
+        }
+
+        this.leftColProps.names.push(this.indicateur_data[i].nom)
+        this.units.push(this.indicateur_data[i].unite)
+        this.leftColProps.currentValues.push(geoObject.last_value)
+        this.leftColProps.evolcodes.push(geoObject.evol_color)
+        this.leftColProps.evolvalues.push(geoObject.evol_percentage)
+        listGeoObject.push(geoObject)
       }
-      return geoObject
+      this.leftColProps.date = this.convertDateToHuman(listGeoObject[0].last_date)
+      this.leftColProps.currentDate = this.convertDateToHuman(listGeoObject[0].last_date)
+
+      listGeoObject[0].values.forEach(function (d) {
+        self.labels.push(self.convertDateToHuman(d.date))
+        data[0].push((d.value))
+
+        for (let i = 1; i < self.nbIndicateurs; i++) {
+          const correspondingValue = listGeoObject[i].values.find(obj => {
+            return obj.date === d.date
+          })
+
+          data[i].push(correspondingValue.value)
+        }
+      })
+
+      const ctx = document.getElementById(self.chartId).getContext('2d')
+      let gradientFill
+
+      for (let i = 0; i < this.nbIndicateurs; i++) {
+        this.display === 'big' ? gradientFill = ctx.createLinearGradient(0, 0, 0, 500) : gradientFill = ctx.createLinearGradient(0, 0, 0, 250)
+        gradientFill.addColorStop(0, this.colors_gradient[i])
+        gradientFill.addColorStop(0.6, 'rgba(245, 245, 255, 0)')
+
+        const tmp = {
+          data: data[i],
+          backgroundColor: gradientFill,
+          borderColor: self.colors[i],
+          type: 'line',
+          pointRadius: 8,
+          pointBackgroundColor: 'rgba(0, 0, 0, 0)',
+          pointBorderColor: 'rgba(0, 0, 0, 0)',
+          showLine: self.showLine[i],
+          pointHoverBackgroundColor: self.colors[i],
+          pointHoverRadius: 6
+        }
+
+        this.dataset.push(tmp)
+      }
     },
 
     updateChart () {
@@ -175,6 +216,33 @@ export default {
       this.chart.update()
     },
 
+    ChangeShowLine (IdLine) {
+      const self = this
+      const i = IdLine - 1
+      this.showLine[i] = !this.showLine[i]
+      this.chart.data.datasets[i].showLine = this.showLine[i]
+      this.colors_legend.length = 0
+      this.classLegend.length = 0
+      this.styleLegend.length = 0
+      this.tooltip.listDisplay.length = 0
+      this.colors.forEach(function (col, index) {
+        if (self.showLine[index]) {
+          self.tooltip.listDisplay.push('')
+          self.colors_legend.push(col)
+          self.classLegend.push('fr-text--sm fr-text--bold fr-ml-1v fr-mb-0')
+          self.styleLegend.push('#1E1E1E')
+        } else {
+          self.tooltip.listDisplay.push('none')
+          self.colors_legend.push(chroma(col).alpha(0.3).hex())
+          self.classLegend.push('fr-text--sm fr-ml-1v fr-mb-0')
+          self.styleLegend.push('#E7E7E7')
+        }
+      })
+      this.chart.update()
+    },
+    hideTooltip () {
+      this.tooltip.display = false
+    },
     createChart () {
       const self = this
 
@@ -185,30 +253,15 @@ export default {
 
       const ctx = document.getElementById(self.chartId).getContext('2d')
 
-      let gradientFill
-      this.display === 'big' ? gradientFill = ctx.createLinearGradient(0, 0, 0, 500) : gradientFill = ctx.createLinearGradient(0, 0, 0, 250)
-
-      gradientFill.addColorStop(0, 'rgba(218, 218, 254, 0.6)')
-      gradientFill.addColorStop(0.6, 'rgba(245, 245, 255, 0)')
-
       this.chart = new Chart(ctx, {
         data: {
           labels: self.labels,
-          datasets: [{
-            data: self.dataset,
-            backgroundColor: gradientFill,
-            borderColor: '#000091',
-            type: 'line',
-            pointRadius: 8,
-            pointBackgroundColor: 'rgba(0, 0, 0, 0)',
-            pointBorderColor: 'rgba(0, 0, 0, 0)',
-            pointHoverBackgroundColor: 'rgba(0, 0, 145, 1)',
-            pointHoverRadius: 6
-          }]
+          datasets: self.dataset
         },
         options: {
           animation: {
-            easing: 'easeInOutBack'
+            easing: 'easeInOutBack',
+            duration: 0
           },
           scales: {
             xAxes: [{
@@ -248,7 +301,7 @@ export default {
             callbacks: {
               label: function (tooltipItems) {
                 const int = self.convertFloatToHuman(tooltipItems.value)
-                return int + ' ' + self.units[0]
+                return int + ' ' + self.units[tooltipItems.datasetIndex]
               },
               title: function (tooltipItems) {
                 return tooltipItems[0].label
@@ -288,28 +341,6 @@ export default {
 <style scoped lang="scss">
 
   .widget_container{
-    .fr-warning {
-      display: flex;
-      min-width: 100%;
-      margin: 0 0 0.75rem;
-      background-color: var(--w);
-      width: 100%;
-      .scheme-border {
-          min-width: 2.5rem;
-          background-color: #0768d5;
-          display: flex;
-          justify-content: center;
-      }
-      span {
-          display: block;
-          color: var(--w);
-      }
-      p {
-          border: solid 1px #0768d5;
-          width: 100%;
-
-      }
-    }
     .ml-lg {
       margin-left:0;
     }
@@ -331,9 +362,7 @@ export default {
           min-width: 1rem;
           width: 1rem;
           height: 1rem;
-          min-width: 1rem;
           border-radius: 50%;
-          background-color: #000091;
           display: inline-block;
           margin-top: 0.25rem;
         }
@@ -343,7 +372,7 @@ export default {
     .chart canvas {
       max-width:100%;
     }
-    .linechart_tooltip{
+    .multiline_tooltip{
       width: 165px;
       height: auto;
       background-color: white;
@@ -371,9 +400,6 @@ export default {
           width: 0.7rem;
           height: 0.7rem;
           border-radius: 50%;
-          background-color: #000091;
-          display: inline-block;
-          margin-top: 0.25rem;
         }
         .tooltip_place{
           color:#242424;
@@ -384,6 +410,7 @@ export default {
         }
       }
     }
+
   }
 
 </style>

@@ -32,7 +32,8 @@
         <div v-else class="sep-viz fr-my-4w fr-my-md-3w"></div>
         <div class="scale" v-if="props['isMap']">
           <p class="l_box_title fr-text--xs fr-mb-1w">Légende</p>
-          <div class="scale_container"></div>
+          <div v-if="props['trendType'] === 'normal' " class="scale_container_normal"></div>
+          <div v-else class="scale_container_abnormal"></div>
           <div>
             <span class="min fr-text--sm fr-text--bold fr-mb-0">{{convertFloatToHuman(props['min'])}}</span>
             <span class="max fr-text--sm fr-text--bold fr-mb-0">{{convertFloatToHuman(props['max'])}}</span>
@@ -48,10 +49,10 @@ export default {
   mixins: [mixin],
   data () {
     return {
-      isDown: [false, false],
-      isGreen: [false, false],
-      isRed: [false, false],
-      isBlue: [false, false]
+      isDown: [],
+      isGreen: [],
+      isRed: [],
+      isBlue: []
     }
   },
   props: {
@@ -161,10 +162,15 @@ export default {
       }
     }
     .scale{
-      .scale_container{
+      .scale_container_normal{
         height: 1.5rem;
         background-color: red;
         background: linear-gradient(90deg, rgba(255, 199, 0,1) 0%, rgba(113, 88, 69, 1) 100%);
+      }
+      .scale_container_abnormal{
+        height: 1.5rem;
+        background-color: red;
+        background: linear-gradient(90deg, rgba(113, 88, 69, 1) 0%, rgba(255, 199, 0,1) 100%);
       }
       div:last-child {
         display:flex;
