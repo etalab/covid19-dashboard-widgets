@@ -210,21 +210,6 @@ export default {
           animation: {
             easing: 'easeInOutBack'
           },
-          onHover: (e) => {
-            console.log(e)
-            if (this.chart.getElementsAtEvent(e).length !== 0) {
-              const index = this.chart.getElementsAtEvent(e)[0]._index
-              const pxTop = this.chart.scales['y-axis-0'].getPixelForValue(this.dataset[index])
-              this.tooltip.top = (e.target.getBoundingClientRect().top + pxTop - 50) + 'px'
-              this.tooltip.left = (e.target.getBoundingClientRect().left + this.chart.scales['x-axis-0'].getPixelForTick(index) + 25) + 'px'
-              this.tooltip.display = true
-
-              this.tooltip.value = this.dataset[index]
-              this.tooltip.date = this.labels[index]
-            } else {
-              this.tooltip.display = false
-            }
-          },
           scales: {
             xAxes: [{
               gridLines: {
@@ -258,9 +243,20 @@ export default {
             display: false
           },
           tooltips: {
-            intersect: false,
-            axis: 'x',
-            enabled: false
+            displayColors: false,
+            backgroundColor: '#6b6b6b',
+            callbacks: {
+              label: function (tooltipItems) {
+                const int = self.convertFloatToHuman(tooltipItems.value)
+                return int + ' ' + self.units[0]
+              },
+              title: function (tooltipItems) {
+                return tooltipItems[0].label
+              },
+              labelTextColor: function () {
+                return '#eeeeee'
+              }
+            }
           }
         }
       })
@@ -332,6 +328,7 @@ export default {
       .flex{
         display: flex;
         .legende_dot{
+          min-width: 1rem;
           width: 1rem;
           height: 1rem;
           min-width: 1rem;
@@ -370,6 +367,7 @@ export default {
         padding-bottom: 5px;
         line-height: 1.67;
         .legende_dot{
+          min-width: 0.7rem;
           width: 0.7rem;
           height: 0.7rem;
           border-radius: 50%;

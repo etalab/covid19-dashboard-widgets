@@ -125,7 +125,7 @@ export default {
       this.classLegend.length = this.nbIndicateurs
       this.classLegend = this.classLegend.fill('fr-text--sm fr-text--bold fr-ml-1v fr-mb-0')
 
-      const listColors = ['#000091', '#007c3a'].concat(chroma.brewer.Set2.reverse())
+      const listColors = ['#000091', '#007c3a', '#A558A0'].concat(chroma.brewer.Set2.reverse())
       this.colors = listColors.slice(0, this.nbIndicateurs)
       this.colors_legend = listColors.slice(0, this.nbIndicateurs)
       this.colors_gradient.length = 0
@@ -263,25 +263,6 @@ export default {
             easing: 'easeInOutBack',
             duration: 0
           },
-          onHover: (e) => {
-            if (this.chart.getElementsAtEvent(e).length !== 0) {
-              const index = this.chart.getElementsAtEvent(e)[0]._index
-              const pxTopList = []
-              for (let i = 0; i < this.nbIndicateurs; i++) {
-                pxTopList.push(this.chart.scales['y-axis-0'].getPixelForValue(this.dataset[i].data[index], index))
-              }
-              const pxTop = Math.min.apply(Math, pxTopList)
-              this.tooltip.top = (e.target.getBoundingClientRect().top + pxTop - 50) + 'px'
-              this.tooltip.left = (e.target.getBoundingClientRect().left + this.chart.scales['x-axis-0'].getPixelForTick(index) + 25) + 'px'
-              this.tooltip.display = true
-              for (let i = 0; i < this.nbIndicateurs; i++) {
-                this.tooltip.values[i] = this.dataset[i].data[index]
-              }
-              this.tooltip.date = this.labels[index]
-            } else {
-              this.tooltip.display = false
-            }
-          },
           scales: {
             xAxes: [{
               gridLines: {
@@ -315,7 +296,20 @@ export default {
             display: false
           },
           tooltips: {
-            enabled: false
+            displayColors: false,
+            backgroundColor: '#6b6b6b',
+            callbacks: {
+              label: function (tooltipItems) {
+                const int = self.convertFloatToHuman(tooltipItems.value)
+                return int + ' ' + self.units[tooltipItems.datasetIndex]
+              },
+              title: function (tooltipItems) {
+                return tooltipItems[0].label
+              },
+              labelTextColor: function () {
+                return '#eeeeee'
+              }
+            }
           }
         }
       })
@@ -402,27 +396,10 @@ export default {
         padding-bottom: 5px;
         line-height: 1.67;
         .legende_dot{
+          min-width: 0.7rem;
           width: 0.7rem;
           height: 0.7rem;
           border-radius: 50%;
-          background-color: #000091;
-          &[showLine=false]{
-            background-color: rgba(0, 0, 145, 0.3)
-          }
-          display: inline-block;
-          margin-top: 0.25rem;
-          &[data-serie="2"]{
-            background-color: #007c3a;
-            &[showLine=false]{
-              background-color: rgba(0, 124, 58, 0.3)
-            }
-          }
-          &[data-serie="3"]{
-            background-color: #FF0000;
-            &[showLine=false]{
-              background-color: rgba(199, 164, 164, 0.3)
-            }
-          }
         }
         .tooltip_place{
           color:#242424;
