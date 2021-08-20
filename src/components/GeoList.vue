@@ -13,7 +13,7 @@
       <p class="fr-text--sm fr-mb-1v" id="select-hint-desc-hint">Filtrer par département</p>
       <select class="fr-select fr-text--sm fr-mb-0 fr-py-1v" id="select-dep" name="select" @change="changeGeoLevel('departements',$event)">
         <option value="" selected disabled hidden>ex : Manche</option>
-        <option v-for="d in departements" :value="d['value']" :key="d['value']">{{d['label']}}</option>
+        <option v-for="d in departements" :value="d['value']" :key="d['value']" v-bind:style="{'display':d['display']}">{{d['label']}}</option>
       </select>
     </div>
     <button @click="resetGeoFilters()" class="fr-link fr-link--sm fr-fi-close-circle-line fr-link--icon-left">Réinitialiser</button>
@@ -36,9 +36,10 @@ export default {
 
   },
   computed: {
-
+    selectedGeoLevel () {
+      return store.state.user.selectedGeoLevel
+    }
   },
-
   methods: {
     populateLists () {
       const self = this
@@ -72,10 +73,12 @@ export default {
 
         this.departements.length = 0
         store.state.dep.forEach(function (d) {
+          let display = 'none'
           if (d.region_value === event.target.value) {
-            const depObj = { label: d.label, value: d.value }
-            self.departements.push(depObj)
+            display = ''
           }
+          const depObj = { label: d.label, value: d.value, display: display }
+          self.departements.push(depObj)
         })
       }
 
@@ -88,7 +91,15 @@ export default {
       store.commit('setUserChoices', { level: 'France', code: '01', label: 'France entière' })
       this.populateLists()
     }
-
+  },
+  watch: {
+    selectedGeoLevel: function () {
+      if (this.selectedGeoLevel === 'departements') {
+        for (let i = 0; i < this.departements.length; i++) {
+          this.departements[i].display = ''
+        }
+      }
+    }
   },
 
   created () {

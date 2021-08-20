@@ -76,7 +76,8 @@ export default {
         max: 0,
         isMap: true,
         date: '',
-        trendType: ''
+        trendType: '',
+        display: []
       },
       scaleMin: 0,
       scaleMax: 0,
@@ -140,6 +141,7 @@ export default {
       this.leftColProps.currentValues.length = 0
       this.leftColProps.evolcodes.length = 0
       this.leftColProps.evolvalues.length = 0
+      this.leftColProps.display.length = 0
 
       this.leftColProps.names.push(this.indicateur_data.nom)
       this.leftColProps.units.push(this.indicateur_data.unite)
@@ -149,6 +151,11 @@ export default {
       this.leftColProps.evolcodes.push(geoObject.evol_color)
       this.leftColProps.evolvalues.push(geoObject.evol_percentage)
       this.leftColProps.trendType = this.indicateur_data.trendType
+      if (isNaN(geoObject.evol_percentage)) {
+        this.leftColProps.display.push('none')
+      } else {
+        this.leftColProps.display.push('')
+      }
 
       const values = []
 
@@ -268,10 +275,10 @@ export default {
       const depObj = store.state.dep.find(obj => {
         return obj.value === dataObj.code_level
       })
-
-      document.querySelector('#select-dep').value = clickdep
-
       store.commit('setUserChoices', { level: 'departements', code: clickdep, label: depObj.label })
+
+      document.querySelector('#select-reg').value = ''
+      document.querySelector('#select-dep').value = clickdep
     },
     resetGeoFilters () {
       document.querySelector('#select-reg').value = ''
