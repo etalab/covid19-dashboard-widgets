@@ -212,7 +212,7 @@ export const getData = async function (store) {
     },
     {
       value: '35',
-      label: 'Île-et-Vilaine',
+      label: 'Ille-et-Vilaine',
       region: 'Bretagne',
       region_value: '53'
     },

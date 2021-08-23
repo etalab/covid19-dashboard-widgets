@@ -62,7 +62,8 @@ export default {
         evolcodes: [],
         evolvalues: [],
         isMap: false,
-        date: ''
+        date: '',
+        display: []
       },
       units: [],
       chart: undefined,
@@ -146,6 +147,7 @@ export default {
       this.leftColProps.currentValues.length = 0
       this.leftColProps.evolcodes.length = 0
       this.leftColProps.evolvalues.length = 0
+      this.leftColProps.display.length = 0
 
       this.labels.length = 0
       this.dataset.length = 0
@@ -168,6 +170,11 @@ export default {
         this.leftColProps.currentValues.push(geoObject.last_value)
         this.leftColProps.evolcodes.push(geoObject.evol_color)
         this.leftColProps.evolvalues.push(geoObject.evol_percentage)
+        if (isNaN(geoObject.evol_percentage)) {
+          this.leftColProps.display.push('none')
+        } else {
+          this.leftColProps.display.push('')
+        }
         listGeoObject.push(geoObject)
       }
       this.leftColProps.date = this.convertDateToHuman(listGeoObject[0].last_date)
