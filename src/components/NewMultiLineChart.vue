@@ -17,7 +17,7 @@
         <div v-for="index in nbIndicateurs" :key="index" class="flex fr-mt-3v fr-mb-1v" :style="style">
           <span class="legende_dot" v-bind:style="{'background-color':colors_legend[index-1]}" @click = "ChangeShowLine(index)"></span>
           <p v-bind:class="classLegend[index - 1]" v-bind:style="{'color':styleLegend[index - 1]}" @click = "ChangeShowLine(index)">
-            {{capitalize(units[index - 1])}}
+            {{capitalize(names[index - 1])}}
           </p>
         </div>
       </div>
@@ -63,9 +63,13 @@ export default {
         evolvalues: [],
         isMap: false,
         date: '',
-        display: []
+        display: [],
+        colors_legend: [],
+        legendDisplay: ['', '', '']
+
       },
       units: [],
+      names: [],
       chart: undefined,
       loading: true,
       legendLeftMargin: 0,
@@ -144,6 +148,7 @@ export default {
 
       this.leftColProps.names.length = 0
       this.units.length = 0
+      this.names.length = 0
       this.leftColProps.currentValues.length = 0
       this.leftColProps.evolcodes.length = 0
       this.leftColProps.evolvalues.length = 0
@@ -167,18 +172,24 @@ export default {
 
         this.leftColProps.names.push(this.indicateur_data[i].nom)
         this.units.push(this.indicateur_data[i].unite)
+        this.names.push(this.indicateur_data[i].nom)
         this.leftColProps.currentValues.push(geoObject.last_value)
         this.leftColProps.evolcodes.push(geoObject.evol_color)
         this.leftColProps.evolvalues.push(geoObject.evol_percentage)
         if (isNaN(geoObject.evol_percentage)) {
           this.leftColProps.display.push('none')
         } else {
-          this.leftColProps.display.push('')
+          if (parseFloat(parseFloat(geoObject.evol_percentage).toFixed(1)) === 0) {
+            this.leftColProps.display.push('none')
+          } else {
+            this.leftColProps.display.push('')
+          }
         }
         listGeoObject.push(geoObject)
       }
       this.leftColProps.date = this.convertDateToHuman(listGeoObject[0].last_date)
       this.leftColProps.currentDate = this.convertDateToHuman(listGeoObject[0].last_date)
+      this.leftColProps.colors_legend = listColors.slice(0, this.nbIndicateurs)
 
       listGeoObject[0].values.forEach(function (d) {
         self.labels.push(self.convertDateToHuman(d.date))

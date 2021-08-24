@@ -5,27 +5,26 @@
         <div class="scheme-border">
             <span class="fr-fi-information-fill fr-px-1w fr-py-3v" aria-hidden="true"></span>
         </div>
-        <p class="fr-text--sm fr-mb-0 fr-p-3v">{{geoFallbackMsg}}
-        </p>
-    </div>
+        <p class="fr-text--sm fr-mb-0 fr-p-3v">{{geoFallbackMsg}}</p>
+      </div>
     <LeftCol :props="leftColProps"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
-      <div class="chart ml-lg">
-        <div class="linechart_tooltip" v-if="tooltip.display" :style="{top:tooltip.top,left:tooltip.left}">
-          <div class="tooltip_header">{{tooltip.date}}</div>
-          <div class="tooltip_body">
-            <div class="tooltip_value">
-              <span class="legende_dot"></span>
-              {{convertStringToLocaleNumber(tooltip.value)}} {{units[0]}}
-            </div>
+    <div class="chart ml-lg">
+      <div class="linechart_tooltip" v-if="tooltip.display" :style="{top:tooltip.top,left:tooltip.left}">
+        <div class="tooltip_header">{{tooltip.date}}</div>
+        <div class="tooltip_body">
+          <div class="tooltip_value">
+            <span class="legende_dot"></span>
+            {{convertStringToLocaleNumber(tooltip.value)}} {{units[0]}}
           </div>
         </div>
-        <canvas :id="chartId"></canvas>
-        <div class="flex fr-mt-3v" :style="style">
-          <span class="legende_dot"></span>
-          <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(units[0])}}</p>
-        </div>
       </div>
+      <canvas :id="chartId"></canvas>
+      <div class="flex fr-mt-3v" :style="style">
+        <span class="legende_dot"></span>
+        <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(units[0])}}</p>
+      </div>
+    </div>
     </div>
   </div>
 </template>
@@ -59,7 +58,9 @@ export default {
         evolvalues: [],
         isMap: false,
         date: '',
-        display: []
+        display: [],
+        colors_legend: ['#000091'],
+        legendDisplay: ['']
       },
       units: [],
       chart: undefined,
@@ -153,7 +154,11 @@ export default {
       if (isNaN(geoObject.evol_percentage)) {
         this.leftColProps.display.push('none')
       } else {
-        this.leftColProps.display.push('')
+        if (parseFloat(parseFloat(geoObject.evol_percentage).toFixed(1)) === 0) {
+          this.leftColProps.display.push('none')
+        } else {
+          this.leftColProps.display.push('')
+        }
       }
 
       this.labels.length = 0
