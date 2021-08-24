@@ -77,7 +77,9 @@ export default {
         isMap: true,
         date: '',
         trendType: '',
-        display: []
+        display: [],
+        colors_legend: [''],
+        legendDisplay: ['none']
       },
       scaleMin: 0,
       scaleMax: 0,
@@ -263,7 +265,17 @@ export default {
       try {
         clickdep = e.path[1]._prevClass
       } catch (error) {
-        clickdep = e.explicitOriginalTarget.parentNode._prevClass
+        try {
+          clickdep = e.explicitOriginalTarget._prevClass
+          if (clickdep === undefined) {
+            clickdep = e.explicitOriginalTarget.parentNode._prevClass
+          }
+        } catch (error) {
+          clickdep = e.toElement._prevClass
+          if (clickdep === undefined) {
+            clickdep = e.toElement.parentElement._prevClass
+          }
+        }
       }
       if (clickdep === 'France') {
         clickdep = e.target._prevClass.replace(/FR-/, '')
