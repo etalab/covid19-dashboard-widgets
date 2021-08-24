@@ -260,14 +260,16 @@ export default {
     },
     changeGeoLevel (e) {
       let clickdep
-
-      clickdep = e.path[1]._prevClass
+      try {
+        clickdep = e.path[1]._prevClass
+      } catch (error) {
+        clickdep = e.explicitOriginalTarget.parentNode._prevClass
+      }
       if (clickdep === 'France') {
         clickdep = e.target._prevClass.replace(/FR-/, '')
       } else {
         clickdep = clickdep.replace(/FR-/g, '')
       }
-
       const dataObj = this.indicateur_data.departements.find(obj => {
         return obj.code_level === clickdep
       })
