@@ -156,9 +156,12 @@ export default {
       if (isNaN(geoObject.evol_percentage)) {
         this.leftColProps.display.push('none')
       } else {
-        this.leftColProps.display.push('')
+        if (parseFloat(parseFloat(geoObject.evol_percentage).toFixed(1)) === 0) {
+          this.leftColProps.display.push('none')
+        } else {
+          this.leftColProps.display.push('')
+        }
       }
-
       const values = []
 
       this.indicateur_data.departements.forEach(function (d) {
