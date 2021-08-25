@@ -5,25 +5,33 @@
         <div class="scheme-border">
             <span class="fr-fi-information-fill fr-px-1w fr-py-3v" aria-hidden="true"></span>
         </div>
-        <p class="fr-text--sm fr-mb-0 fr-p-3v">{{geoFallbackMsg}}
-        </p>
-    </div>
+        <p class="fr-text--sm fr-mb-0 fr-p-3v">{{geoFallbackMsg}}</p>
+      </div>
     <LeftCol :props="leftColProps"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
-      <div class="chart ml-lg">
-        <canvas :id="chartId"></canvas>
-        <div class="flex fr-mt-3v" :style="style">
-          <span class="legende_dot"></span>
-          <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(units[0])}}</p>
+    <div class="chart ml-lg">
+      <div class="linechart_tooltip" v-if="tooltip.display" :style="{top:tooltip.top,left:tooltip.left}">
+        <div class="tooltip_header">{{tooltip.date}}</div>
+        <div class="tooltip_body">
+          <div class="tooltip_value">
+            <span class="legende_dot"></span>
+            {{convertStringToLocaleNumber(tooltip.value)}} {{units[0]}}
+          </div>
         </div>
       </div>
+      <canvas :id="chartId"></canvas>
+      <div class="flex fr-mt-3v" :style="style">
+        <span class="legende_dot"></span>
+        <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(units[0])}}</p>
+      </div>
+    </div>
     </div>
   </div>
 </template>
 
 <script>
 import store from '@/store'
-import Chart from 'chart.js'
+import { Chart } from 'chart.js'
 import LeftCol from '@/components/LeftCol'
 import { mixin } from '@/utils.js'
 
@@ -49,14 +57,24 @@ export default {
         evolcodes: [],
         evolvalues: [],
         isMap: false,
-        date: ''
+        date: '',
+        display: [],
+        colors_legend: ['#000091'],
+        legendDisplay: ['']
       },
       units: [],
       chart: undefined,
       loading: true,
       legendLeftMargin: 0,
       geoFallback: false,
-      geoFallbackMsg: ''
+      geoFallbackMsg: '',
+      tooltip: {
+        top: '100px',
+        left: '100px',
+        display: false,
+        value: 0,
+        date: ''
+      }
     }
   },
   props: {
@@ -84,7 +102,6 @@ export default {
         this.createChart()
       })
     },
-
     updateData () {
       const self = this
 
@@ -126,6 +143,7 @@ export default {
       this.leftColProps.currentValues.length = 0
       this.leftColProps.evolcodes.length = 0
       this.leftColProps.evolvalues.length = 0
+      this.leftColProps.display.length = 0
 
       this.leftColProps.names.push(this.indicateur_data.nom)
       this.units.push(this.indicateur_data.unite)
@@ -133,6 +151,15 @@ export default {
       this.leftColProps.currentDate = this.convertDateToHuman(geoObject.last_date)
       this.leftColProps.evolcodes.push(geoObject.evol_color)
       this.leftColProps.evolvalues.push(geoObject.evol_percentage)
+      if (isNaN(geoObject.evol_percentage)) {
+        this.leftColProps.display.push('none')
+      } else {
+        if (parseFloat(parseFloat(geoObject.evol_percentage).toFixed(1)) === 0) {
+          this.leftColProps.display.push('none')
+        } else {
+          this.leftColProps.display.push('')
+        }
+      }
 
       this.labels.length = 0
       this.dataset.length = 0
@@ -186,7 +213,9 @@ export default {
             type: 'line',
             pointRadius: 8,
             pointBackgroundColor: 'rgba(0, 0, 0, 0)',
-            pointBorderColor: 'rgba(0, 0, 0, 0)'
+            pointBorderColor: 'rgba(0, 0, 0, 0)',
+            pointHoverBackgroundColor: 'rgba(0, 0, 145, 1)',
+            pointHoverRadius: 6
           }]
         },
         options: {
@@ -311,6 +340,7 @@ export default {
       .flex{
         display: flex;
         .legende_dot{
+          min-width: 1rem;
           width: 1rem;
           height: 1rem;
           min-width: 1rem;
@@ -325,7 +355,47 @@ export default {
     .chart canvas {
       max-width:100%;
     }
-
+    .linechart_tooltip{
+      width: 165px;
+      height: auto;
+      background-color: white;
+      position: fixed;
+      z-index: 999;
+      border-radius: 4px;
+      box-shadow: 0 8px 16px 0 rgba(22, 22, 22, 0.12), 0 8px 16px -16px rgba(22, 22, 22, 0.32);
+      text-align: left;
+      pointer-events: none;
+      font-size: 0.75rem;
+      .tooltip_header{
+        width: 100%;
+        height: 30px;
+        background-color: #f6f6f6;
+        color:#6b6b6b;
+        padding-left: 5px;
+        padding-top: 3px;
+      }
+      .tooltip_body{
+        padding-left: 5px;
+        padding-bottom: 5px;
+        line-height: 1.67;
+        .legende_dot{
+          min-width: 0.7rem;
+          width: 0.7rem;
+          height: 0.7rem;
+          border-radius: 50%;
+          background-color: #000091;
+          display: inline-block;
+          margin-top: 0.25rem;
+        }
+        .tooltip_place{
+          color:#242424;
+        }
+        .tooltip_value{
+          color:#242424;
+          font-weight: bold;
+        }
+      }
+    }
   }
 
 </style>

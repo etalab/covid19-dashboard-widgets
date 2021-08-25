@@ -4,7 +4,7 @@
     <LeftCol :props="leftColProps"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
       <div class="map m-lg">
-        <div class="map_tooltip" v-if="tooltip.display" :style="{top:tooltip.top,left:tooltip.left}">
+          <div ref="mapTooltip" class="map_tooltip" :style="{top:tooltip.top,left:tooltip.left,display:tooltip.display,visibility:tooltip.visibility}">
           <div class="tooltip_header">{{convertDateToHuman(tooltip.date)}}</div>
           <div class="tooltip_body">
             <div class="tooltip_place">{{tooltip.place}}</div>
@@ -12,28 +12,28 @@
           </div>
         </div>
         <div class="france_container no_select">
-          <france :onenter="displayTooltip" :onleave="hideTooltip"></france>
+          <france :onclick="changeGeoLevel" :ondblclick="resetGeoFilters" :onenter="displayTooltip" :onleave="hideTooltip"></france>
         </div>
         <div class="om_container fr-grid-row no_select">
           <div class="om fr-col-4 fr-col-sm">
             <span class="fr-text--xs fr-my-1w">Guadeloupe</span>
-            <guadeloupe :onenter="displayTooltip" :onleave="hideTooltip"></guadeloupe>
+            <guadeloupe :onclick="changeGeoLevel" :ondblclick="resetGeoFilters" :onenter="displayTooltip" :onleave="hideTooltip"></guadeloupe>
           </div>
           <div class="om fr-col-4 fr-col-sm">
             <span class="fr-text--xs fr-my-1w">Martinique</span>
-            <martinique :onenter="displayTooltip" :onleave="hideTooltip"></martinique>
+            <martinique :onclick="changeGeoLevel" :ondblclick="resetGeoFilters" :onenter="displayTooltip" :onleave="hideTooltip"></martinique>
           </div>
           <div class="om fr-col-4 fr-col-sm">
             <span class="fr-text--xs fr-my-1w">Guyane</span>
-            <guyane :onenter="displayTooltip" :onleave="hideTooltip"></guyane>
+            <guyane :onclick="changeGeoLevel" :ondblclick="resetGeoFilters" :onenter="displayTooltip" :onleave="hideTooltip"></guyane>
           </div>
           <div class="om fr-col-4 fr-col-sm">
             <span class="fr-text--xs fr-my-1w">La Réunion</span>
-            <reunion :onenter="displayTooltip" :onleave="hideTooltip"></reunion>
+            <reunion :onclick="changeGeoLevel" :ondblclick="resetGeoFilters" :onenter="displayTooltip" :onleave="hideTooltip"></reunion>
           </div>
           <div class="om fr-col-4 fr-col-sm">
             <span class="fr-text--xs fr-my-1w">Mayotte</span>
-            <mayotte :onenter="displayTooltip" :onleave="hideTooltip"></mayotte>
+            <mayotte :onclick="changeGeoLevel" :ondblclick="resetGeoFilters" :onenter="displayTooltip" :onleave="hideTooltip"></mayotte>
           </div>
         </div>
       </div>
@@ -69,12 +69,17 @@ export default {
         currentValues: [],
         currentDate: '',
         names: [],
+        units: [],
         evolcodes: [],
         evolvalues: [],
         min: 0,
         max: 0,
         isMap: true,
-        date: ''
+        date: '',
+        trendType: '',
+        display: [],
+        colors_legend: [''],
+        legendDisplay: ['none']
       },
       scaleMin: 0,
       scaleMax: 0,
@@ -87,7 +92,8 @@ export default {
       tooltip: {
         top: '0px',
         left: '0px',
-        display: false,
+        display: 'none',
+        visibility: 'hidden',
         value: 0,
         date: '',
         place: ''
@@ -132,18 +138,30 @@ export default {
       this.leftColProps.date = this.convertDateToHuman(geoObject.last_date)
 
       this.leftColProps.names.length = 0
+      this.leftColProps.units.length = 0
       this.units.length = 0
       this.leftColProps.currentValues.length = 0
       this.leftColProps.evolcodes.length = 0
       this.leftColProps.evolvalues.length = 0
+      this.leftColProps.display.length = 0
 
       this.leftColProps.names.push(this.indicateur_data.nom)
+      this.leftColProps.units.push(this.indicateur_data.unite)
       this.units.push(this.indicateur_data.unite)
       this.leftColProps.currentValues.push(geoObject.last_value)
       this.leftColProps.currentDate = this.convertDateToHuman(geoObject.last_date)
       this.leftColProps.evolcodes.push(geoObject.evol_color)
       this.leftColProps.evolvalues.push(geoObject.evol_percentage)
-
+      this.leftColProps.trendType = this.indicateur_data.trendType
+      if (isNaN(geoObject.evol_percentage)) {
+        this.leftColProps.display.push('none')
+      } else {
+        if (parseFloat(parseFloat(geoObject.evol_percentage).toFixed(1)) === 0) {
+          this.leftColProps.display.push('none')
+        } else {
+          this.leftColProps.display.push('')
+        }
+      }
       const values = []
 
       this.indicateur_data.departements.forEach(function (d) {
@@ -156,7 +174,8 @@ export default {
       this.leftColProps.min = this.scaleMin
       this.leftColProps.max = this.scaleMax
 
-      const x = d3.scaleLinear().domain([this.scaleMin, this.scaleMax]).range(['#ffc700', '#715845'])
+      let x
+      this.indicateur_data.trendType === 'normal' ? x = d3.scaleLinear().domain([this.scaleMin, this.scaleMax]).range(['#ffc700', '#715845']) : x = d3.scaleLinear().domain([this.scaleMin, this.scaleMax]).range(['#715845', '#ffc700'])
 
       const parentWidget = document.getElementById(this.widgetId)
 
@@ -224,16 +243,65 @@ export default {
       this.tooltip.date = dataObj.last_date
       this.tooltip.place = depObj.label
 
-      this.tooltip.top = (e.target.getBoundingClientRect().top - 75) + 'px'
-      this.tooltip.left = (e.target.getBoundingClientRect().left + 15) + 'px'
-      this.tooltip.display = true
+      this.tooltip.display = 'block'
+      const containerRect = e.target.getBoundingClientRect()
+      let tooltipX = (containerRect.left + containerRect.right) / 2 - 165 / 2
+      let tooltipY = containerRect.top - 70
+      if ((tooltipX + 165 / 2) > window.innerWidth) {
+        tooltipX = containerRect.right - 165
+      }
+      if (tooltipY + 70 > window.innerHeight) {
+        tooltipY = containerRect.bottom
+      }
+      this.tooltip.top = tooltipY + 'px'
+      this.tooltip.left = tooltipX + 'px'
+      this.tooltip.visibility = 'visible'
     },
 
     hideTooltip () {
       if (isMobile) return
-      this.tooltip.display = false
-    }
+      this.tooltip.visibility = 'hidden'
+      this.tooltip.display = 'none'
+    },
+    changeGeoLevel (e) {
+      let clickdep
+      try {
+        clickdep = e.path[1]._prevClass
+      } catch (error) {
+        try {
+          clickdep = e.explicitOriginalTarget._prevClass
+          if (clickdep === undefined) {
+            clickdep = e.explicitOriginalTarget.parentNode._prevClass
+          }
+        } catch (error) {
+          clickdep = e.toElement._prevClass
+          if (clickdep === undefined) {
+            clickdep = e.toElement.parentElement._prevClass
+          }
+        }
+      }
+      if (clickdep === 'France') {
+        clickdep = e.target._prevClass.replace(/FR-/, '')
+      } else {
+        clickdep = clickdep.replace(/FR-/g, '')
+      }
+      const dataObj = this.indicateur_data.departements.find(obj => {
+        return obj.code_level === clickdep
+      })
 
+      const depObj = store.state.dep.find(obj => {
+        return obj.value === dataObj.code_level
+      })
+      store.commit('setUserChoices', { level: 'departements', code: clickdep, label: depObj.label })
+
+      document.querySelector('#select-reg').value = ''
+      document.querySelector('#select-dep').value = clickdep
+    },
+    resetGeoFilters () {
+      document.querySelector('#select-reg').value = ''
+      document.querySelector('#select-dep').value = ''
+      store.commit('setUserChoices', { level: 'France', code: '01', label: 'France entière' })
+    }
   },
 
   watch: {

@@ -198,13 +198,21 @@
               <div class="chart_container">
                 <map-chart indicateur="deces_moyenne_quotidienne"></map-chart>
               </div>
-        
+
               <div class="chart_container">
-                <map-chart indicateur="deces"></map-chart>
+                <line-chart indicateur="deces_moyenne_quotidienne"></line-chart>
+              </div>
+
+              <div class="box_container">
+                <data-box indicateur="deces_moyenne_quotidienne"></data-box>
+              </div>
+
+              <div class="chart_container">
+                <new-multiline-chart indicateurs="deces_moyenne_quotidienne"></new-multiline-chart>
               </div>
         
               <div class="chart_container">
-                <bar-chart indicateur="cas_positifs"></bar-chart>
+                <map-chart indicateur="deces"></map-chart>
               </div>
         
               <div class="chart_container">
@@ -228,15 +236,11 @@
               </div>
         
               <div class="chart_container">
-                <multiline-chart indicateur1="vaccins_premiere_dose" indicateur2="vaccins_vaccines"></multiline-chart>
+                <new-multiline-chart indicateurs="vaccins_premiere_dose vaccins_vaccines"></new-multiline-chart>
               </div>
         
               <div class="chart_container">
                 <line-chart indicateur="deces"></line-chart>
-              </div>
-        
-              <div class="chart_container">
-                <bar-chart indicateur="cas_positifs"></bar-chart>
               </div>
         
               <div class="box_container">
@@ -278,9 +282,15 @@
               <div class="chart_container">
                 <line-chart indicateur="vaccins_vaccines"></line-chart>
               </div>
-        
-        
-        
+
+              <div class="chart_container">
+                <line-chart indicateur="prop_variant_B"></line-chart>
+              </div>     
+
+              <div class="chart_container">
+                <new-multiline-chart indicateurs="prop_variant_A prop_variant_B prop_variant_C"></new-multiline-chart>
+              </div>        
+
               <div class="box_container">
                 <data-box indicateur="cas_positifs"></data-box>
               </div>

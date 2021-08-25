@@ -13,7 +13,12 @@
             </div>
             <div class="tooltip_value">
               <span class="legende_dot" data-serie="2"></span>
-              {{convertStringToLocaleNumber(tooltip.value2)}} {{units[1]}}</div>
+              {{convertStringToLocaleNumber(tooltip.value2)}} {{units[1]}}
+            </div>
+            <div class="tooltip_value">
+              <span class="legende_dot" data-serie="3"></span>
+              {{convertStringToLocaleNumber(tooltip.value3)}} {{units[2]}}
+            </div>
           </div>
         </div>
         <canvas :id="chartId" @mouseleave = 'hideTooltip'></canvas>
@@ -28,6 +33,12 @@
           <span v-else class="legende_dot" data-serie="2" showLine = false @click = "ChangeShowLine(2)"></span>
           <p v-if="showLine2" class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0 ">{{capitalize(units[1])}}</p>
           <p v-else class="fr-text--sm fr-ml-1v fr-mb-0 " style="color:#E7E7E7">{{capitalize(units[1])}}</p>
+        </div>
+        <div class="flex" :style="style">
+          <span v-if="showLine3" class="legende_dot" data-serie="3" @click = "ChangeShowLine(3)"></span>
+          <span v-else class="legende_dot" data-serie="3" showLine = false @click = "ChangeShowLine(3)"></span>
+          <p v-if="showLine2" class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0 ">{{capitalize(units[2])}}</p>
+          <p v-else class="fr-text--sm fr-ml-1v fr-mb-0 " style="color:#E7E7E7">{{capitalize(units[2])}}</p>
         </div>
       </div>
     </div>
@@ -50,11 +61,14 @@ export default {
     return {
       indicateur_data: undefined,
       indicateur_data2: undefined,
+      indicateur_data3: undefined,
       labels: [],
       dataset: [],
       dataset2: [],
+      dataset3: [],
       showLine: true,
       showLine2: true,
+      showLine3: true,
       widgetId: '',
       chartId: '',
       display: '',
@@ -78,13 +92,15 @@ export default {
         display: false,
         value: 0,
         value2: 0,
+        value3: 0,
         date: ''
       }
     }
   },
   props: {
     indicateur1: String,
-    indicateur2: String
+    indicateur2: String,
+    indicateur3: String
   },
   computed: {
     selectedGeoLevel () {
@@ -111,7 +127,11 @@ export default {
         this.indicateur_data2 = data
       })
 
-      Promise.all([promise1, promise2]).then((values) => {
+      const promise3 = store.dispatch('getData', this.indicateur3).then(data => {
+        this.indicateur_data3 = data
+      })
+
+      Promise.all([promise1, promise2, promise3]).then((values) => {
         this.loading = false
         this.createChart()
       })
@@ -127,15 +147,20 @@ export default {
 
       let geoObject
       let geoObject2
+      let geoObject3
 
       if (geolevel === 'France') {
         geoObject = this.indicateur_data.france[0]
         geoObject2 = this.indicateur_data2.france[0]
+        geoObject3 = this.indicateur_data3.france[0]
       } else {
         geoObject = this.indicateur_data[geolevel].find(obj => {
           return obj.code_level === geocode
         })
         geoObject2 = this.indicateur_data2[geolevel].find(obj => {
+          return obj.code_level === geocode
+        })
+        geoObject3 = this.indicateur_data3[geolevel].find(obj => {
           return obj.code_level === geocode
         })
       }
@@ -148,16 +173,17 @@ export default {
       this.leftColProps.evolcodes.length = 0
       this.leftColProps.evolvalues.length = 0
 
-      this.leftColProps.names.push(this.indicateur_data.nom, this.indicateur_data2.nom)
-      this.units.push(this.indicateur_data.unite, this.indicateur_data2.unite)
-      this.leftColProps.currentValues.push(geoObject.last_value, geoObject2.last_value)
+      this.leftColProps.names.push(this.indicateur_data.nom, this.indicateur_data2.nom, this.indicateur_data3.nom)
+      this.units.push(this.indicateur_data.unite, this.indicateur_data2.unite, this.indicateur_data3.unite)
+      this.leftColProps.currentValues.push(geoObject.last_value, geoObject2.last_value, geoObject3.last_value)
       this.leftColProps.currentDate = this.convertDateToHuman(geoObject.last_date)
-      this.leftColProps.evolcodes.push(geoObject.evol_color, geoObject2.evol_color)
-      this.leftColProps.evolvalues.push(geoObject.evol_percentage, geoObject2.evol_percentage)
+      this.leftColProps.evolcodes.push(geoObject.evol_color, geoObject2.evol_color, geoObject3.evol_color)
+      this.leftColProps.evolvalues.push(geoObject.evol_percentage, geoObject2.evol_percentage, geoObject3.evol_percentage)
 
       this.labels.length = 0
       this.dataset.length = 0
       this.dataset2.length = 0
+      this.dataset3.length = 0
 
       geoObject.values.forEach(function (d) {
         self.labels.push(self.convertDateToHuman(d.date))
@@ -168,6 +194,12 @@ export default {
         })
 
         self.dataset2.push(correspondingValue.value)
+
+        const correspondingValue2 = geoObject3.values.find(obj => {
+          return obj.date === d.date
+        })
+
+        self.dataset3.push(correspondingValue2.value)
       })
     },
 
@@ -181,9 +213,13 @@ export default {
         this.showLine = !this.showLine
         this.chart.data.datasets[0].showLine = this.showLine
         this.chart.update()
-      } else {
+      } else if (IdLine === 2) {
         this.showLine2 = !this.showLine2
         this.chart.data.datasets[1].showLine = this.showLine2
+        this.chart.update()
+      } else {
+        this.showLine3 = !this.showLine3
+        this.chart.data.datasets[2].showLine = this.showLine3
         this.chart.update()
       }
     },
@@ -214,6 +250,13 @@ export default {
       gradientFill2.addColorStop(0, 'rgba(0, 124, 58, 0.6)')
       gradientFill2.addColorStop(0.6, 'rgba(0, 124, 58, 0)')
 
+      let gradientFill3
+
+      this.display === 'big' ? gradientFill3 = ctx.createLinearGradient(0, 0, 0, 500) : gradientFill3 = ctx.createLinearGradient(0, 0, 0, 250)
+
+      gradientFill3.addColorStop(0, 'rgba(255, 0, 0, 0.1)')
+      gradientFill3.addColorStop(0.6, 'rgba(255, 0, 0, 0)')
+
       this.chart = new Chart(ctx, {
         data: {
           labels: self.labels,
@@ -241,6 +284,18 @@ export default {
               showLine: self.showLine2,
               pointHoverBackgroundColor: 'rgba(0, 124, 58, 1)',
               pointHoverRadius: 6
+            },
+            {
+              data: self.dataset3,
+              backgroundColor: gradientFill3,
+              borderColor: '#FF0000',
+              type: 'line',
+              pointRadius: 8,
+              pointBackgroundColor: 'rgba(0, 0, 0, 0)',
+              pointBorderColor: 'rgba(0, 0, 0, 0)',
+              showLine: self.showLine2,
+              pointHoverBackgroundColor: 'rgb(255,0,0)',
+              pointHoverRadius: 6
             }
           ]
         },
@@ -258,6 +313,7 @@ export default {
 
               this.tooltip.value = this.dataset[index]
               this.tooltip.value2 = this.dataset2[index]
+              this.tooltip.value3 = this.dataset3[index]
               this.tooltip.date = this.labels[index]
             } else {
               this.tooltip.display = false
@@ -346,7 +402,6 @@ export default {
       .flex{
         display: flex;
         .legende_dot{
-          min-width: 1rem;
           width: 1rem;
           height: 1rem;
           border-radius: 50%;
@@ -360,6 +415,12 @@ export default {
             background-color: #007c3a;
             &[showLine=false]{
               background-color: rgba(0, 124, 58, 0.3)
+            }
+          }
+          &[data-serie="3"]{
+            background-color: #FF0000;
+            &[showLine=false]{
+              background-color: rgba(255, 0, 0, 0.3)
             }
           }
         }
@@ -406,6 +467,12 @@ export default {
             background-color: #007c3a;
             &[showLine=false]{
               background-color: rgba(0, 124, 58, 0.3)
+            }
+          }
+          &[data-serie="3"]{
+            background-color: #FF0000;
+            &[showLine=false]{
+              background-color: rgba(255, 0, 0, 0.3)
             }
           }
         }
