@@ -38,7 +38,7 @@ export const getData = async function (store) {
     },
     {
       value: '07',
-      label: 'Ardêche',
+      label: 'Ardèche',
       region: 'Auvergne-Rhône-Alpes',
       region_value: '84'
     },
