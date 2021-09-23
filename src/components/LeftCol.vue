@@ -13,11 +13,15 @@
         <div data-box="number">
           <p class="l_box_title fr-text--xs fr-mb-1w">Mise à jour : {{props['date']}}</p>
 
+          <!-- <div class="indicateur_info" :class="i>0 ? 'fr-mt-2w' : ''" v-for="(n,i) in props['names']" :key="n" @click = "EmitEvent(i)" v-bind:style="{'opacity':props['opacity'][i]}"> -->
           <div class="indicateur_info" :class="i>0 ? 'fr-mt-2w' : ''" v-for="(n,i) in props['names']" :key="n">
-            <p class="fr-text--sm fr-text--bold fr-mt-0 fr-mb-1w">{{props['names'][i]}}</p>
+            <div class="flex" >
+              <!-- <span class="legende_dot" v-bind:style="{'background-color':props['colors_legend'][i], 'display':props['legendDisplay'][i]}"></span> -->
+              <p class="fr-text--sm fr-text--bold fr-mt-0 fr-mb-1w">{{props['names'][i]}}</p>
+            </div>
             <div class="l_box_number_container">
-              <p class="fr-text--lg fr-text--bold fr-mb-1v">{{convertFloatToHuman(props['currentValues'][i])}}</p>
-              <p class="l_box_trend flex fr-mb-0 fr-text--xs fr-text--bold fr-px-1w fr-py-1v" v-bind:class="{'down':isDown[i],'green':isGreen[i],'red':isRed[i],'blue':isBlue[i]}"  v-bind:style="{'display': props.display[i]}">
+              <p class="fr-text--lg fr-text--bold fr-mb-1v">{{convertFloatToHuman(props['currentValues'][i])}} {{props['units'][i]}}</p>
+              <p class="l_box_trend flex fr-mb-0 fr-text--xs fr-text--bold fr-px-1w fr-py-1v" v-bind:class="{'down':isDown[i], 'horizontal':isHorizontal[i], 'green':isGreen[i],'red':isRed[i],'blue':isBlue[i]}">
                 <svg class="trend_ico" width="16" height="16" viewBox="0 0 24 24">
                   <path v-if="!isBlue[i]" d="M19.071 4.929c3.903 3.903 3.903 10.239 0 14.142-3.903 3.903-10.239 3.903-14.142 0-3.903-3.903-3.903-10.239 0-14.142 3.903-3.903 10.239-3.903 14.142 0zm-2.828 2.828H7.757l3.182 3.182-4.242 4.243 2.121 2.121 4.243-4.242 3.182 3.182V7.757z" transform="translate(-902 -5664) translate(902 5664)"/>
                   <path v-if="isBlue[i]" d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm4 11H8v2h8v-2zm0-4H8v2h8V9z" transform="translate(-1366 -5645) translate(1366 5645)"/>
@@ -50,6 +54,7 @@ export default {
   data () {
     return {
       isDown: [],
+      isHorizontal: [],
       isGreen: [],
       isRed: [],
       isBlue: []
@@ -70,18 +75,24 @@ export default {
           self.isRed[i] = false
           self.isBlue[i] = false
           self.props.evolvalues[i] > 0 ? self.isDown[i] = false : self.isDown[i] = true
+          self.isHorizontal = false
         } else if (self.props.evolcodes[i] === 'red') {
           self.isGreen[i] = false
           self.isRed[i] = true
           self.isBlue[i] = false
           self.props.evolvalues[i] > 0 ? self.isDown[i] = false : self.isDown[i] = true
+          self.isHorizontal = false
         } else {
           self.isGreen[i] = false
           self.isRed[i] = false
           self.isBlue[i] = true
           self.isDown[i] = false
+          self.isHorizontal = true
         }
       })
+    },
+    EmitEvent (index) {
+      this.$emit('EventShowLine', { index: index })
     }
   },
 
@@ -121,7 +132,16 @@ export default {
     }
     .flex{
       display: inline-flex;
-      align-items: center;
+      .legende_dot{
+        min-width: 0.7rem;
+        width: 0.7rem;
+        height: 0.7rem;
+        border-radius: 50%;
+        display: inline-block;
+        margin-top: 0.4rem;
+        align-items: left;
+        margin-right: 0.1rem;
+      }
     }
     .l_box_number_container {
       display: flex;
@@ -130,6 +150,11 @@ export default {
         &.down {
           .trend_ico {
             transform: rotate(90deg);
+          }
+        }
+        &.horizontal {
+          .trend_ico {
+            transform: rotate(45deg);
           }
         }
         &.green {
