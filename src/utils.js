@@ -12,7 +12,7 @@ export const convertFloatToHuman = function (float) {
   if (Number.isInteger(parseFloat(float))) {
     return parseInt(float).toLocaleString()
   } else {
-    return parseFloat(float).toFixed(1).toLocaleString()
+    return parseFloat(float).toFixed(2).toLocaleString()
   }
 }
 

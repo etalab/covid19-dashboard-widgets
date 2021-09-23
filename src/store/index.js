@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 const BASE_URL = 'https://data.widgets.dashboard.covid19.data.gouv.fr'
+// const BASE_URL = './dist'
 
 export default new Vuex.Store({
   state: {
