@@ -292,7 +292,11 @@ export default {
               label: function (tooltipItems) {
                 const int = parseFloat(self.dataset[tooltipItems.index]).toFixed(0).toLocaleString()
                 const taux = self.dataset2[tooltipItems.index].toString()
-                return ['- ' + int + ' ' + self.units[0] + ' (' + taux + '%)', '- Protocole sanitaire du ' + self.protocole[tooltipItems.index]]
+                if (self.protocole[tooltipItems.index] === undefined) {
+                  return int + ' ' + self.units[0] + ' (' + taux + '%)'
+                } else {
+                  return ['- ' + int + ' ' + self.units[0] + ' (' + taux + '%)', '- Protocole sanitaire du ' + self.protocole[tooltipItems.index]]
+                }
               },
               title: function (tooltipItems) {
                 return tooltipItems[0].label
