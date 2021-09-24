@@ -1,17 +1,16 @@
 <template>
-
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
     <LeftCol :props="leftColProps" @EventShowLine = "ChangeShowLine2"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
       <div class="chart ml-lg">
-        <div class="multiline_tooltip" id = 'chartjs-tooltip'>
+        <!-- <div class="multiline_tooltip" id = 'chartjs-tooltip'>
           <div class="tooltip_header" id = 'divDate'></div>
           <div class="tooltip_body">
             <div class="tooltip_value" id = 'divValue'>
               <span class="legende_dot"></span>
             </div>
           </div>
-        </div>
+        </div> -->
         <canvas :id="chartId"></canvas>
         <div v-for="index in nbIndicateurs" :key="index" class="flex fr-mt-3v fr-mb-1v" :style="style">
           <span class="legende_dot" v-bind:style="{'background-color':colors_legend[index-1]}" @click = "ChangeShowLine(index)"></span>
@@ -298,7 +297,9 @@ export default {
             display: false
           },
           tooltips: {
-            enabled: false,
+            displayColors: false,
+            backgroundColor: '#6b6b6b',
+            enabled: true,
             callbacks: {
               label: function (tooltipItems) {
                 const int = self.convertFloatToHuman(tooltipItems.value)
@@ -308,54 +309,55 @@ export default {
                 return tooltipItems[0].label
               },
               labelTextColor: function (tooltipItems) {
-                return self.colors_legend[tooltipItems.datasetIndex]
+                return '#eeeeee'
+                // return self.colors_legend[tooltipItems.datasetIndex]
               }
-            },
-            custom: function (context) {
-              // Tooltip Element
-              const tooltipEl = document.getElementById('chartjs-tooltip')
+            } // ,
+            // custom: function (context) {
+            //   // Tooltip Element
+            //   const tooltipEl = document.getElementById('chartjs-tooltip')
 
-              // Hide if no tooltip
-              const tooltipModel = context
-              if (tooltipModel.opacity === 0) {
-                tooltipEl.style.opacity = 0
-                return
-              }
+            //   // Hide if no tooltip
+            //   const tooltipModel = context
+            //   if (tooltipModel.opacity === 0) {
+            //     tooltipEl.style.opacity = 0
+            //     return
+            //   }
 
-              // Set caret Position
-              tooltipEl.classList.remove('above', 'below', 'no-transform')
-              if (tooltipModel.yAlign) {
-                tooltipEl.classList.add(tooltipModel.yAlign)
-              } else {
-                tooltipEl.classList.add('no-transform')
-              }
+            //   // Set caret Position
+            //   tooltipEl.classList.remove('above', 'below', 'no-transform')
+            //   if (tooltipModel.yAlign) {
+            //     tooltipEl.classList.add(tooltipModel.yAlign)
+            //   } else {
+            //     tooltipEl.classList.add('no-transform')
+            //   }
 
-              function getBody (bodyItem) {
-                return bodyItem.lines
-              }
-              // Set Text
-              if (tooltipModel.body) {
-                const titleLines = tooltipModel.title || []
-                const bodyLines = tooltipModel.body.map(getBody)
+            //   function getBody (bodyItem) {
+            //     return bodyItem.lines
+            //   }
+            //   // Set Text
+            //   if (tooltipModel.body) {
+            //     const titleLines = tooltipModel.title || []
+            //     const bodyLines = tooltipModel.body.map(getBody)
 
-                const divDate = document.getElementById('divDate')
-                divDate.innerHTML = titleLines[0]
+            //     const divDate = document.getElementById('divDate')
+            //     divDate.innerHTML = titleLines[0]
 
-                const color = tooltipModel.labelTextColors[0]
-                const divValue = document.getElementById('divValue')
-                divValue.innerHTML = '<span data-v-6760596c="" class="legende_dot" style = "background-color :' + color + '"></span>' + ' ' + bodyLines[0]
-              }
+            //     const color = tooltipModel.labelTextColors[0]
+            //     const divValue = document.getElementById('divValue')
+            //     divValue.innerHTML = '<span data-v-6760596c="" class="legende_dot" style = "background-color :' + color + '"></span>' + ' ' + bodyLines[0]
+            //   }
 
-              const position = self.chart.canvas.getBoundingClientRect()
+            //   const position = self.chart.canvas.getBoundingClientRect()
 
-              // Display, position, and set styles for font
-              tooltipEl.style.opacity = 1
-              tooltipEl.style.position = 'absolute'
-              tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX - tooltipEl.clientWidth / 2 + 'px'
-              tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - tooltipEl.clientHeight - 5 + 'px'
-              tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px'
-              tooltipEl.style.pointerEvents = 'none'
-            }
+            //   // Display, position, and set styles for font
+            //   tooltipEl.style.opacity = 1
+            //   tooltipEl.style.position = 'absolute'
+            //   tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX - tooltipEl.clientWidth / 2 + 'px'
+            //   tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - tooltipEl.clientHeight - 5 + 'px'
+            //   tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px'
+            //   tooltipEl.style.pointerEvents = 'none'
+            // }
           }
         }
       })

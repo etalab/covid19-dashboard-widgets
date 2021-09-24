@@ -1,23 +1,22 @@
 <template>
-
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
-      <div class="fr-warning" v-if="geoFallback">
-        <div class="scheme-border">
-            <span class="fr-fi-information-fill fr-px-1w fr-py-3v" aria-hidden="true"></span>
-        </div>
-        <p class="fr-text--sm fr-mb-0 fr-p-3v">{{geoFallbackMsg}}</p>
+    <div class="fr-warning" v-if="geoFallback">
+      <div class="scheme-border">
+          <span class="fr-fi-information-fill fr-px-1w fr-py-3v" aria-hidden="true"></span>
       </div>
+      <p class="fr-text--sm fr-mb-0 fr-p-3v">{{geoFallbackMsg}}</p>
+    </div>
     <LeftCol :props="leftColProps"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
     <div class="chart ml-lg">
-      <div class="linechart_tooltip" id = 'chartjs-tooltip'>
+      <!-- <div class="linechart_tooltip" id = 'chartjs-tooltip'>
         <div class="tooltip_header" id = 'divDate'></div>
         <div class="tooltip_body">
           <div class="tooltip_value" id = 'divValue'>
             <span class="legende_dot"></span>
           </div>
         </div>
-      </div>
+      </div> -->
       <canvas :id="chartId"></canvas>
       <div class="flex fr-mt-3v" :style="style">
         <span class="legende_dot"></span>
@@ -120,14 +119,14 @@ export default {
       let geoObject
 
       geoObject = this.getGeoObject(geolevel, geocode)
-      this.leftColProps.date = this.convertDateToHuman(geoObject.last_date)
 
       if (typeof geoObject === 'undefined') {
         if (geolevel === 'regions') {
           geoObject = this.getGeoObject('France', '01')
           this.leftColProps.localisation = 'France entière'
+          this.leftColProps.date = this.convertDateToHuman(geoObject.last_date)
           this.geoFallback = true
-          this.geoFallbackMsg = 'Affichage des résultats au niveau national, faute de données au niveau régional'
+          this.geoFallbackMsg = "L'affichage des données est uniquement disponible au niveau national"
         } else {
           const depObj = store.state.dep.find(obj => {
             return obj.value === geocode
@@ -139,10 +138,16 @@ export default {
           if (typeof geoObject === 'undefined') {
             geoObject = this.getGeoObject('France', '01')
             this.leftColProps.localisation = 'France entière'
+            this.leftColProps.date = this.convertDateToHuman(geoObject.last_date)
             this.geoFallback = true
-            this.geoFallbackMsg = 'Affichage des résultats au niveau national, faute de données au niveau régional ou départemental'
+            this.geoFallbackMsg = "L'affichage des données est uniquement disponible au niveau national"
+          } else {
+            this.leftColProps.date = this.convertDateToHuman(geoObject.last_date)
           }
         }
+      } else {
+        this.leftColProps.date = this.convertDateToHuman(geoObject.last_date)
+        this.geoFallback = false
       }
 
       this.leftColProps.names.length = 0
@@ -221,7 +226,6 @@ export default {
       }]
 
       if (this.constante) {
-        console.log(self.cst.value)
         datasets.push({
           data: Array(self.labels.length).fill(self.cst.value),
           borderColor: '#009081',
@@ -245,6 +249,7 @@ export default {
           },
           scales: {
             xAxes: [{
+              offset: true,
               gridLines: {
                 color: 'rgba(0, 0, 0, 0)'
               },
@@ -279,52 +284,65 @@ export default {
             filter: function (tooltipItem) {
               return tooltipItem.datasetIndex === 0
             },
-            enabled: false,
-            custom: function (context) {
-              // Tooltip Element
-              const tooltipEl = document.getElementById('chartjs-tooltip')
-
-              // Hide if no tooltip
-              const tooltipModel = context
-              if (tooltipModel.opacity === 0 || tooltipModel.title[0] === undefined) {
-                tooltipEl.style.opacity = 0
-                return
+            displayColors: false,
+            backgroundColor: '#6b6b6b',
+            callbacks: {
+              label: function (tooltipItems) {
+                const int = self.convertFloatToHuman(tooltipItems.value)
+                return int + ' ' + self.units[0]
+              },
+              title: function (tooltipItems) {
+                return tooltipItems[0].label
+              },
+              labelTextColor: function () {
+                return '#eeeeee'
               }
-
-              // Set caret Position
-              tooltipEl.classList.remove('above', 'below', 'no-transform')
-              if (tooltipModel.yAlign) {
-                tooltipEl.classList.add(tooltipModel.yAlign)
-              } else {
-                tooltipEl.classList.add('no-transform')
-              }
-
-              function getBody (bodyItem) {
-                return bodyItem.lines
-              }
-
-              // Set Text
-              if (tooltipModel.body) {
-                const titleLines = tooltipModel.title || []
-                const bodyLines = tooltipModel.body.map(getBody)
-
-                const divDate = document.getElementById('divDate')
-                divDate.innerHTML = titleLines[0]
-
-                const divValue = document.getElementById('divValue')
-                divValue.innerHTML = '<span data-v-6760596c="" class="legende_dot"></span>' + ' ' + bodyLines[0] + ' ' + self.units
-              }
-
-              const position = self.chart.canvas.getBoundingClientRect()
-
-              // Display, position, and set styles for font
-              tooltipEl.style.opacity = 1
-              tooltipEl.style.position = 'absolute'
-              tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX - tooltipEl.clientWidth / 2 + 'px'
-              tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - tooltipEl.clientHeight - 5 + 'px'
-              tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px'
-              tooltipEl.style.pointerEvents = 'none'
             }
+            // custom: function (context) {
+            //   // Tooltip Element
+            //   const tooltipEl = document.getElementById('chartjs-tooltip')
+
+            //   // Hide if no tooltip
+            //   const tooltipModel = context
+            //   if (tooltipModel.opacity === 0 || tooltipModel.title[0] === undefined) {
+            //     tooltipEl.style.opacity = 0
+            //     return
+            //   }
+
+            //   // Set caret Position
+            //   tooltipEl.classList.remove('above', 'below', 'no-transform')
+            //   if (tooltipModel.yAlign) {
+            //     tooltipEl.classList.add(tooltipModel.yAlign)
+            //   } else {
+            //     tooltipEl.classList.add('no-transform')
+            //   }
+
+            //   function getBody (bodyItem) {
+            //     return bodyItem.lines
+            //   }
+
+            //   // Set Text
+            //   if (tooltipModel.body) {
+            //     const titleLines = tooltipModel.title || []
+            //     const bodyLines = tooltipModel.body.map(getBody)
+
+            //     const divDate = document.getElementById('divDate')
+            //     divDate.innerHTML = titleLines[0]
+
+            //     const divValue = document.getElementById('divValue')
+            //     divValue.innerHTML = '<span data-v-6760596c="" class="legende_dot"></span>' + ' ' + bodyLines[0] + ' ' + self.units
+            //   }
+
+            //   const position = self.chart.canvas.getBoundingClientRect()
+
+            //   // Display, position, and set styles for font
+            //   tooltipEl.style.opacity = 1
+            //   tooltipEl.style.position = 'absolute'
+            //   tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX - tooltipEl.clientWidth / 2 + 'px'
+            //   tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - tooltipEl.clientHeight - 5 + 'px'
+            //   tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px'
+            //   tooltipEl.style.pointerEvents = 'none'
+            // }
           }
         }
       })

@@ -1,22 +1,22 @@
 <template>
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
-      <div class="fr-warning" v-if="geoFallback">
+      <div class="fr-warning" v-bind:style="{'display': alerteDisplay}">
         <div class="scheme-border">
             <span class="fr-fi-information-fill fr-px-1w fr-py-3v" aria-hidden="true"></span>
         </div>
-        <p class="fr-text--sm fr-mb-0 fr-p-3v">{{geoFallbackMsg}}</p>
+        <p class="fr-text--sm fr-mb-0 fr-p-3v">L'affichage des données est uniquement disponible au niveau national</p>
       </div>
     <LeftCol :props="leftColProps"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
     <div class="chart ml-lg">
-      <div class="linechart_tooltip" id = 'chartjs-tooltip'>
+      <!-- <div class="linechart_tooltip" id = 'chartjs-tooltip'>
         <div class="tooltip_header" id = 'divDate'></div>
         <div class="tooltip_body">
           <div class="tooltip_value" id = 'divValue'>
             <span class="legende_dot"></span>
           </div>
         </div>
-      </div>
+      </div> -->
       <canvas :id="chartId"></canvas>
       <div class="flex fr-mt-3v" :style="style">
         <span class="legende_dot"></span>
@@ -54,6 +54,7 @@ export default {
       widgetId: '',
       chartId: '',
       display: '',
+      alerteDisplay: 'none',
       leftColProps: {
         localisation: '',
         currentValues: [],
@@ -113,7 +114,7 @@ export default {
       const self = this
 
       const geolevel = this.selectedGeoLevel
-      const geocode = this.selectedGeoCode
+      // const geocode = this.selectedGeoCode
 
       this.leftColProps.localisation = this.selectedGeoLabel
 
@@ -123,13 +124,12 @@ export default {
       if (geolevel === 'France') {
         geoObject = this.indicateur_data.france[0]
         geoObject2 = this.indicateur_data2.france[0]
+        this.alerteDisplay = 'none'
       } else {
-        geoObject = this.indicateur_data[geolevel].find(obj => {
-          return obj.code_level === geocode
-        })
-        geoObject2 = this.indicateur_data2[geolevel].find(obj => {
-          return obj.code_level === geocode
-        })
+        this.alerteDisplay = ''
+        geoObject = this.indicateur_data.france[0]
+        geoObject2 = this.indicateur_data2.france[0]
+        this.leftColProps.localisation = 'France entière'
       }
 
       this.leftColProps.names.length = 0
@@ -143,6 +143,7 @@ export default {
       this.units.push(this.indicateur_data.unite, this.indicateur_data2.unite)
       this.leftColProps.currentValues.push(geoObject.last_value, geoObject2.last_value)
       this.leftColProps.currentDate = this.convertDateToHuman(geoObject.last_date)
+      this.leftColProps.date = this.convertDateToHuman(geoObject.last_date)
       this.leftColProps.evolcodes.push(geoObject.evol_color, geoObject2.evol_color)
       this.leftColProps.evolvalues.push(geoObject.evol_percentage, geoObject2.evol_percentage)
       this.leftColProps.units.push(this.indicateur_data.unite_short, this.indicateur_data2.unite_short)
@@ -282,65 +283,71 @@ export default {
             display: false
           },
           tooltips: {
-            enabled: false,
+            reversed: false,
+            displayColors: false,
+            backgroundColor: '#6b6b6b',
+            // mode: 'label',
+            enabled: true,
             callbacks: {
               label: function (tooltipItems) {
-                const int = tooltipItems.value.toString()
-                return int + ' ' + self.units[tooltipItems.datasetIndex] + '\n' + self.protocole[tooltipItems.index] + ' en vigueur'
+                const int = parseFloat(self.dataset[tooltipItems.index]).toFixed(0).toLocaleString()
+                const taux = self.dataset2[tooltipItems.index].toString()
+                return ['- ' + int + ' ' + self.units[0] + ' (' + taux + '%)', '- Protocole sanitaire du ' + self.protocole[tooltipItems.index]]
               },
               title: function (tooltipItems) {
                 return tooltipItems[0].label
               },
               labelTextColor: function (tooltipItems) {
-                return self.leftColProps.colors_legend[tooltipItems.datasetIndex]
+                // return self.leftColProps.colors_legend[tooltipItems.datasetIndex]
+                return '#eeeeee'
               }
-            },
-            custom: function (context) {
-              // Tooltip Element
-              const tooltipEl = document.getElementById('chartjs-tooltip')
+            } // ,
+            // custom: function (context) {
+            //   // Tooltip Element
+            //   const tooltipEl = document.getElementById('chartjs-tooltip')
 
-              // Hide if no tooltip
-              const tooltipModel = context
-              if (tooltipModel.opacity === 0) {
-                tooltipEl.style.opacity = 0
-                return
-              }
+            //   // Hide if no tooltip
+            //   const tooltipModel = context
+            //   if (tooltipModel.opacity === 0) {
+            //     tooltipEl.style.opacity = 0
+            //     return
+            //   }
 
-              // Set caret Position
-              tooltipEl.classList.remove('above', 'below', 'no-transform')
-              if (tooltipModel.yAlign) {
-                tooltipEl.classList.add(tooltipModel.yAlign)
-              } else {
-                tooltipEl.classList.add('no-transform')
-              }
+            //   // Set caret Position
+            //   tooltipEl.classList.remove('above', 'below', 'no-transform')
+            //   if (tooltipModel.yAlign) {
+            //     tooltipEl.classList.add(tooltipModel.yAlign)
+            //   } else {
+            //     tooltipEl.classList.add('no-transform')
+            //   }
 
-              function getBody (bodyItem) {
-                return bodyItem.lines
-              }
+            //   function getBody (bodyItem) {
+            //     return bodyItem.lines
+            //   }
 
-              // Set Text
-              if (tooltipModel.body) {
-                const titleLines = tooltipModel.title || []
-                const bodyLines = tooltipModel.body.map(getBody)
+            //   // Set Text
+            //   if (tooltipModel.body) {
+            //     const titleLines = tooltipModel.title || []
+            //     const bodyLines = tooltipModel.body.map(getBody)
 
-                const divDate = document.getElementById('divDate')
-                divDate.innerHTML = titleLines[0]
+            //     const divDate = document.getElementById('divDate')
+            //     divDate.innerHTML = titleLines[0]
 
-                const color = tooltipModel.labelTextColors[0]
-                const divValue = document.getElementById('divValue')
-                divValue.innerHTML = '<span data-v-6760596c="" class="legende_dot" style = "background-color :' + color + '"></span>' + ' ' + bodyLines[0]
-              }
+            //     const color = tooltipModel.labelTextColors[0]
+            //     const divValue = document.getElementById('divValue')
+            //     divValue.innerHTML = '<span data-v-6760596c="" class="legende_dot" style = "background-color :' + color + '"></span>' + ' ' + bodyLines[0]
+            //   }
 
-              const position = self.chart.canvas.getBoundingClientRect()
+            //   const position = self.chart.canvas.getBoundingClientRect()
 
-              // Display, position, and set styles for font
-              tooltipEl.style.opacity = 1
-              tooltipEl.style.position = 'absolute'
-              tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX - tooltipEl.clientWidth / 2 + 'px'
-              tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - tooltipEl.clientHeight - 5 + 'px'
-              tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px'
-              tooltipEl.style.pointerEvents = 'none'
-            }
+            //   // Display, position, and set styles for font
+            //   tooltipEl.style.opacity = 1
+            //   tooltipEl.style.position = 'absolute'
+            //   tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX - tooltipEl.clientWidth / 2 + 'px'
+            //   tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - tooltipEl.clientHeight - 5 + 'px'
+            //   tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px'
+            //   tooltipEl.style.pointerEvents = 'none'
+            // }
           }
         }
       })
@@ -370,7 +377,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
   .widget_container{
     .fr-warning {
       display: flex;
@@ -466,6 +472,7 @@ export default {
           color:#242424;
           font-weight: bold;
         }
+
       }
     }
   }
