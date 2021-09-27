@@ -51,6 +51,7 @@ export default {
       dataset: [],
       dataset2: [],
       protocole: [],
+      total: [],
       widgetId: '',
       chartId: '',
       display: '',
@@ -152,6 +153,7 @@ export default {
       this.dataset.length = 0
       this.dataset2.length = 0
       this.protocole.length = 0
+      this.total.length = 0
 
       let date = []
       geoObject.values.forEach(function (d) {
@@ -161,12 +163,13 @@ export default {
       geoObject.values.forEach(function (d) {
         if (date.includes(d.date)) {
           self.labels.push(self.convertDateToHuman(d.date))
-          self.dataset.push((d.value))
-          self.protocole.push((d.protocole))
+          self.dataset.push(d.value)
+          self.protocole.push(d.protocole)
+          self.total.push(d.total)
           const correspondingValue = geoObject2.values.find(obj => {
             return obj.date === d.date
           })
-
+          console.log(self.total)
           self.dataset2.push(correspondingValue.value)
         }
       })
@@ -181,6 +184,9 @@ export default {
       const self = this
 
       this.updateData()
+
+      let xTickLimit
+      this.display === 'big' ? xTickLimit = 9 : xTickLimit = 5
 
       const ctx = document.getElementById(self.chartId).getContext('2d')
 
@@ -236,6 +242,8 @@ export default {
                 color: 'rgba(0, 0, 0, 0)'
               },
               ticks: {
+                autoSkip: true,
+                maxTicksLimit: xTickLimit,
                 maxRotation: 0,
                 minRotation: 0,
                 callback: function (value) {
@@ -291,11 +299,12 @@ export default {
             callbacks: {
               label: function (tooltipItems) {
                 const int = parseFloat(self.dataset[tooltipItems.index]).toFixed(0).toLocaleString()
+                const total = parseFloat(self.total[tooltipItems.index]).toFixed(0).toLocaleString()
                 const taux = self.dataset2[tooltipItems.index].toString()
                 if (self.protocole[tooltipItems.index] === undefined) {
-                  return int + ' ' + self.units[0] + ' (' + taux + '%)'
+                  return int + ' ' + self.units[0] + ' (' + taux + '%) sur un total de ' + total
                 } else {
-                  return ['- ' + int + ' ' + self.units[0] + ' (' + taux + '%)', '- Protocole sanitaire du ' + self.protocole[tooltipItems.index]]
+                  return ['- ' + int + ' ' + self.units[0] + ' (' + taux + '%) sur un total de ' + total, '- Protocole sanitaire du ' + self.protocole[tooltipItems.index]]
                 }
               },
               title: function (tooltipItems) {
