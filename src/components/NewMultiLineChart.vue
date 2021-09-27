@@ -1,19 +1,17 @@
 <template>
-
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
-    <LeftCol :props="leftColProps"></LeftCol>
+    <LeftCol :props="leftColProps" @EventShowLine = "ChangeShowLine2"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
       <div class="chart ml-lg">
-        <div class="multiline_tooltip" v-if="tooltip.display" :style="{top:tooltip.top,left:tooltip.left}">
-          <div class="tooltip_header">{{tooltip.date}}</div>
+        <!-- <div class="multiline_tooltip" id = 'chartjs-tooltip'>
+          <div class="tooltip_header" id = 'divDate'></div>
           <div class="tooltip_body">
-            <div class="tooltip_value" v-for="index in nbIndicateurs" :key="index"  v-bind:style="{'display':tooltip.listDisplay[index - 1]}">
-              <span class="legende_dot" v-bind:style="{'background-color':colors[index - 1]}"></span>
-              {{convertStringToLocaleNumber(tooltip.values[index - 1])}} {{units[index- 1]}}
+            <div class="tooltip_value" id = 'divValue'>
+              <span class="legende_dot"></span>
             </div>
           </div>
-        </div>
-        <canvas :id="chartId" @mouseleave = 'hideTooltip'></canvas>
+        </div> -->
+        <canvas :id="chartId"></canvas>
         <div v-for="index in nbIndicateurs" :key="index" class="flex fr-mt-3v fr-mb-1v" :style="style">
           <span class="legende_dot" v-bind:style="{'background-color':colors_legend[index-1]}" @click = "ChangeShowLine(index)"></span>
           <p v-bind:class="classLegend[index - 1]" v-bind:style="{'color':styleLegend[index - 1]}" @click = "ChangeShowLine(index)">
@@ -63,24 +61,17 @@ export default {
         evolvalues: [],
         isMap: false,
         date: '',
-        display: [],
         colors_legend: [],
-        legendDisplay: ['', '', '']
+        legendDisplay: ['', '', ''],
+        units: [],
+        opacity: []
 
       },
       units: [],
       names: [],
       chart: undefined,
       loading: true,
-      legendLeftMargin: 0,
-      tooltip: {
-        top: '0px',
-        left: '0px',
-        display: false,
-        values: [],
-        date: '',
-        listDisplay: []
-      }
+      legendLeftMargin: 0
     }
   },
   props: {
@@ -124,9 +115,6 @@ export default {
       this.showLine.length = this.nbIndicateurs
       this.showLine = this.showLine.fill(true)
 
-      this.tooltip.listDisplay.length = this.nbIndicateurs
-      this.tooltip.listDisplay = this.tooltip.listDisplay.fill('')
-
       this.classLegend.length = this.nbIndicateurs
       this.classLegend = this.classLegend.fill('fr-text--sm fr-text--bold fr-ml-1v fr-mb-0')
 
@@ -152,8 +140,8 @@ export default {
       this.leftColProps.currentValues.length = 0
       this.leftColProps.evolcodes.length = 0
       this.leftColProps.evolvalues.length = 0
-      this.leftColProps.display.length = 0
-
+      this.leftColProps.units.length = 0
+      this.leftColProps.opacity.length = 0
       this.labels.length = 0
       this.dataset.length = 0
 
@@ -172,19 +160,13 @@ export default {
 
         this.leftColProps.names.push(this.indicateur_data[i].nom)
         this.units.push(this.indicateur_data[i].unite)
+        this.leftColProps.units.push(this.indicateur_data[i].unite_short)
+        this.leftColProps.opacity.push(1)
         this.names.push(this.indicateur_data[i].nom)
         this.leftColProps.currentValues.push(geoObject.last_value)
         this.leftColProps.evolcodes.push(geoObject.evol_color)
         this.leftColProps.evolvalues.push(geoObject.evol_percentage)
-        if (isNaN(geoObject.evol_percentage)) {
-          this.leftColProps.display.push('none')
-        } else {
-          if (parseFloat(parseFloat(geoObject.evol_percentage).toFixed(1)) === 0) {
-            this.leftColProps.display.push('none')
-          } else {
-            this.leftColProps.display.push('')
-          }
-        }
+
         listGeoObject.push(geoObject)
       }
       this.leftColProps.date = this.convertDateToHuman(listGeoObject[0].last_date)
@@ -242,25 +224,26 @@ export default {
       this.colors_legend.length = 0
       this.classLegend.length = 0
       this.styleLegend.length = 0
-      this.tooltip.listDisplay.length = 0
+      this.leftColProps.opacity.length = 0
       this.colors.forEach(function (col, index) {
         if (self.showLine[index]) {
-          self.tooltip.listDisplay.push('')
           self.colors_legend.push(col)
           self.classLegend.push('fr-text--sm fr-text--bold fr-ml-1v fr-mb-0')
           self.styleLegend.push('#1E1E1E')
+          self.leftColProps.opacity.push(1)
         } else {
-          self.tooltip.listDisplay.push('none')
           self.colors_legend.push(chroma(col).alpha(0.3).hex())
           self.classLegend.push('fr-text--sm fr-ml-1v fr-mb-0')
           self.styleLegend.push('#E7E7E7')
+          self.leftColProps.opacity.push(0.33)
         }
       })
       this.chart.update()
     },
-    hideTooltip () {
-      this.tooltip.display = false
+    ChangeShowLine2 (payload) {
+      this.ChangeShowLine(payload.index + 1)
     },
+
     createChart () {
       const self = this
 
@@ -316,6 +299,7 @@ export default {
           tooltips: {
             displayColors: false,
             backgroundColor: '#6b6b6b',
+            enabled: true,
             callbacks: {
               label: function (tooltipItems) {
                 const int = self.convertFloatToHuman(tooltipItems.value)
@@ -324,10 +308,56 @@ export default {
               title: function (tooltipItems) {
                 return tooltipItems[0].label
               },
-              labelTextColor: function () {
+              labelTextColor: function (tooltipItems) {
                 return '#eeeeee'
+                // return self.colors_legend[tooltipItems.datasetIndex]
               }
-            }
+            } // ,
+            // custom: function (context) {
+            //   // Tooltip Element
+            //   const tooltipEl = document.getElementById('chartjs-tooltip')
+
+            //   // Hide if no tooltip
+            //   const tooltipModel = context
+            //   if (tooltipModel.opacity === 0) {
+            //     tooltipEl.style.opacity = 0
+            //     return
+            //   }
+
+            //   // Set caret Position
+            //   tooltipEl.classList.remove('above', 'below', 'no-transform')
+            //   if (tooltipModel.yAlign) {
+            //     tooltipEl.classList.add(tooltipModel.yAlign)
+            //   } else {
+            //     tooltipEl.classList.add('no-transform')
+            //   }
+
+            //   function getBody (bodyItem) {
+            //     return bodyItem.lines
+            //   }
+            //   // Set Text
+            //   if (tooltipModel.body) {
+            //     const titleLines = tooltipModel.title || []
+            //     const bodyLines = tooltipModel.body.map(getBody)
+
+            //     const divDate = document.getElementById('divDate')
+            //     divDate.innerHTML = titleLines[0]
+
+            //     const color = tooltipModel.labelTextColors[0]
+            //     const divValue = document.getElementById('divValue')
+            //     divValue.innerHTML = '<span data-v-6760596c="" class="legende_dot" style = "background-color :' + color + '"></span>' + ' ' + bodyLines[0]
+            //   }
+
+            //   const position = self.chart.canvas.getBoundingClientRect()
+
+            //   // Display, position, and set styles for font
+            //   tooltipEl.style.opacity = 1
+            //   tooltipEl.style.position = 'absolute'
+            //   tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX - tooltipEl.clientWidth / 2 + 'px'
+            //   tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - tooltipEl.clientHeight - 5 + 'px'
+            //   tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px'
+            //   tooltipEl.style.pointerEvents = 'none'
+            // }
           }
         }
       })

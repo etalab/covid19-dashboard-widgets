@@ -1,11 +1,11 @@
 <template>
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
-    <div class="fr-warning" v-if="geoFallback">
-      <div class="scheme-border">
-          <span class="fr-fi-information-fill fr-px-1w fr-py-3v" aria-hidden="true"></span>
+      <div class="fr-warning" v-bind:style="{'display': alerteDisplay}">
+        <div class="scheme-border">
+            <span class="fr-fi-information-fill fr-px-1w fr-py-3v" aria-hidden="true"></span>
+        </div>
+        <p class="fr-text--sm fr-mb-0 fr-p-3v">L'affichage des données est uniquement disponible au niveau national</p>
       </div>
-      <p class="fr-text--sm fr-mb-0 fr-p-3v">{{geoFallbackMsg}}</p>
-    </div>
     <LeftCol :props="leftColProps"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
     <div class="chart ml-lg">
@@ -23,8 +23,8 @@
         <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(units[0])}}</p>
       </div>
       <div class="flex fr-mt-3v" :style="style">
-        <span class="legende_dot" v-bind:style="{'background-color': '#009081', 'display': cst.legendDisplay}"></span>
-        <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(cst.legendName)}}</p>
+        <span class="legende_dot"  v-bind:style="{'background-color': leftColProps.colors_legend[1]}"></span>
+        <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(units[1])}}</p>
       </div>
     </div>
     </div>
@@ -38,7 +38,7 @@ import LeftCol from '@/components/LeftCol'
 import { mixin } from '@/utils.js'
 
 export default {
-  name: 'LineChart',
+  name: 'BarLineChart',
   components: {
     LeftCol
   },
@@ -46,12 +46,16 @@ export default {
   data () {
     return {
       indicateur_data: undefined,
+      indicateur_data2: undefined,
       labels: [],
       dataset: [],
-      datasets: [],
+      dataset2: [],
+      protocole: [],
+      total: [],
       widgetId: '',
       chartId: '',
       display: '',
+      alerteDisplay: 'none',
       leftColProps: {
         localisation: '',
         currentValues: [],
@@ -61,15 +65,10 @@ export default {
         evolvalues: [],
         isMap: false,
         date: '',
-        colors_legend: ['#000091'],
+        colors_legend: ['#000091', '#009081'],
         legendDisplay: [''],
         units: [],
         opacity: [1]
-      },
-      cst: {
-        legendName: '',
-        value: 0,
-        legendDisplay: 'none'
       },
       units: [],
       chart: undefined,
@@ -80,11 +79,8 @@ export default {
     }
   },
   props: {
-    indicateur: String,
-    constante: {
-      type: Boolean,
-      default: false
-    }
+    indicateur1: String,
+    indicateur2: String
   },
   computed: {
     selectedGeoLevel () {
@@ -102,8 +98,15 @@ export default {
   },
   methods: {
     async getData () {
-      store.dispatch('getData', this.indicateur).then(data => {
+      const promise1 = store.dispatch('getData', this.indicateur1).then(data => {
         this.indicateur_data = data
+      })
+
+      const promise2 = store.dispatch('getData', this.indicateur2).then(data => {
+        this.indicateur_data2 = data
+      })
+
+      Promise.all([promise1, promise2]).then((values) => {
         this.loading = false
         this.createChart()
       })
@@ -112,42 +115,22 @@ export default {
       const self = this
 
       const geolevel = this.selectedGeoLevel
-      const geocode = this.selectedGeoCode
+      // const geocode = this.selectedGeoCode
 
       this.leftColProps.localisation = this.selectedGeoLabel
 
       let geoObject
+      let geoObject2
 
-      geoObject = this.getGeoObject(geolevel, geocode)
-
-      if (typeof geoObject === 'undefined') {
-        if (geolevel === 'regions') {
-          geoObject = this.getGeoObject('France', '01')
-          this.leftColProps.localisation = 'France entière'
-          this.leftColProps.date = this.convertDateToHuman(geoObject.last_date)
-          this.geoFallback = true
-          this.geoFallbackMsg = "L'affichage des données est uniquement disponible au niveau national"
-        } else {
-          const depObj = store.state.dep.find(obj => {
-            return obj.value === geocode
-          })
-          geoObject = this.getGeoObject('regions', depObj.region_value)
-          this.leftColProps.localisation = depObj.region
-          this.geoFallback = true
-          this.geoFallbackMsg = 'Affichage des résultats au niveau régional, faute de données au niveau départemental'
-          if (typeof geoObject === 'undefined') {
-            geoObject = this.getGeoObject('France', '01')
-            this.leftColProps.localisation = 'France entière'
-            this.leftColProps.date = this.convertDateToHuman(geoObject.last_date)
-            this.geoFallback = true
-            this.geoFallbackMsg = "L'affichage des données est uniquement disponible au niveau national"
-          } else {
-            this.leftColProps.date = this.convertDateToHuman(geoObject.last_date)
-          }
-        }
+      if (geolevel === 'France') {
+        geoObject = this.indicateur_data.france[0]
+        geoObject2 = this.indicateur_data2.france[0]
+        this.alerteDisplay = 'none'
       } else {
-        this.leftColProps.date = this.convertDateToHuman(geoObject.last_date)
-        this.geoFallback = false
+        this.alerteDisplay = ''
+        geoObject = this.indicateur_data.france[0]
+        geoObject2 = this.indicateur_data2.france[0]
+        this.leftColProps.localisation = 'France entière'
       }
 
       this.leftColProps.names.length = 0
@@ -157,39 +140,39 @@ export default {
       this.leftColProps.evolvalues.length = 0
       this.leftColProps.units.length = 0
 
-      this.leftColProps.names.push(this.indicateur_data.nom)
-      this.units.push(this.indicateur_data.unite)
-      this.leftColProps.currentValues.push(geoObject.last_value)
+      this.leftColProps.names.push(this.indicateur_data.nom, this.indicateur_data2.nom)
+      this.units.push(this.indicateur_data.unite, this.indicateur_data2.unite)
+      this.leftColProps.currentValues.push(geoObject.last_value, geoObject2.last_value)
       this.leftColProps.currentDate = this.convertDateToHuman(geoObject.last_date)
-      this.leftColProps.evolcodes.push(geoObject.evol_color)
-      this.leftColProps.evolvalues.push(geoObject.evol_percentage)
-      this.leftColProps.units.push(this.indicateur_data.unite_short)
-
-      if (this.constante) {
-        this.cst.legendName = this.indicateur_data.constante_label
-        this.cst.value = this.indicateur_data.constante_value
-        this.cst.legendDisplay = ''
-      }
+      this.leftColProps.date = this.convertDateToHuman(geoObject.last_date)
+      this.leftColProps.evolcodes.push(geoObject.evol_color, geoObject2.evol_color)
+      this.leftColProps.evolvalues.push(geoObject.evol_percentage, geoObject2.evol_percentage)
+      this.leftColProps.units.push(this.indicateur_data.unite_short, this.indicateur_data2.unite_short)
 
       this.labels.length = 0
       this.dataset.length = 0
+      this.dataset2.length = 0
+      this.protocole.length = 0
+      this.total.length = 0
 
+      let date = []
       geoObject.values.forEach(function (d) {
-        self.labels.push(self.convertDateToHuman(d.date))
-        self.dataset.push((d.value))
+        date.push(d.date)
       })
-    },
-
-    getGeoObject (geolevel, geocode) {
-      let geoObject
-      if (geolevel === 'France') {
-        geoObject = this.indicateur_data.france[0]
-      } else {
-        geoObject = this.indicateur_data[geolevel].find(obj => {
-          return obj.code_level === geocode
-        })
-      }
-      return geoObject
+      date = date.sort().slice(-9)
+      geoObject.values.forEach(function (d) {
+        if (date.includes(d.date)) {
+          self.labels.push(self.convertDateToHuman(d.date))
+          self.dataset.push(d.value)
+          self.protocole.push(d.protocole)
+          self.total.push(d.total)
+          const correspondingValue = geoObject2.values.find(obj => {
+            return obj.date === d.date
+          })
+          console.log(self.total)
+          self.dataset2.push(correspondingValue.value)
+        }
+      })
     },
 
     updateChart () {
@@ -203,45 +186,50 @@ export default {
       this.updateData()
 
       let xTickLimit
-      this.display === 'big' ? xTickLimit = 6 : xTickLimit = 1
+      this.display === 'big' ? xTickLimit = 9 : xTickLimit = 5
 
       const ctx = document.getElementById(self.chartId).getContext('2d')
 
       let gradientFill
       this.display === 'big' ? gradientFill = ctx.createLinearGradient(0, 0, 0, 500) : gradientFill = ctx.createLinearGradient(0, 0, 0, 250)
 
-      gradientFill.addColorStop(0, 'rgba(218, 218, 254, 0.6)')
+      gradientFill.addColorStop(0, 'rgba(45, 88, 81, 0.3)')
       gradientFill.addColorStop(0.6, 'rgba(245, 245, 255, 0)')
 
-      const datasets = [{
-        data: self.dataset,
-        backgroundColor: gradientFill,
-        borderColor: '#000091',
-        type: 'line',
-        pointRadius: 8,
-        pointBackgroundColor: 'rgba(0, 0, 0, 0)',
-        pointBorderColor: 'rgba(0, 0, 0, 0)',
-        pointHoverBackgroundColor: 'rgba(0, 0, 145, 1)',
-        pointHoverRadius: 6
-      }]
-
-      if (this.constante) {
-        datasets.push({
-          data: Array(self.labels.length).fill(self.cst.value),
-          borderColor: '#009081',
-          type: 'line',
-          backgroundColor: 'rgba(0, 0, 0, 0)',
-          pointRadius: 8,
-          pointBackgroundColor: 'rgba(0, 0, 0, 0)',
-          pointBorderColor: 'rgba(0, 0, 0, 0)',
-          borderDash: [10, 5]
-        })
+      let max
+      max = Math.max.apply(null, self.dataset2)
+      if (max < 0.1) {
+        max = 1
+      } else {
+        max = Math.min(Math.ceil(max / 10) * 10, 100)
       }
 
       this.chart = new Chart(ctx, {
         data: {
           labels: self.labels,
-          datasets: datasets
+          datasets: [{
+            data: self.dataset,
+            backgroundColor: '#000091',
+            borderColor: '#000091',
+            type: 'bar',
+            barPercentage: 0.5,
+            yAxisID: 'yAxisL',
+            order: 2
+          },
+          {
+            data: self.dataset2,
+            backgroundColor: gradientFill,
+            borderColor: '#009081',
+            type: 'line',
+            pointRadius: 8,
+            pointBackgroundColor: 'rgba(0, 0, 0, 0)',
+            pointBorderColor: 'rgba(0, 0, 0, 0)',
+            pointHoverBackgroundColor: '#009081',
+            pointHoverRadius: 6,
+            yAxisID: 'yAxisR',
+            order: 1
+          }
+          ]
         },
         options: {
           animation: {
@@ -249,7 +237,7 @@ export default {
           },
           scales: {
             xAxes: [{
-              // offset: true,
+              offset: true,
               gridLines: {
                 color: 'rgba(0, 0, 0, 0)'
               },
@@ -259,11 +247,13 @@ export default {
                 maxRotation: 0,
                 minRotation: 0,
                 callback: function (value) {
-                  return value.toString().substring(3, 5) + '/' + value.toString().substring(8, 10)
+                  return value.toString().substring(0, 2) + '/' + value.toString().substring(3, 5)
                 }
               }
             }],
             yAxes: [{
+              position: 'left',
+              id: 'yAxisL',
               gridLines: {
                 color: '#e5e5e5',
                 borderDash: [3]
@@ -275,36 +265,63 @@ export default {
               afterFit: function (axis) {
                 self.legendLeftMargin = axis.width
               }
+            },
+            {
+              position: 'right',
+              id: 'yAxisR',
+              gridLines: {
+                color: '#e5e5e5',
+                borderDash: [3]
+              },
+              ticks: {
+                min: 0,
+                max: max,
+                autoSkip: true,
+                maxTicksLimit: 5,
+                callback: function (value) {
+                  return value.toString() + '%'
+                }
+              },
+              afterFit: function (axis) {
+                self.legendLeftMargin = axis.width
+              }
             }]
           },
           legend: {
             display: false
           },
           tooltips: {
-            filter: function (tooltipItem) {
-              return tooltipItem.datasetIndex === 0
-            },
+            reversed: false,
             displayColors: false,
             backgroundColor: '#6b6b6b',
+            // mode: 'label',
+            enabled: true,
             callbacks: {
               label: function (tooltipItems) {
-                const int = self.convertFloatToHuman(tooltipItems.value)
-                return int + ' ' + self.units[0]
+                const int = parseFloat(self.dataset[tooltipItems.index]).toFixed(0).toLocaleString()
+                const total = parseFloat(self.total[tooltipItems.index]).toFixed(0).toLocaleString()
+                const taux = self.dataset2[tooltipItems.index].toString()
+                if (self.protocole[tooltipItems.index] === undefined) {
+                  return int + ' ' + self.units[0] + ' (' + taux + '%) sur un total de ' + total
+                } else {
+                  return ['- ' + int + ' ' + self.units[0] + ' (' + taux + '%) sur un total de ' + total, '- Protocole sanitaire du ' + self.protocole[tooltipItems.index]]
+                }
               },
               title: function (tooltipItems) {
                 return tooltipItems[0].label
               },
-              labelTextColor: function () {
+              labelTextColor: function (tooltipItems) {
+                // return self.leftColProps.colors_legend[tooltipItems.datasetIndex]
                 return '#eeeeee'
               }
-            }
+            } // ,
             // custom: function (context) {
             //   // Tooltip Element
             //   const tooltipEl = document.getElementById('chartjs-tooltip')
 
             //   // Hide if no tooltip
             //   const tooltipModel = context
-            //   if (tooltipModel.opacity === 0 || tooltipModel.title[0] === undefined) {
+            //   if (tooltipModel.opacity === 0) {
             //     tooltipEl.style.opacity = 0
             //     return
             //   }
@@ -329,8 +346,9 @@ export default {
             //     const divDate = document.getElementById('divDate')
             //     divDate.innerHTML = titleLines[0]
 
+            //     const color = tooltipModel.labelTextColors[0]
             //     const divValue = document.getElementById('divValue')
-            //     divValue.innerHTML = '<span data-v-6760596c="" class="legende_dot"></span>' + ' ' + bodyLines[0] + ' ' + self.units
+            //     divValue.innerHTML = '<span data-v-6760596c="" class="legende_dot" style = "background-color :' + color + '"></span>' + ' ' + bodyLines[0]
             //   }
 
             //   const position = self.chart.canvas.getBoundingClientRect()
@@ -372,7 +390,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
   .widget_container{
     .fr-warning {
       display: flex;
@@ -468,6 +485,7 @@ export default {
           color:#242424;
           font-weight: bold;
         }
+
       }
     }
   }

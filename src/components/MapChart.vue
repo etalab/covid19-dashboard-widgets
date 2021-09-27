@@ -77,9 +77,9 @@ export default {
         isMap: true,
         date: '',
         trendType: '',
-        display: [],
         colors_legend: [''],
-        legendDisplay: ['none']
+        legendDisplay: ['none'],
+        opacity: [1]
       },
       scaleMin: 0,
       scaleMax: 0,
@@ -143,25 +143,16 @@ export default {
       this.leftColProps.currentValues.length = 0
       this.leftColProps.evolcodes.length = 0
       this.leftColProps.evolvalues.length = 0
-      this.leftColProps.display.length = 0
 
       this.leftColProps.names.push(this.indicateur_data.nom)
-      this.leftColProps.units.push(this.indicateur_data.unite)
+      this.leftColProps.units.push(this.indicateur_data.unite_short)
       this.units.push(this.indicateur_data.unite)
       this.leftColProps.currentValues.push(geoObject.last_value)
       this.leftColProps.currentDate = this.convertDateToHuman(geoObject.last_date)
       this.leftColProps.evolcodes.push(geoObject.evol_color)
       this.leftColProps.evolvalues.push(geoObject.evol_percentage)
       this.leftColProps.trendType = this.indicateur_data.trendType
-      if (isNaN(geoObject.evol_percentage)) {
-        this.leftColProps.display.push('none')
-      } else {
-        if (parseFloat(parseFloat(geoObject.evol_percentage).toFixed(1)) === 0) {
-          this.leftColProps.display.push('none')
-        } else {
-          this.leftColProps.display.push('')
-        }
-      }
+
       const values = []
 
       this.indicateur_data.departements.forEach(function (d) {
