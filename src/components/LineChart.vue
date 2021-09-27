@@ -249,7 +249,7 @@ export default {
           },
           scales: {
             xAxes: [{
-              offset: true,
+              // offset: true,
               gridLines: {
                 color: 'rgba(0, 0, 0, 0)'
               },
