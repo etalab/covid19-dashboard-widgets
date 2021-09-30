@@ -9,14 +9,14 @@
     <LeftCol :props="leftColProps"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
     <div class="chart ml-lg">
-      <!-- <div class="linechart_tooltip" id = 'chartjs-tooltip'>
+      <div class="linechart_tooltip" id = 'chartjs-tooltip'>
         <div class="tooltip_header" id = 'divDate'></div>
         <div class="tooltip_body">
           <div class="tooltip_value" id = 'divValue'>
             <span class="legende_dot"></span>
           </div>
         </div>
-      </div> -->
+      </div>
       <canvas :id="chartId"></canvas>
       <div class="flex fr-mt-3v" :style="style">
         <span class="legende_dot"></span>
@@ -249,7 +249,6 @@ export default {
           },
           scales: {
             xAxes: [{
-              // offset: true,
               gridLines: {
                 color: 'rgba(0, 0, 0, 0)'
               },
@@ -284,6 +283,7 @@ export default {
             filter: function (tooltipItem) {
               return tooltipItem.datasetIndex === 0
             },
+            enabled: false,
             displayColors: false,
             backgroundColor: '#6b6b6b',
             callbacks: {
@@ -297,52 +297,52 @@ export default {
               labelTextColor: function () {
                 return '#eeeeee'
               }
+            },
+            custom: function (context) {
+              // Tooltip Element
+              const tooltipEl = document.getElementById('chartjs-tooltip')
+
+              // Hide if no tooltip
+              const tooltipModel = context
+              if (tooltipModel.opacity === 0 || tooltipModel.title[0] === undefined) {
+                tooltipEl.style.opacity = 0
+                return
+              }
+
+              // Set caret Position
+              tooltipEl.classList.remove('above', 'below', 'no-transform')
+              if (tooltipModel.yAlign) {
+                tooltipEl.classList.add(tooltipModel.yAlign)
+              } else {
+                tooltipEl.classList.add('no-transform')
+              }
+
+              function getBody (bodyItem) {
+                return bodyItem.lines
+              }
+
+              // Set Text
+              if (tooltipModel.body) {
+                const titleLines = tooltipModel.title || []
+                const bodyLines = tooltipModel.body.map(getBody)
+
+                const divDate = document.getElementById('divDate')
+                divDate.innerHTML = titleLines[0]
+
+                const divValue = document.getElementById('divValue')
+                divValue.innerHTML = '<span data-v-6760596c="" class="legende_dot"></span>' + ' ' + bodyLines[0]
+              }
+
+              const position = self.chart.canvas.getBoundingClientRect()
+
+              // Display, position, and set styles for font
+              tooltipEl.style.opacity = 1
+              tooltipEl.style.position = 'absolute'
+              tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX - tooltipEl.clientWidth / 2 + 'px'
+              tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - tooltipEl.clientHeight - 5 + 'px'
+              tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px'
+              tooltipEl.style.pointerEvents = 'none'
             }
-            // custom: function (context) {
-            //   // Tooltip Element
-            //   const tooltipEl = document.getElementById('chartjs-tooltip')
-
-            //   // Hide if no tooltip
-            //   const tooltipModel = context
-            //   if (tooltipModel.opacity === 0 || tooltipModel.title[0] === undefined) {
-            //     tooltipEl.style.opacity = 0
-            //     return
-            //   }
-
-            //   // Set caret Position
-            //   tooltipEl.classList.remove('above', 'below', 'no-transform')
-            //   if (tooltipModel.yAlign) {
-            //     tooltipEl.classList.add(tooltipModel.yAlign)
-            //   } else {
-            //     tooltipEl.classList.add('no-transform')
-            //   }
-
-            //   function getBody (bodyItem) {
-            //     return bodyItem.lines
-            //   }
-
-            //   // Set Text
-            //   if (tooltipModel.body) {
-            //     const titleLines = tooltipModel.title || []
-            //     const bodyLines = tooltipModel.body.map(getBody)
-
-            //     const divDate = document.getElementById('divDate')
-            //     divDate.innerHTML = titleLines[0]
-
-            //     const divValue = document.getElementById('divValue')
-            //     divValue.innerHTML = '<span data-v-6760596c="" class="legende_dot"></span>' + ' ' + bodyLines[0] + ' ' + self.units
-            //   }
-
-            //   const position = self.chart.canvas.getBoundingClientRect()
-
-            //   // Display, position, and set styles for font
-            //   tooltipEl.style.opacity = 1
-            //   tooltipEl.style.position = 'absolute'
-            //   tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX - tooltipEl.clientWidth / 2 + 'px'
-            //   tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - tooltipEl.clientHeight - 5 + 'px'
-            //   tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px'
-            //   tooltipEl.style.pointerEvents = 'none'
-            // }
           }
         }
       })

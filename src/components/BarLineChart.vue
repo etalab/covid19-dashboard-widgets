@@ -169,7 +169,6 @@ export default {
           const correspondingValue = geoObject2.values.find(obj => {
             return obj.date === d.date
           })
-          console.log(self.total)
           self.dataset2.push(correspondingValue.value)
         }
       })
@@ -294,15 +293,14 @@ export default {
             reversed: false,
             displayColors: false,
             backgroundColor: '#6b6b6b',
-            // mode: 'label',
-            enabled: true,
+            enabled: false,
             callbacks: {
               label: function (tooltipItems) {
                 const int = parseFloat(self.dataset[tooltipItems.index]).toFixed(0).toLocaleString()
                 const total = parseFloat(self.total[tooltipItems.index]).toFixed(0).toLocaleString()
                 const taux = self.dataset2[tooltipItems.index].toString()
                 if (self.protocole[tooltipItems.index] === undefined) {
-                  return int + ' ' + self.units[0] + ' (' + taux + '%) sur un total de ' + total
+                  return [int + ' ' + self.units[0] + ' (' + taux + '%) sur un total de ' + total]
                 } else {
                   return ['- ' + int + ' ' + self.units[0] + ' (' + taux + '%) sur un total de ' + total, '- Protocole sanitaire du ' + self.protocole[tooltipItems.index]]
                 }
@@ -314,53 +312,59 @@ export default {
                 // return self.leftColProps.colors_legend[tooltipItems.datasetIndex]
                 return '#eeeeee'
               }
-            } // ,
-            // custom: function (context) {
-            //   // Tooltip Element
-            //   const tooltipEl = document.getElementById('chartjs-tooltip')
+            },
+            custom: function (context) {
+              // Tooltip Element
+              const tooltipEl = document.getElementById('chartjs-tooltip')
 
-            //   // Hide if no tooltip
-            //   const tooltipModel = context
-            //   if (tooltipModel.opacity === 0) {
-            //     tooltipEl.style.opacity = 0
-            //     return
-            //   }
+              // Hide if no tooltip
+              const tooltipModel = context
+              if (tooltipModel.opacity === 0) {
+                tooltipEl.style.opacity = 0
+                return
+              }
 
-            //   // Set caret Position
-            //   tooltipEl.classList.remove('above', 'below', 'no-transform')
-            //   if (tooltipModel.yAlign) {
-            //     tooltipEl.classList.add(tooltipModel.yAlign)
-            //   } else {
-            //     tooltipEl.classList.add('no-transform')
-            //   }
+              // Set caret Position
+              tooltipEl.classList.remove('above', 'below', 'no-transform')
+              if (tooltipModel.yAlign) {
+                tooltipEl.classList.add(tooltipModel.yAlign)
+              } else {
+                tooltipEl.classList.add('no-transform')
+              }
 
-            //   function getBody (bodyItem) {
-            //     return bodyItem.lines
-            //   }
+              function getBody (bodyItem) {
+                return bodyItem.lines
+              }
 
-            //   // Set Text
-            //   if (tooltipModel.body) {
-            //     const titleLines = tooltipModel.title || []
-            //     const bodyLines = tooltipModel.body.map(getBody)
+              // Set Text
+              if (tooltipModel.body) {
+                const titleLines = tooltipModel.title || []
+                const bodyLines = tooltipModel.body.map(getBody)
 
-            //     const divDate = document.getElementById('divDate')
-            //     divDate.innerHTML = titleLines[0]
+                const divDate = document.getElementById('divDate')
+                divDate.innerHTML = titleLines[0]
 
-            //     const color = tooltipModel.labelTextColors[0]
-            //     const divValue = document.getElementById('divValue')
-            //     divValue.innerHTML = '<span data-v-6760596c="" class="legende_dot" style = "background-color :' + color + '"></span>' + ' ' + bodyLines[0]
-            //   }
+                // const color = tooltipModel.labelTextColors[0]
+                const divValue = document.getElementById('divValue')
 
-            //   const position = self.chart.canvas.getBoundingClientRect()
+                let innerHTML = ''
+                bodyLines[0].forEach(function (line) {
+                  innerHTML += line + '<br>'
+                })
 
-            //   // Display, position, and set styles for font
-            //   tooltipEl.style.opacity = 1
-            //   tooltipEl.style.position = 'absolute'
-            //   tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX - tooltipEl.clientWidth / 2 + 'px'
-            //   tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - tooltipEl.clientHeight - 5 + 'px'
-            //   tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px'
-            //   tooltipEl.style.pointerEvents = 'none'
-            // }
+                divValue.innerHTML = innerHTML
+              }
+
+              const position = self.chart.canvas.getBoundingClientRect()
+
+              // Display, position, and set styles for font
+              tooltipEl.style.opacity = 1
+              tooltipEl.style.position = 'absolute'
+              tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX - tooltipEl.clientWidth / 2 + 'px'
+              tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - tooltipEl.clientHeight - 5 + 'px'
+              tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px'
+              tooltipEl.style.pointerEvents = 'none'
+            }
           }
         }
       })
