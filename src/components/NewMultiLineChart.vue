@@ -3,14 +3,14 @@
     <LeftCol :props="leftColProps" @EventShowLine = "ChangeShowLine2"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
       <div class="chart ml-lg">
-        <!-- <div class="multiline_tooltip" id = 'chartjs-tooltip'>
-          <div class="tooltip_header" id = 'divDate'></div>
+        <div class="multiline_tooltip">
+          <div class="tooltip_header"></div>
           <div class="tooltip_body">
-            <div class="tooltip_value" id = 'divValue'>
-              <span class="legende_dot"></span>
+            <div class="tooltip_value">
+              <span class="tooltip_dot"></span>
             </div>
           </div>
-        </div> -->
+        </div>
         <canvas :id="chartId"></canvas>
         <div v-for="index in nbIndicateurs" :key="index" class="flex fr-mt-3v fr-mb-1v" :style="style">
           <span class="legende_dot" v-bind:style="{'background-color':colors_legend[index-1]}" @click = "ChangeShowLine(index)"></span>
@@ -302,20 +302,31 @@ export default {
             enabled: false,
             callbacks: {
               label: function (tooltipItems) {
-                const int = self.convertFloatToHuman(tooltipItems.value)
-                return int + ' ' + self.units[tooltipItems.datasetIndex]
+                const label = []
+                self.dataset.forEach(function (set, i) {
+                  if (self.showLine[i]) {
+                    const int = set.data[tooltipItems.index]
+                    label.push(int + ' ' + self.units[i])
+                  }
+                })
+                return label
               },
               title: function (tooltipItems) {
                 return tooltipItems[0].label
               },
               labelTextColor: function (tooltipItems) {
-                // return '#eeeeee'
-                return self.colors_legend[tooltipItems.datasetIndex]
+                const color = []
+                self.colors_legend.forEach(function (col, i) {
+                  if (self.showLine[i]) {
+                    color.push(col)
+                  }
+                })
+                return color
               }
             },
             custom: function (context) {
               // Tooltip Element
-              const tooltipEl = document.getElementById('chartjs-tooltip')
+              const tooltipEl = self.$el.querySelector('.multiline_tooltip')
 
               // Hide if no tooltip
               const tooltipModel = context
@@ -340,23 +351,43 @@ export default {
                 const titleLines = tooltipModel.title || []
                 const bodyLines = tooltipModel.body.map(getBody)
 
-                const divDate = document.getElementById('divDate')
+                const divDate = self.$el.querySelector('.tooltip_header')
                 divDate.innerHTML = titleLines[0]
 
                 const color = tooltipModel.labelTextColors[0]
-                const divValue = document.getElementById('divValue')
-                divValue.innerHTML = '<span data-v-6760596c="" class="legende_dot" style = "background-color :' + color + '"></span>' + ' ' + bodyLines[0]
+                const divValue = self.$el.querySelector('.tooltip_value')
+
+                divValue.innerHTML = ''
+                bodyLines[0].forEach(function (line, i) {
+                  divValue.innerHTML += '<span data-v-f242ef5e="" class="tooltip_dot" style = "background-color:' + color[i] + '"></span>' + ' ' + line + '<br>'
+                })
               }
 
-              const position = self.chart.canvas.getBoundingClientRect()
+              const {
+                offsetLeft: positionX,
+                offsetTop: positionY,
+                height: canvasHeight
+              } = self.chart.canvas
 
-              // Display, position, and set styles for font
-              tooltipEl.style.opacity = 1
+              const canvasWidth = Number(self.chart.canvas.style.width.replace(/\D/g, ''))
               tooltipEl.style.position = 'absolute'
-              tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX - tooltipEl.clientWidth / 2 + 'px'
-              tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - tooltipEl.clientHeight - 5 + 'px'
               tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px'
               tooltipEl.style.pointerEvents = 'none'
+              let tooltipX = positionX + tooltipModel.caretX + 10
+              let tooltipY = positionY + tooltipModel.caretY - 18
+              if (tooltipX + tooltipEl.clientWidth + self.legendLeftMargin > positionX + canvasWidth) { // tooltip disappears at the right of the canvas
+                tooltipX = positionX + tooltipModel.caretX - tooltipEl.clientWidth - 10
+              }
+              if (tooltipY + tooltipEl.clientHeight > positionY + canvasHeight) { // tooltip disappears at the bottom of the canvas
+                tooltipY = positionY + tooltipModel.caretY - tooltipEl.clientHeight + 18
+              }
+              if (tooltipX < positionX) {
+                tooltipX = positionX + tooltipModel.caretX - tooltipEl.clientWidth / 2
+                tooltipY = positionY + tooltipModel.caretY - tooltipEl.clientHeight - 18
+              }
+              tooltipEl.style.left = tooltipX + 'px'
+              tooltipEl.style.top = tooltipY + 'px'
+              tooltipEl.style.opacity = 1
             }
           }
         }
@@ -443,11 +474,14 @@ export default {
         padding-left: 5px;
         padding-bottom: 5px;
         line-height: 1.67;
-        .legende_dot{
+        .tooltip_dot{
           min-width: 0.7rem;
           width: 0.7rem;
           height: 0.7rem;
           border-radius: 50%;
+          background-color: #000091;
+          display: inline-block;
+          margin-top: 0.25rem;
         }
         .tooltip_place{
           color:#242424;
