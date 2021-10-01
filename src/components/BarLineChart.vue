@@ -9,14 +9,14 @@
     <LeftCol :props="leftColProps"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
     <div class="chart ml-lg">
-      <!-- <div class="linechart_tooltip" id = 'chartjs-tooltip'>
-        <div class="tooltip_header" id = 'divDate'></div>
+      <div class="linechart_tooltip">
+        <div class="tooltip_header"></div>
         <div class="tooltip_body">
-          <div class="tooltip_value" id = 'divValue'>
+          <div class="tooltip_value">
             <span class="legende_dot"></span>
           </div>
         </div>
-      </div> -->
+      </div>
       <canvas :id="chartId"></canvas>
       <div class="flex fr-mt-3v" :style="style">
         <span class="legende_dot"></span>
@@ -315,7 +315,7 @@ export default {
             },
             custom: function (context) {
               // Tooltip Element
-              const tooltipEl = document.getElementById('chartjs-tooltip')
+              const tooltipEl = self.$el.querySelector('.linechart_tooltip')
 
               // Hide if no tooltip
               const tooltipModel = context
@@ -341,11 +341,11 @@ export default {
                 const titleLines = tooltipModel.title || []
                 const bodyLines = tooltipModel.body.map(getBody)
 
-                const divDate = document.getElementById('divDate')
+                const divDate = self.$el.querySelector('.tooltip_header')
                 divDate.innerHTML = titleLines[0]
 
                 // const color = tooltipModel.labelTextColors[0]
-                const divValue = document.getElementById('divValue')
+                const divValue = self.$el.querySelector('.tooltip_value')
 
                 let innerHTML = ''
                 bodyLines[0].forEach(function (line) {
@@ -354,16 +354,31 @@ export default {
 
                 divValue.innerHTML = innerHTML
               }
+              const {
+                offsetLeft: positionX,
+                offsetTop: positionY,
+                height: canvasHeight
+              } = self.chart.canvas
 
-              const position = self.chart.canvas.getBoundingClientRect()
-
-              // Display, position, and set styles for font
-              tooltipEl.style.opacity = 1
+              const canvasWidth = Number(self.chart.canvas.style.width.replace(/\D/g, ''))
               tooltipEl.style.position = 'absolute'
-              tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX - tooltipEl.clientWidth / 2 + 'px'
-              tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - tooltipEl.clientHeight - 5 + 'px'
               tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px'
               tooltipEl.style.pointerEvents = 'none'
+              let tooltipX = positionX + tooltipModel.caretX + 10
+              let tooltipY = positionY + tooltipModel.caretY - 18
+              if (tooltipX + tooltipEl.clientWidth + self.legendLeftMargin > positionX + canvasWidth) { // tooltip disappears at the right of the canvas
+                tooltipX = positionX + tooltipModel.caretX - tooltipEl.clientWidth - 10
+              }
+              if (tooltipY + tooltipEl.clientHeight > positionY + canvasHeight) { // tooltip disappears at the bottom of the canvas
+                tooltipY = positionY + tooltipModel.caretY - tooltipEl.clientHeight + 18
+              }
+              if (tooltipX < positionX) {
+                tooltipX = positionX + tooltipModel.caretX - tooltipEl.clientWidth / 2
+                tooltipY = positionY + tooltipModel.caretY - tooltipEl.clientHeight - 18
+              }
+              tooltipEl.style.left = tooltipX + 'px'
+              tooltipEl.style.top = tooltipY + 'px'
+              tooltipEl.style.opacity = 1
             }
           }
         }
