@@ -356,11 +356,11 @@ export default {
               }
               const {
                 offsetLeft: positionX,
-                offsetTop: positionY,
-                height: canvasHeight
+                offsetTop: positionY
               } = self.chart.canvas
 
               const canvasWidth = Number(self.chart.canvas.style.width.replace(/\D/g, ''))
+              const canvasHeight = Number(self.chart.canvas.style.height.replace(/\D/g, ''))
               tooltipEl.style.position = 'absolute'
               tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px'
               tooltipEl.style.pointerEvents = 'none'
@@ -369,7 +369,7 @@ export default {
               if (tooltipX + tooltipEl.clientWidth + self.legendLeftMargin > positionX + canvasWidth) { // tooltip disappears at the right of the canvas
                 tooltipX = positionX + tooltipModel.caretX - tooltipEl.clientWidth - 10
               }
-              if (tooltipY + tooltipEl.clientHeight > positionY + canvasHeight) { // tooltip disappears at the bottom of the canvas
+              if (tooltipY + tooltipEl.clientHeight > positionY + 0.9 * canvasHeight) { // tooltip disappears at the bottom of the canvas
                 tooltipY = positionY + tooltipModel.caretY - tooltipEl.clientHeight + 18
               }
               if (tooltipX < positionX) {
@@ -466,7 +466,7 @@ export default {
       max-width:100%;
     }
     .linechart_tooltip{
-      width: 165px;
+      width: 11.25rem;
       height: auto;
       background-color: white;
       position: fixed;
@@ -481,12 +481,13 @@ export default {
         height: 30px;
         background-color: #f6f6f6;
         color:#6b6b6b;
-        padding-left: 5px;
-        padding-top: 3px;
+        padding-left: 0.75rem;
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
       }
       .tooltip_body{
-        padding-left: 5px;
-        padding-bottom: 5px;
+        padding-left: 0.75rem;
+        padding-top:0.25rem;
         line-height: 1.67;
         .legende_dot{
           min-width: 0.7rem;
