@@ -350,12 +350,14 @@ export default {
           height: 30px;
           background-color: #f6f6f6;
           color:#6b6b6b;
-          padding-left: 5px;
-          padding-top: 3px;
+          padding-left: 0.75rem;
+          padding-bottom: 0.25rem;
+          padding-top:0.25rem;
         }
         .tooltip_body{
-          padding-left: 5px;
-          padding-bottom: 5px;
+          padding-left: 0.75rem;
+          padding-top:0.25rem;
+          padding-right: 0.75rem;
           line-height: 1.67;
           .tooltip_place{
             color:#242424;

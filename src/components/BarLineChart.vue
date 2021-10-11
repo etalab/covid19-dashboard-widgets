@@ -487,6 +487,7 @@ export default {
       }
       .tooltip_body{
         padding-left: 0.75rem;
+        padding-right: 0.75rem;
         padding-top:0.25rem;
         line-height: 1.67;
         .legende_dot{

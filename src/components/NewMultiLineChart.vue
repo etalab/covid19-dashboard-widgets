@@ -474,6 +474,7 @@ export default {
       }
       .tooltip_body{
         padding-left: 0.75rem;
+        padding-right: 0.75rem;
         padding-top:0.25rem;
         .tooltip_dot{
           min-width: 0.7rem;
