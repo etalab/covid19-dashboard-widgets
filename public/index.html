@@ -171,19 +171,19 @@
                 </div>
               </div>
 
-              <div class="chart_container">
+              <!-- <div class="chart_container">
                 <map-chart indicateur="soins_critiques_moyenne_quotidienne"></map-chart>
-              </div>
+              </div> -->
         
-              <div class="chart_container">
+              <!-- <div class="chart_container">
                 <map-chart indicateur="cas_positifs"></map-chart>
-              </div>
+              </div> -->
         
-              <div class="chart_container">
+              <!-- <div class="chart_container">
                 <map-chart indicateur="taux_positivite"></map-chart>
-              </div>
+              </div> -->
         
-              <div class="chart_container">
+              <!-- <div class="chart_container">
                 <map-chart indicateur="facteur_reproduction"></map-chart>
               </div>
         
@@ -197,7 +197,7 @@
         
               <div class="chart_container">
                 <map-chart indicateur="deces_moyenne_quotidienne"></map-chart>
-              </div>
+              </div> -->
 
               <div class="chart_container">
                 <line-chart indicateur="deces_moyenne_quotidienne"></line-chart>
@@ -238,6 +238,18 @@
               <div class="chart_container">
                 <new-multiline-chart indicateurs="vaccins_premiere_dose vaccins_vaccines"></new-multiline-chart>
               </div>
+
+              <div class="chart_container">
+                <new-multiline-chart indicateurs="vaccins_premiere_dose vaccins_vaccines vaccins_rappel" periods = "vaccin_rappel"></new-multiline-chart>
+              </div>   
+              
+              <div class="chart_container">
+                <line-chart indicateur="vaccins_rappel" periods = "vaccin_rappel"></line-chart>
+              </div>
+
+              <div class="chart_container">
+                <line-chart indicateur="vaccins_rappel_moyenne_quotidienne" periods = "vaccin_rappel"></line-chart>
+              </div>              
         
               <div class="chart_container">
                 <line-chart indicateur="deces"></line-chart>
@@ -313,6 +325,10 @@
 
               <div class="chart_container">
                 <line-chart indicateur="nb_college_lycee_vaccin" constante=true></line-chart>
+              </div>
+
+              <div class="chart_container">
+                <new-multiline-chart indicateurs="nb_college_lycee_vaccin"></new-multiline-chart>
               </div>
 
               <div class="box_container">

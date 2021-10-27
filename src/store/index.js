@@ -10,6 +10,7 @@ export default new Vuex.Store({
   state: {
     dep: [],
     reg: [],
+    periods: {},
     promises: {},
     data: {},
     user: {
@@ -51,6 +52,9 @@ export default new Vuex.Store({
       state.user.selectedGeoLevel = payload.level
       state.user.selectedGeoCode = payload.code
       state.user.selectedGeoLabel = payload.label
+    },
+    setPeriods (state, data) {
+      state.periods = data
     }
   }
 })

@@ -1,5 +1,11 @@
 <template>
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
+    <div class="fr-warning" v-if="geoFallback">
+      <div class="scheme-border">
+        <span class="fr-fi-information-fill fr-px-1w fr-py-3v" aria-hidden="true"></span>
+      </div>
+      <p class="fr-text--sm fr-mb-0 fr-p-3v">{{ geoFallbackMsg }}</p>
+    </div>
     <LeftCol :props="leftColProps" @EventShowLine = "ChangeShowLine2"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
       <div class="chart ml-lg">
@@ -17,6 +23,11 @@
           <p v-bind:class="classLegend[index - 1]" v-bind:style="{'color':styleLegend[index - 1]}" @click = "ChangeShowLine(index)">
             {{capitalize(names[index - 1])}}
           </p>
+        </div>
+        <div v-for="index in periodsProps.date.length" :key="index" class="flex fr-mt-3v fr-mb-1v" :style="style">
+          <span class="legende_dash_line1" v-bind:style="{'background-color': periodsProps.color}"></span>
+          <span class="legende_dash_line2" v-bind:style="{'background-color': periodsProps.color}"></span>
+          <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(periodsProps.name[index - 1])}}</p>
         </div>
       </div>
     </div>
@@ -52,6 +63,11 @@ export default {
       widgetId: '',
       chartId: '',
       display: '',
+      periodsProps: {
+        date: [],
+        name: [],
+        color: '#161616'
+      },
       leftColProps: {
         localisation: '',
         currentValues: [],
@@ -65,17 +81,22 @@ export default {
         legendDisplay: ['', '', ''],
         units: [],
         opacity: []
-
       },
       units: [],
       names: [],
       chart: undefined,
       loading: true,
-      legendLeftMargin: 0
+      legendLeftMargin: 0,
+      geoFallback: false,
+      geoFallbackMsg: ''
     }
   },
   props: {
-    indicateurs: String
+    indicateurs: String,
+    periods: {
+      type: String,
+      default: null
+    }
   },
   computed: {
     selectedGeoLevel () {
@@ -96,11 +117,11 @@ export default {
       this.listIndicateurs = this.indicateurs.split(' ')
       this.nbIndicateurs = this.listIndicateurs.length
       const promises = []
-      this.indicateur_data.length = 0
+      this.indicateur_data.length = this.nbIndicateurs
       promises.length = 0
       for (let i = 0; i < this.nbIndicateurs; i++) {
         const promise = store.dispatch('getData', this.listIndicateurs[i]).then(data => {
-          this.indicateur_data.push(data)
+          this.indicateur_data[i] = data
         })
         promises.push(promise)
       }
@@ -112,6 +133,16 @@ export default {
 
     updateData () {
       const self = this
+      if (this.periods !== null) {
+        this.periodsProps.date.length = 0
+        this.periodsProps.name.length = 0
+        const periodsList = this.periods.split(' ')
+        periodsList.forEach(function (p) {
+          self.periodsProps.date.push(store.state.periods[p].date)
+          self.periodsProps.name.push(store.state.periods[p].nom)
+        })
+      }
+
       this.showLine.length = this.nbIndicateurs
       this.showLine = this.showLine.fill(true)
 
@@ -128,8 +159,8 @@ export default {
 
       this.leftColProps.localisation = this.selectedGeoLabel
 
-      const geolevel = this.selectedGeoLevel
-      const geocode = this.selectedGeoCode
+      let geolevel = this.selectedGeoLevel
+      let geocode = this.selectedGeoCode
 
       let geoObject
       const listGeoObject = []
@@ -144,6 +175,46 @@ export default {
       this.leftColProps.opacity.length = 0
       this.labels.length = 0
       this.dataset.length = 0
+
+      this.geoFallback = false
+      this.geoFallbackMsg = ''
+
+      let isRegionOk = true
+      let isDepOk = true
+      if (geolevel === 'departements') {
+        for (let i = 0; i < this.nbIndicateurs; i++) {
+          geoObject = this.indicateur_data[i][geolevel].find(obj => {
+            return obj.code_level === geocode
+          })
+          isDepOk = (isDepOk) && (typeof geoObject !== 'undefined')
+        }
+        if (!isDepOk) {
+          const depObj = store.state.dep.find(obj => {
+            return obj.value === geocode
+          })
+          this.leftColProps.localisation = depObj.region
+          geolevel = 'regions'
+          geocode = depObj.region_value
+          this.geoFallback = true
+          this.geoFallbackMsg = 'Affichage des résultats au niveau régional, faute de données au niveau départemental'
+        }
+      }
+
+      if (geolevel === 'regions') {
+        for (let i = 0; i < this.nbIndicateurs; i++) {
+          geoObject = this.indicateur_data[i][geolevel].find(obj => {
+            return obj.code_level === geocode
+          })
+          isRegionOk = (isRegionOk) && (typeof geoObject !== 'undefined')
+        }
+        if (!isRegionOk) {
+          this.leftColProps.localisation = 'France entière'
+          geolevel = 'France'
+          geocode = '01'
+          this.geoFallback = true
+          this.geoFallbackMsg = 'L\'affichage des données est uniquement disponible au niveau national'
+        }
+      }
 
       const data = []
       data.length = 0
@@ -259,6 +330,28 @@ export default {
           labels: self.labels,
           datasets: self.dataset
         },
+        plugins: [{
+          afterDatasetDraw: function (chart, args, options) {
+            if (self.periods !== null) {
+              self.periodsProps.date.forEach(function (d) {
+                const ctx = chart.ctx
+                const xAxis = chart.scales['x-axis-0']
+                const yAxis = chart.scales['y-axis-0']
+
+                const index = self.labels.indexOf(self.convertDateToHuman(d))
+                const x = xAxis.getPixelForTick(index)
+
+                ctx.beginPath()
+                ctx.moveTo(x, yAxis.bottom)
+                ctx.strokeStyle = self.periodsProps.color
+                ctx.lineWidth = '2'
+                ctx.setLineDash([5, 3])
+                ctx.lineTo(x, yAxis.top)
+                ctx.stroke()
+              })
+            }
+          }
+        }],
         options: {
           animation: {
             easing: 'easeInOutBack',
@@ -286,7 +379,17 @@ export default {
               },
               ticks: {
                 autoSkip: true,
-                maxTicksLimit: 5
+                maxTicksLimit: 5,
+                callback: function (value, index, values) {
+                  if (value >= 1000000000 || value <= -1000000000) {
+                    return value / 1e9 + 'B'
+                  } else if (value >= 1000000 || value <= -1000000) {
+                    return value / 1e6 + 'M'
+                  } else if (value >= 1000 || value <= -1000) {
+                    return value / 1e3 + 'K'
+                  }
+                  return value
+                }
               },
               afterFit: function (axis) {
                 self.legendLeftMargin = axis.width
@@ -421,6 +524,27 @@ export default {
 <style scoped lang="scss">
 
   .widget_container{
+    .fr-warning {
+      display: flex;
+      min-width: 100%;
+      margin: 0 0 0.75rem;
+      background-color: var(--w);
+      width: 100%;
+      .scheme-border {
+        min-width: 2.5rem;
+        background-color: #0768d5;
+        display: flex;
+        justify-content: center;
+      }
+      span {
+        display: block;
+        color: var(--w);
+      }
+      p {
+        border: solid 1px #0768d5;
+        width: 100%;
+      }
+    }
     .ml-lg {
       margin-left:0;
     }
@@ -445,6 +569,23 @@ export default {
           border-radius: 50%;
           display: inline-block;
           margin-top: 0.25rem;
+        }
+        .legende_dash_line1{
+          min-width: 0.4rem;
+          width: 0.4rem;
+          height: 0.2rem;
+          border-radius: 0%;
+          display: inline-block;
+          margin-top: 0.6rem;
+        }
+        .legende_dash_line2{
+          min-width: 0.4rem;
+          width: 0.4rem;
+          height: 0.2rem;
+          border-radius: 0%;
+          display: inline-block;
+          margin-top: 0.6rem;
+          margin-left: 0.2rem;
         }
       }
     }

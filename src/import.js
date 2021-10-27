@@ -611,7 +611,8 @@ export const getData = async function (store) {
   const reg = [
     {
       value: '84',
-      label: 'Auvergne-Rhône-Alpes'
+      label: 'Auvergne-Rhône-Alpes',
+      viewBox: '120 100 100 80'
     },
     {
       value: '32',
@@ -682,6 +683,11 @@ export const getData = async function (store) {
       label: 'Mayotte'
     }
   ]
+
+  const BASE_URL = 'https://data.widgets.dashboard.covid19.data.gouv.fr'
+  // const BASE_URL = './dist'
+  const url = `${BASE_URL}/period.json`
+  fetch(url).then(response => response.json()).then(json => { store.commit('setPeriods', json) })
 
   store.commit('initDep', dep)
   store.commit('initReg', reg)

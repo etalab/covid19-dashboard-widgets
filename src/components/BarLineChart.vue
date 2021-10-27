@@ -1,11 +1,11 @@
 <template>
   <div class="widget_container fr-grid-row" :class="(loading)?'loading':''" :data-display="display" :id="widgetId">
-      <div class="fr-warning" v-bind:style="{'display': alerteDisplay}">
-        <div class="scheme-border">
-            <span class="fr-fi-information-fill fr-px-1w fr-py-3v" aria-hidden="true"></span>
-        </div>
-        <p class="fr-text--sm fr-mb-0 fr-p-3v">L'affichage des données est uniquement disponible au niveau national</p>
+    <div class="fr-warning" v-if="geoFallback">
+      <div class="scheme-border">
+        <span class="fr-fi-information-fill fr-px-1w fr-py-3v" aria-hidden="true"></span>
       </div>
+      <p class="fr-text--sm fr-mb-0 fr-p-3v">{{ geoFallbackMsg }}</p>
+    </div>
     <LeftCol :props="leftColProps"></LeftCol>
     <div class="r_col fr-col-12 fr-col-lg-9">
     <div class="chart ml-lg">
@@ -55,7 +55,6 @@ export default {
       widgetId: '',
       chartId: '',
       display: '',
-      alerteDisplay: 'none',
       leftColProps: {
         localisation: '',
         currentValues: [],
@@ -114,23 +113,61 @@ export default {
     updateData () {
       const self = this
 
-      const geolevel = this.selectedGeoLevel
-      // const geocode = this.selectedGeoCode
+      let geolevel = this.selectedGeoLevel
+      let geocode = this.selectedGeoCode
 
       this.leftColProps.localisation = this.selectedGeoLabel
 
       let geoObject
       let geoObject2
 
+      this.geoFallback = false
+      this.geoFallbackMsg = ''
+
+      if (geolevel === 'departements') {
+        geoObject = this.indicateur_data[geolevel].find(obj => {
+          return obj.code_level === geocode
+        })
+        geoObject2 = this.indicateur_data2[geolevel].find(obj => {
+          return obj.code_level === geocode
+        })
+        if ((typeof geoObject === 'undefined') & (typeof geoObject2 === 'undefined')) {
+          const depObj = store.state.dep.find(obj => {
+            return obj.value === geocode
+          })
+          this.leftColProps.localisation = depObj.region
+          geolevel = 'regions'
+          geocode = depObj.region_value
+          this.geoFallback = true
+          this.geoFallbackMsg = 'Affichage des résultats au niveau régional, faute de données au niveau départemental'
+        }
+      }
+      if (geolevel === 'regions') {
+        geoObject = this.indicateur_data[geolevel].find(obj => {
+          return obj.code_level === geocode
+        })
+        geoObject2 = this.indicateur_data2[geolevel].find(obj => {
+          return obj.code_level === geocode
+        })
+        if ((typeof geoObject === 'undefined') & (typeof geoObject2 === 'undefined')) {
+          this.leftColProps.localisation = 'France entière'
+          geolevel = 'France'
+          geocode = '01'
+          this.geoFallback = true
+          this.geoFallbackMsg = 'L\'affichage des données est uniquement disponible au niveau national'
+        }
+      }
+
       if (geolevel === 'France') {
         geoObject = this.indicateur_data.france[0]
         geoObject2 = this.indicateur_data2.france[0]
-        this.alerteDisplay = 'none'
       } else {
-        this.alerteDisplay = ''
-        geoObject = this.indicateur_data.france[0]
-        geoObject2 = this.indicateur_data2.france[0]
-        this.leftColProps.localisation = 'France entière'
+        geoObject = this.indicateur_data[geolevel].find(obj => {
+          return obj.code_level === geocode
+        })
+        geoObject2 = this.indicateur_data2[geolevel].find(obj => {
+          return obj.code_level === geocode
+        })
       }
 
       this.leftColProps.names.length = 0
@@ -259,7 +296,17 @@ export default {
               },
               ticks: {
                 autoSkip: true,
-                maxTicksLimit: 5
+                maxTicksLimit: 5,
+                callback: function (value, index, values) {
+                  if (value >= 1000000000 || value <= -1000000000) {
+                    return value / 1e9 + 'B'
+                  } else if (value >= 1000000 || value <= -1000000) {
+                    return value / 1e6 + 'M'
+                  } else if (value >= 1000 || value <= -1000) {
+                    return value / 1e3 + 'K'
+                  }
+                  return value
+                }
               },
               afterFit: function (axis) {
                 self.legendLeftMargin = axis.width
@@ -409,6 +456,35 @@ export default {
 </script>
 
 <style scoped lang="scss">
+  .slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+  }
+
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #04AA6D;
+    cursor: pointer;
+  }
+
+  .slider::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #04AA6D;
+    cursor: pointer;
+  }
   .widget_container{
     .fr-warning {
       display: flex;
