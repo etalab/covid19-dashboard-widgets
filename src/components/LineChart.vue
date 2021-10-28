@@ -18,13 +18,18 @@
           </div>
         </div>
         <canvas :id="chartId"></canvas>
-        <div class="flex fr-mt-3v" :style="style">
+        <div class="flex fr-mt-3v" :style="{'margin-left': style}">
           <span class="legende_dot"></span>
           <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{ capitalize(units[0]) }}</p>
         </div>
-        <div class="flex fr-mt-3v" :style="style">
-          <span class="legende_dot" v-bind:style="{'background-color': '#009081', 'display': cst.legendDisplay}"></span>
+        <div class="flex fr-mt-3v" :style="{'margin-left': style, 'display': cst.legendDisplay}">
+          <span class="legende_dot" v-bind:style="{'background-color': '#009081'}"></span>
           <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{ capitalize(cst.legendName) }}</p>
+        </div>
+        <div v-for="index in periodsProps.date.length" :key="index" class="flex fr-mt-3v fr-mb-1v" :style="{'margin-left': style}">
+          <span class="legende_dash_line1" v-bind:style="{'background-color': periodsProps.color}"></span>
+          <span class="legende_dash_line2" v-bind:style="{'background-color': periodsProps.color}"></span>
+          <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{capitalize(periodsProps.name[index - 1])}}</p>
         </div>
       </div>
     </div>
@@ -50,6 +55,11 @@ export default {
       widgetId: '',
       chartId: '',
       display: '',
+      periodsProps: {
+        date: [],
+        name: [],
+        color: '#161616'
+      },
       leftColProps: {
         localisation: '',
         currentValues: [],
@@ -82,6 +92,10 @@ export default {
     constante: {
       type: Boolean,
       default: false
+    },
+    periods: {
+      type: String,
+      default: null
     }
   },
   computed: {
@@ -95,7 +109,7 @@ export default {
       return store.state.user.selectedGeoLabel
     },
     style () {
-      return 'margin-left: ' + this.legendLeftMargin + 'px'
+      return this.legendLeftMargin + 'px'
     }
   },
   methods: {
@@ -108,6 +122,17 @@ export default {
     },
     updateData () {
       const self = this
+
+      if (this.periods !== null) {
+        this.periodsProps.date.length = 0
+        this.periodsProps.name.length = 0
+        const periodsList = this.periods.split(' ')
+        periodsList.forEach(function (p) {
+          self.periodsProps.date.push(store.state.periods[p].date)
+          self.periodsProps.name.push(store.state.periods[p].nom)
+        })
+      }
+
       const geolevel = this.selectedGeoLevel
       const geocode = this.selectedGeoCode
       this.leftColProps.localisation = this.selectedGeoLabel
@@ -220,6 +245,28 @@ export default {
           labels: self.labels,
           datasets: datasets
         },
+        plugins: [{
+          afterDatasetDraw: function (chart, args, options) {
+            if (self.periods !== null) {
+              self.periodsProps.date.forEach(function (d) {
+                const ctx = chart.ctx
+                const xAxis = chart.scales['x-axis-0']
+                const yAxis = chart.scales['y-axis-0']
+
+                const index = self.labels.indexOf(self.convertDateToHuman(d))
+                const x = xAxis.getPixelForTick(index)
+
+                ctx.beginPath()
+                ctx.moveTo(x, yAxis.bottom)
+                ctx.strokeStyle = self.periodsProps.color
+                ctx.lineWidth = '2'
+                ctx.setLineDash([5, 3])
+                ctx.lineTo(x, yAxis.top)
+                ctx.stroke()
+              })
+            }
+          }
+        }],
         options: {
           animation: {
             easing: 'easeInOutBack'
@@ -246,7 +293,17 @@ export default {
               },
               ticks: {
                 autoSkip: true,
-                maxTicksLimit: 5
+                maxTicksLimit: 5,
+                callback: function (value, index, values) {
+                  if (value >= 1000000000 || value <= -1000000000) {
+                    return value / 1e9 + 'B'
+                  } else if (value >= 1000000 || value <= -1000000) {
+                    return value / 1e6 + 'M'
+                  } else if (value >= 1000 || value <= -1000) {
+                    return value / 1e3 + 'K'
+                  }
+                  return value
+                }
               },
               afterFit: function (axis) {
                 self.legendLeftMargin = axis.width
@@ -400,6 +457,23 @@ export default {
         background-color: #000091;
         display: inline-block;
         margin-top: 0.25rem;
+      }
+      .legende_dash_line1{
+        min-width: 0.4rem;
+        width: 0.4rem;
+        height: 0.2rem;
+        border-radius: 0%;
+        display: inline-block;
+        margin-top: 0.6rem;
+      }
+      .legende_dash_line2{
+        min-width: 0.4rem;
+        width: 0.4rem;
+        height: 0.2rem;
+        border-radius: 0%;
+        display: inline-block;
+        margin-top: 0.6rem;
+        margin-left: 0.2rem;
       }
     }
   }
