@@ -684,7 +684,7 @@ export const getData = async function (store) {
     }
   ]
 
-  const BASE_URL = 'https://data.widgets.dashboard.covid19.data.gouv.fr'
+  const BASE_URL = 'https://object.files.data.gouv.fr/opendata/test'
   // const BASE_URL = './dist'
   const url = `${BASE_URL}/period.json`
   fetch(url).then(response => response.json()).then(json => { store.commit('setPeriods', json) })
