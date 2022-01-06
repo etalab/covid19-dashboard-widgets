@@ -150,8 +150,22 @@ export default {
       this.classLegend = this.classLegend.fill('fr-text--sm fr-text--bold fr-ml-1v fr-mb-0')
 
       const listColors = ['#000091', '#007c3a', '#A558A0'].concat(chroma.brewer.Set2.reverse())
-      this.colors = listColors.slice(0, this.nbIndicateurs)
-      this.colors_legend = listColors.slice(0, this.nbIndicateurs)
+      const newColor = Array(this.nbIndicateurs)
+      let k = 0
+      let pos = 0
+      this.listIndicateurs.forEach(function (indName) {
+        if (indName === 'prop_variant_C') {
+          newColor[pos] = '#E4794A'
+        } else if (indName === 'prop_variant_D' || indName === 'prop_variant_A0C0') {
+          newColor[pos] = '#A558A0'
+        } else {
+          newColor[pos] = listColors[k]
+          k = k + 1
+        }
+        pos = pos + 1
+      })
+      this.colors = newColor.slice(0, this.nbIndicateurs)
+      this.colors_legend = newColor.slice(0, this.nbIndicateurs)
       this.colors_gradient.length = 0
       this.colors.forEach(function (col) {
         self.colors_gradient.push(chroma(col).alpha(0.3).hex())
@@ -242,7 +256,7 @@ export default {
       }
       this.leftColProps.date = this.convertDateToHuman(listGeoObject[0].last_date)
       this.leftColProps.currentDate = this.convertDateToHuman(listGeoObject[0].last_date)
-      this.leftColProps.colors_legend = listColors.slice(0, this.nbIndicateurs)
+      this.leftColProps.colors_legend = newColor.slice(0, this.nbIndicateurs)
 
       listGeoObject[0].values.forEach(function (d) {
         self.labels.push(self.convertDateToHuman(d.date))

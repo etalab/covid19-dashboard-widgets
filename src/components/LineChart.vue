@@ -13,13 +13,13 @@
           <div class="tooltip_header"></div>
           <div class="tooltip_body">
             <div class="tooltip_value">
-              <span class="tooltip_dot"></span>
+              <span class="tooltip_dot" v-bind:style="{'background-color': color}"></span>
             </div>
           </div>
         </div>
         <canvas :id="chartId"></canvas>
         <div class="flex fr-mt-3v" :style="{'margin-left': style}">
-          <span class="legende_dot"></span>
+          <span class="legende_dot" v-bind:style="{'background-color': color}"></span>
           <p class="fr-text--sm fr-text--bold fr-ml-1v fr-mb-0">{{ capitalize(units[0]) }}</p>
         </div>
         <div class="flex fr-mt-3v" :style="{'margin-left': style, 'display': cst.legendDisplay}">
@@ -37,6 +37,7 @@
 </template>
 <script>
 import store from '@/store'
+import chroma from 'chroma-js'
 import { Chart } from 'chart.js'
 import LeftCol from '@/components/LeftCol'
 import { mixin } from '@/utils.js'
@@ -55,6 +56,7 @@ export default {
       widgetId: '',
       chartId: '',
       display: '',
+      color: '#000091',
       periodsProps: {
         date: [],
         name: [],
@@ -191,6 +193,14 @@ export default {
         self.labels.push(self.convertDateToHuman(d.date))
         self.dataset.push((d.value))
       })
+
+      if (this.indicateur === 'prop_variant_C') {
+        self.color = '#E4794A'
+      } else if (this.indicateur === 'prop_variant_D' || this.indicateur === 'prop_variant_A0C0') {
+        self.color = '#A558A0'
+      } else {
+        self.color = '#000091'
+      }
     },
     getGeoObject (geolevel, geocode) {
       let geoObject
@@ -215,17 +225,18 @@ export default {
       const ctx = document.getElementById(self.chartId).getContext('2d')
       let gradientFill
       this.display === 'big' ? gradientFill = ctx.createLinearGradient(0, 0, 0, 500) : gradientFill = ctx.createLinearGradient(0, 0, 0, 250)
-      gradientFill.addColorStop(0, 'rgba(218, 218, 254, 0.6)')
-      gradientFill.addColorStop(0.6, 'rgba(245, 245, 255, 0)')
+      gradientFill.addColorStop(0, chroma(this.color).alpha(0.05).hex())
+      // gradientFill.addColorStop(0, 'rgba(218, 218, 254, 0.6)')
+      // gradientFill.addColorStop(0.6, 'rgba(245, 245, 255, 0)')
       const datasets = [{
         data: self.dataset,
         backgroundColor: gradientFill,
-        borderColor: '#000091',
+        borderColor: self.color,
         type: 'line',
         pointRadius: 8,
         pointBackgroundColor: 'rgba(0, 0, 0, 0)',
         pointBorderColor: 'rgba(0, 0, 0, 0)',
-        pointHoverBackgroundColor: 'rgba(0, 0, 145, 1)',
+        pointHoverBackgroundColor: self.color,
         pointHoverRadius: 6
       }]
       if (this.constante) {
